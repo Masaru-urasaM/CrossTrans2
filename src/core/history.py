@@ -1,0 +1,266 @@
+"""
+History Manager for CrossTrans.
+Handles saving, retrieving, and managing translation history.
+"""
+import time
+import uuid
+import threading
+from functools import wraps
+from copy import deepcopy
+from typing import List, Dict, Any, Optional
+
+from src.core import lang_id
+from src.core.translation_task import active_write
+
+
+_state_lock = threading.RLock()
+
+
+def history_transaction(function):
+    """Serialize short read/modify/write operations, never provider requests."""
+    @wraps(function)
+    def guarded(*args, **kwargs):
+        with _state_lock:
+            return function(*args, **kwargs)
+    return guarded
+
+
+class HistoryManager:
+    """Manages translation history with a limit on entries."""
+    
+    MAX_HISTORY = 200
+
+    def __init__(self, config):
+        self.config = config
+
+    @active_write
+    @history_transaction
+    def add_entry(self, original: str, translated: str, target_lang: str,
+                  source_type: str = "text", model_used: str = "Auto",
+                  source_lang: str = "", source_verdict: str = "", alignment=None, source_choice: str = ""):
+        """Add a new translation entry to history.
+
+        Args:
+            source_lang: The source language label shown in the History list;
+                detected from the characters when empty.
+            source_verdict: The language a model reported for `original`
+                (Decision 22). Stored only when there is one - it is what tells a
+                model's verdict apart from a detected label later.
+            source_choice: An explicit editable source selection. Stored separately
+                so reopening restores it and automatic cache lookup excludes it.
+        """
+        if not self.config.get('history_enabled', True):
+            return
+
+        # Don't save if original text is empty or too short/trivial
+        if not original or len(original.strip()) < 2:
+            return
+
+        # Auto-detect source language if not provided
+        if not source_lang:
+            source_lang = self._detect_language(original)
+
+        entry = {
+            'id': str(uuid.uuid4()),
+            'timestamp': time.time(),
+            'original': original,
+            'translated': str(translated),
+            'target_lang': target_lang,
+            'source_lang': source_lang,
+            'source_type': source_type,
+            'model_used': model_used
+        }
+        if source_verdict:
+            entry['source_verdict'] = source_verdict
+        if source_choice:
+            from src.core.source_languages import normalize_source
+            choice = normalize_source(source_choice)
+            if choice:
+                entry['source_choice'] = choice
+        if alignment is not None:
+            from src.core.translation_alignment import validate_metadata
+            valid = validate_metadata(alignment, original, translated, target_lang, source_type)
+            if valid:
+                entry['alignment'] = deepcopy(valid)
+
+        history = self.config.get('history', [])
+        history.insert(0, entry)
+        
+        # Enforce limit
+        if len(history) > self.MAX_HISTORY:
+            history = history[:self.MAX_HISTORY]
+            
+        self.config.set('history', history)
+
+    @history_transaction
+    def get_history(self) -> List[Dict[str, Any]]:
+        """Get full history list."""
+        return self.config.get('history', [])
+
+    def reading_result(self, entry: Dict) -> str:
+        """Restore saved links without modifying or upgrading a stored translation."""
+        from src.core.translation_alignment import attach_alignment
+        source, text = entry.get('original', ''), entry.get('translated', '')
+        mode = entry.get('source_type', 'text')
+        mode = mode if mode in ('text', 'merged') else 'text'
+        if source.startswith('[') and 'attachment(s)]' in source:
+            return text
+        return attach_alignment(text, entry.get('alignment'), source,
+                                entry.get('target_lang', ''), mode)
+
+    @history_transaction
+    def find_cached_entry(self, original: str, target_lang: str,
+                          source_type: str = 'text') -> Optional[Dict]:
+        """Return a stored translation for an exact (original, target_lang) match.
+
+        Reuses the translation history as a lookup cache so identical input is not
+        re-sent to the API. Scans most-recent first (history is insert-at-front), so a
+        freshly re-translated entry wins over older ones. Error results are never
+        returned as cache hits.
+
+        Args:
+            original: Source text to match exactly.
+            target_lang: Target language to match exactly.
+            source_type: Only entries tagged with this exact source_type are eligible.
+                Defaults to 'text' (plain translations). The merged translate-or-fix
+                path passes 'merged' so its minimal-change grammar fixes are never
+                cross-served as a plain 'rephrase' translation (and vice versa).
+
+        Returns:
+            The whole cached entry, or None if no usable match exists. Callers
+            that only want the text use find_cached(); the entry itself carries
+            `model_used`, which the popup needs to say where a cache hit came
+            from instead of crediting whatever model ran most recently.
+        """
+        if not original or not target_lang:
+            return None
+
+        for entry in self.config.get('history', []):
+            # Only entries of the requested source_type are cacheable. This keeps plain
+            # translations, custom-prompt, screenshot, multimodal and merged results in
+            # separate namespaces so they are never served in place of one another.
+            if entry.get('source_type', 'text') != source_type or entry.get('source_choice'):
+                continue
+            if entry.get('original') == original and entry.get('target_lang') == target_lang:
+                translated = entry.get('translated', '')
+                if translated and not translated.startswith('Error:'):
+                    return entry
+        return None
+
+    @history_transaction
+    def find_source_verdict(self, original: str) -> Optional[str]:
+        """The language a model reported for this exact text, from the newest
+        entry that recorded one - whatever its target language - or None."""
+        if not original:
+            return None
+        for entry in self.config.get('history', []):
+            if entry.get('original') == original and entry.get('source_verdict'):
+                return entry['source_verdict']
+        return None
+
+    @history_transaction
+    def set_source_verdict(self, original: str, verdict: str) -> int:
+        """Record the language the user settled for `original` on every entry of
+        exactly that text, as its verdict and its label.
+
+        The user's pick outranks a model's (Decision 22), so it replaces theirs
+        too: find_source_verdict() reads the newest entry, and an older one left
+        disagreeing would come back if the newer were deleted.
+
+        Returns:
+            How many entries changed.
+        """
+        if not original or not verdict:
+            return 0
+        history = self.config.get('history', [])
+        changed = 0
+        for entry in history:
+            if entry.get('original') == original and (
+                    entry.get('source_verdict') != verdict
+                    or entry.get('source_lang') != verdict):
+                entry['source_verdict'] = verdict
+                entry['source_lang'] = verdict
+                entry.pop('alignment', None)
+                changed += 1
+        if changed:
+            self.config.set('history', history)
+        return changed
+
+    def find_cached(self, original: str, target_lang: str,
+                    source_type: str = 'text') -> Optional[str]:
+        """The cached translation text for an exact match, or None.
+
+        Thin reader over find_cached_entry() - see there for the matching rules.
+        """
+        entry = self.find_cached_entry(original, target_lang, source_type)
+        return entry.get('translated') if entry else None
+
+    @history_transaction
+    def clear_history(self):
+        """Clear all history."""
+        self.config.set('history', [])
+
+    @history_transaction
+    def delete_entry(self, entry_id: str):
+        """Delete a specific entry by ID."""
+        history = self.config.get('history', [])
+        history = [h for h in history if h.get('id') != entry_id]
+        self.config.set('history', history)
+
+    def _detect_language(self, text: str) -> str:
+        """Simple language detection based on character ranges."""
+        if not text:
+            return "Unknown"
+
+        # Count characters in different ranges
+        cjk = 0  # Chinese/Japanese/Korean
+        hiragana = 0
+        katakana = 0
+        korean = 0
+        vietnamese = 0
+        latin = 0
+        cyrillic = 0
+
+        vietnamese_chars = set('àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ')
+
+        for char in text.lower():
+            code = ord(char)
+            if 0x4E00 <= code <= 0x9FFF:  # CJK
+                cjk += 1
+            elif 0x3040 <= code <= 0x309F:  # Hiragana
+                hiragana += 1
+            elif 0x30A0 <= code <= 0x30FF:  # Katakana
+                katakana += 1
+            elif 0xAC00 <= code <= 0xD7AF:  # Korean
+                korean += 1
+            elif char in vietnamese_chars:
+                vietnamese += 1
+            elif 0x0400 <= code <= 0x04FF:  # Cyrillic
+                cyrillic += 1
+            elif char.isalpha():
+                latin += 1
+
+        # Determine language
+        total = cjk + hiragana + katakana + korean + vietnamese + latin + cyrillic
+        if total == 0:
+            return "Unknown"
+
+        if lang_id.has_kana(text):
+            return "Japanese"
+        if korean > total * 0.3:
+            return "Korean"
+        if cjk > total * 0.3:
+            # Kanji alone: what the glyphs (or, K6, the function words) prove,
+            # else unknown - 勉強 used to be labelled "Chinese" (TODO.md F5). The
+            # model's verdict, when there is one, is passed in by the caller
+            # instead (source_lang).
+            evidence = lang_id.text_evidence(text)
+            return evidence.language if evidence else "Unknown"
+        if vietnamese > 0:
+            return "Vietnamese"
+        if cyrillic > total * 0.3:
+            return "Russian"
+        if latin > 0:
+            return "English"  # Default for Latin scripts
+
+        return "Unknown"

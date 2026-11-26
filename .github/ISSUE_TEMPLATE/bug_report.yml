@@ -1,0 +1,70 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in CrossTrans 2
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Before submitting, please check the [Troubleshooting section of the User Guide](https://github.com/Masaru-urasaM/CrossTrans2/blob/main/docs/USER_GUIDE.md#troubleshooting).
+
+        **Tip:** You can generate a privacy-safe report automatically from **Settings > About > Open diagnostics** (API keys, tokens, and translation history are automatically excluded).
+
+  - type: input
+    id: version
+    attributes:
+      label: CrossTrans 2 Version
+      placeholder: "e.g., 2.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Windows Version
+      placeholder: "e.g., Windows 11 24H2 (64-bit)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature Area
+      options:
+        - Quick Translate (Hotkeys / Popup / Replace)
+        - Translator Window / Files & PDF
+        - Screenshot OCR
+        - Audio Translation (Recording / File Upload)
+        - Dictionary / Furigana / Linked Reading
+        - API Keys / Providers / Failover
+        - Settings / Themes / UI Scaling
+        - Installer / Auto-Update
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected to happen instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Select text in ...
+        2. Press Win + Alt + V
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics Report or Logs (optional)
+      description: Paste output from Settings > About > Open diagnostics. Never paste real API keys or tokens.
+      render: text

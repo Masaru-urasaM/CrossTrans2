@@ -1,0 +1,16 @@
+{
+  "PANEL": "#2b2b2b",
+  "RUBY_PLATE": "#363636",
+  "WHITE": "#ffffff",
+  "TEXT_SOFT": "#cccccc",
+  "TEXT_DIM": "#888888",
+  "TEXT_FAINT": "#666666",
+  "TEXT_MID": "#aaaaaa",
+  "RUBY_READING": "#80b8ff",
+  "ERROR_TEXT": "#ff6b6b",
+  "LINK_BLUE": "#4da6ff",
+  "DANGER": "#dc3545",
+  "PRIMARY": "#0d6efd",
+  "OVERLAY_OUTLINE": "#991700",
+  "C_5A9FD4": "#5a9fd4"
+}

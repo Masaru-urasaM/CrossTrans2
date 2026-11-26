@@ -1,0 +1,2186 @@
+"""
+NLP Language Pack Manager for CrossTrans.
+
+Handles optional download and management of NLP libraries for smart
+word tokenization in Dictionary mode.
+
+Supports 30+ languages via:
+- UDPipe for European languages (Python 3.14 compatible)
+- Specialized libraries for Asian languages (Vietnamese, Japanese, Chinese, Korean, Thai)
+"""
+import hashlib
+import os
+import shutil
+import subprocess
+import sys
+import time  # noqa: F401 - kept: tests may patch this module attribute
+import importlib
+import re
+import logging
+from typing import Dict, List, Optional, Callable, Tuple
+from dataclasses import dataclass
+
+from src.core import lang_id
+from src.product import profile_dir
+
+
+def is_frozen() -> bool:
+    """Check if running as PyInstaller frozen EXE."""
+    frozen = getattr(sys, 'frozen', False)
+    has_meipass = hasattr(sys, '_MEIPASS')
+    result = frozen or has_meipass
+    # DEBUG: called many times per run, and the [Startup] line already records frozen=... once
+    logging.debug(f"[FROZEN] frozen={frozen}, _MEIPASS={has_meipass}, result={result}")
+    return result
+
+
+def get_custom_packages_dir() -> str:
+    """Get custom directory for NLP packages when running as EXE.
+
+    EXE builds need a separate directory for pip packages because:
+    1. PyInstaller freezes imports - can't import from system site-packages
+    2. Avoids conflicts with source code development
+
+    Returns:
+        Path to custom packages directory (e.g., %APPDATA%/CrossTrans2/nlp_packages)
+    """
+    base_dir = profile_dir()
+    packages_dir = os.path.join(base_dir, "nlp_packages")
+
+    # Create directory if not exists
+    os.makedirs(packages_dir, exist_ok=True)
+
+    return packages_dir
+
+
+def setup_custom_packages_path():
+    """Add custom packages directory to sys.path for EXE builds.
+
+    This allows importing packages installed via pip --target.
+    Must be called early in app startup.
+    """
+    if is_frozen():
+        custom_dir = get_custom_packages_dir()
+        if custom_dir not in sys.path:
+            # Insert at beginning to prioritize custom packages
+            sys.path.insert(0, custom_dir)
+            logging.info(f"Added custom packages path: {custom_dir}")
+
+
+def get_python_executable() -> Optional[str]:
+    """Get the Python executable path.
+
+    When running as a PyInstaller EXE, sys.executable points to the EXE itself,
+    not the Python interpreter. In that case, we need to find the system Python.
+
+    Returns:
+        Path to Python executable, or None if not found
+    """
+    if not is_frozen():
+        return sys.executable
+
+    logging.info("Running as frozen EXE, searching for system Python...")
+
+    # Check cached working Python first (set by auto-retry on previous install)
+    try:
+        from config import Config
+        cfg = Config()
+        cached = cfg.get_nlp_working_python()
+        if cached and os.path.isfile(cached):
+            try:
+                result = subprocess.run(
+                    [cached, '--version'],
+                    capture_output=True, text=True, timeout=10,
+                    creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+                )
+                if result.returncode == 0 and 'Python' in result.stdout:
+                    logging.info(f"Using cached working Python: {cached}")
+                    return cached
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    python_names = ['python', 'python3', 'py']
+
+    for name in python_names:
+        python_path = shutil.which(name)
+        if python_path:
+            try:
+                result = subprocess.run(
+                    [python_path, '--version'],
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
+                    creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+                )
+                if result.returncode == 0 and 'Python' in result.stdout:
+                    logging.info(f"Found system Python: {python_path}")
+                    return python_path
+            except Exception:
+                continue
+
+    if sys.platform == 'win32':
+        py_launcher = shutil.which('py')
+        if py_launcher:
+            logging.info(f"Found Python Launcher: {py_launcher}")
+            return py_launcher
+
+        common_paths = [
+            os.path.expandvars(r'%LOCALAPPDATA%\Programs\Python\Python3*\python.exe'),
+            os.path.expandvars(r'%PROGRAMFILES%\Python3*\python.exe'),
+            os.path.expandvars(r'%PROGRAMFILES(X86)%\Python3*\python.exe'),
+        ]
+
+        import glob
+        for pattern in common_paths:
+            matches = glob.glob(pattern)
+            if matches:
+                matches.sort(reverse=True)
+                logging.info(f"Found Python at: {matches[0]}")
+                return matches[0]
+
+    logging.error("Could not find system Python executable")
+    return None
+
+
+def get_all_python_executables() -> List[str]:
+    """Discover all available Python interpreters on the system.
+
+    Uses the Windows Python Launcher (py -0p) and common install paths.
+    Returns a deduplicated list of verified Python executable paths.
+    """
+    found: Dict[str, str] = {}  # path -> version
+
+    if sys.platform == 'win32':
+        py_launcher = shutil.which('py')
+        if py_launcher:
+            try:
+                result = subprocess.run(
+                    [py_launcher, '-0p'],
+                    capture_output=True, text=True, timeout=10,
+                    creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+                )
+                if result.returncode == 0:
+                    for line in result.stdout.strip().splitlines():
+                        line = line.strip()
+                        if not line:
+                            continue
+                        parts = line.split(None, 1)
+                        if len(parts) == 2:
+                            ver_tag, path = parts
+                            path = path.strip().rstrip('*').strip()
+                            if os.path.isfile(path):
+                                found[os.path.normcase(path)] = ver_tag
+            except Exception as e:
+                logging.debug(f"py -0p failed: {e}")
+
+        import glob as glob_module
+        common_patterns = [
+            os.path.expandvars(r'%LOCALAPPDATA%\Programs\Python\Python3*\python.exe'),
+            os.path.expandvars(r'%PROGRAMFILES%\Python3*\python.exe'),
+        ]
+        for pattern in common_patterns:
+            for path in glob_module.glob(pattern):
+                found.setdefault(os.path.normcase(path), "")
+
+    verified = []
+    for path in found:
+        try:
+            result = subprocess.run(
+                [path, '--version'],
+                capture_output=True, text=True, timeout=10,
+                creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+            )
+            if result.returncode == 0 and 'Python' in result.stdout:
+                verified.append(path)
+        except Exception:
+            continue
+
+    logging.info(f"Discovered {len(verified)} Python interpreters: {verified}")
+    return verified
+
+
+# Initialize custom packages path at module load time
+logging.info(f"=== NLP Manager module loading: sys.executable={sys.executable} ===")
+logging.info(f"=== is_frozen()={is_frozen()} ===")
+setup_custom_packages_path()
+
+
+@dataclass
+class LanguagePack:
+    """Language pack configuration."""
+    name: str
+    code: str
+    packages: List[str]  # pip packages to install
+    size_mb: int = 0
+    module_check: str = ""  # module to import to check if installed
+    udpipe_model: str = ""  # UDPipe model name if using UDPipe
+    category: str = "Other"  # Category for grouping in UI
+    whitespace_separated: bool = True  # False for CJK/Thai where _simple_tokenize is useless
+
+
+@dataclass
+class ParsedToken:
+    """Token with dependency and POS information from CoNLL-U format.
+
+    Used for grouping compound words and phrasal verbs.
+    """
+    id: int          # Token index in sentence (1-based)
+    form: str        # Word form/surface text
+    head: int        # ID of head token (0 = root)
+    deprel: str      # Dependency relation to head (e.g., "compound", "compound:prt")
+    upos: str = ""   # Universal POS tag (NOUN, VERB, ADJ, CCONJ, etc.)
+
+
+# Dependency relations that indicate multi-word expressions
+# These tokens should be merged with their head token
+COMPOUND_RELATIONS = {
+    'compound',       # General compounds: "ice cream", "New York"
+    'compound:prt',   # Phrasal verb particles: "give UP", "break DOWN"
+    'flat',           # Flat structures (names): "John Smith"
+    'flat:name',      # Named entities: "New York City"
+    'flat:foreign',   # Foreign words kept together
+    'fixed',          # Fixed multi-word expressions: "as well as"
+    'goeswith',       # Parts of same word incorrectly split
+}
+
+# POS constraints for compound relations
+# Defines which POS combinations are valid for each relation type
+COMPOUND_POS_CONSTRAINTS = {
+    'compound': {'NOUN', 'PROPN'},       # Both must be NOUN/PROPN (not ADJ, CCONJ, etc.)
+    'compound:prt': {'VERB'},            # Head must be VERB (phrasal verbs)
+    'flat': {'PROPN'},                   # Both must be PROPN (names only)
+    'flat:name': {'PROPN'},              # Names only
+    'flat:foreign': None,                # No constraint (foreign words)
+    'fixed': None,                       # No constraint (fixed expressions)
+    'goeswith': None,                    # No constraint (split words)
+}
+
+
+def get_udpipe_model_dir() -> str:
+    """Get directory for UDPipe models."""
+    import os
+    return os.path.join(profile_dir(), "udpipe_models")
+
+
+def get_udpipe_model_path(model_name: str) -> str:
+    """Get full path to a UDPipe model file."""
+    import os
+    return os.path.join(get_udpipe_model_dir(), f"{model_name}.udpipe")
+
+
+def _sha256_of_file(path: str) -> str:
+    """Hex SHA-256 of a file, read in chunks."""
+    digest = hashlib.sha256()
+    with open(path, 'rb') as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+# UDPipe model download URLs from LINDAT repository
+# https://lindat.mff.cuni.cz/repository/xmlui/handle/11234/1-3131
+UDPIPE_MODEL_URLS = {
+    "english-ewt-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/english-ewt-ud-2.5-191206.udpipe",
+    "german-gsd-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/german-gsd-ud-2.5-191206.udpipe",
+    "french-gsd-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/french-gsd-ud-2.5-191206.udpipe",
+    "spanish-ancora-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/spanish-ancora-ud-2.5-191206.udpipe",
+    "italian-isdt-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/italian-isdt-ud-2.5-191206.udpipe",
+    "portuguese-bosque-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/portuguese-bosque-ud-2.5-191206.udpipe",
+    "dutch-alpino-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/dutch-alpino-ud-2.5-191206.udpipe",
+    "polish-pdb-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/polish-pdb-ud-2.5-191206.udpipe",
+    "russian-syntagrus-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/russian-syntagrus-ud-2.5-191206.udpipe",
+    "ukrainian-iu-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/ukrainian-iu-ud-2.5-191206.udpipe",
+    "greek-gdt-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/greek-gdt-ud-2.5-191206.udpipe",
+    "romanian-rrt-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/romanian-rrt-ud-2.5-191206.udpipe",
+    "croatian-set-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/croatian-set-ud-2.5-191206.udpipe",
+    "catalan-ancora-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/catalan-ancora-ud-2.5-191206.udpipe",
+    "danish-ddt-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/danish-ddt-ud-2.5-191206.udpipe",
+    "finnish-tdt-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/finnish-tdt-ud-2.5-191206.udpipe",
+    "norwegian-bokmaal-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/norwegian-bokmaal-ud-2.5-191206.udpipe",
+    "swedish-talbanken-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/swedish-talbanken-ud-2.5-191206.udpipe",
+    "slovenian-ssj-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/slovenian-ssj-ud-2.5-191206.udpipe",
+    "lithuanian-alksnis-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/lithuanian-alksnis-ud-2.5-191206.udpipe",
+    "hebrew-htb-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/hebrew-htb-ud-2.5-191206.udpipe",
+    "indonesian-gsd-ud-2.5": "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-3131/indonesian-gsd-ud-2.5-191206.udpipe",
+}
+
+# SHA-256 of every model file above, checked after each download. Computed on 2026-11-11 from a download
+# over verified TLS; each file's MD5 also matched the checksum LINDAT publishes on the item page.
+# There is no Macedonian pack: no UDPipe 1 release has a Macedonian model (Decision 90).
+UDPIPE_MODEL_SHA256 = {
+    "english-ewt-ud-2.5": "784bd0fa85e3d831fd02a55290d0acfd05c953159dc38cc33d52e1b28add9957",
+    "german-gsd-ud-2.5": "3a14db4ff1a7fa6eee756537d579b49c0a000e4fc9bed474b681e31e73f02274",
+    "french-gsd-ud-2.5": "3b10b4c87e7667ac4cf5b301fa075720303c6a1d101cd11a62abde670bebea30",
+    "spanish-ancora-ud-2.5": "eb7c37977de18072d1f63740c06c588620d48b51dc0c0d0a3604a21db12600fc",
+    "italian-isdt-ud-2.5": "dad54daaa01c250f39ec0ae7d29b3f3830c1eea066db4e3a92c39b41f2dd1a40",
+    "portuguese-bosque-ud-2.5": "6d6ff79c2388347426e8dc29c61b759a437ee55789f5925fe21a6df955aac4af",
+    "dutch-alpino-ud-2.5": "700198d252054f4625ba03f9ea29881816491077691960a0912f24814ca440d7",
+    "polish-pdb-ud-2.5": "ffe6ab0f604f88f82a7d8e8096d94491f99336d0d4c8e2b9700d28190f352e46",
+    "russian-syntagrus-ud-2.5": "16894d425ee328ace668a9d2f7ea5ff945468247d146333e8688f9200fa114e2",
+    "ukrainian-iu-ud-2.5": "ea48223c000cf6b6a33f981fbca63b645fdbc191d76eea0b35df286719d965cd",
+    "greek-gdt-ud-2.5": "b76aef5fc08f4df50f535c140c51852505eadbe17619ab0f233f0b979c0de8e9",
+    "romanian-rrt-ud-2.5": "396a0ab7fb21d0148c18049ee72e855e02248ca95897aa51ec8a7f60cd769340",
+    "croatian-set-ud-2.5": "b8e0ad212bdc84c57366bd7267d21810e1fd3239c4d22ca5867f94e76c6cedc7",
+    "catalan-ancora-ud-2.5": "a706a200017c3968e2c23ee229d7680d22140d948358e5a667cdece4a997d8ad",
+    "danish-ddt-ud-2.5": "fe25149d355609eb551963d70b971fcd3730d35558b758f34d4eb341c6b8569c",
+    "finnish-tdt-ud-2.5": "4593b24e7f2b807ae7d795ef1c72b11e461a5f6a9bf5eb20a3ac79849e132b0a",
+    "norwegian-bokmaal-ud-2.5": "e2723e0e93b34202806e0b72e162b9a92d977016f3ebec1e36c274d2dcc187b2",
+    "swedish-talbanken-ud-2.5": "116548cf458f4bc47426ab8fa525af704e71886c4acd69a8f84865860a7d2f57",
+    "slovenian-ssj-ud-2.5": "2af52564ac2963dff7250c8b892cd640b8e04c1d03fb3d1b0c1ce983d1dde526",
+    "lithuanian-alksnis-ud-2.5": "0a8bcdfde0fda41fc1e39f627966753921405ca51f4c066c35387db2c61873d5",
+    "hebrew-htb-ud-2.5": "084d466313d91d004cc4e7bd10bb2410ab98bef491ad046eaa2b73b69ccb4d16",
+    "indonesian-gsd-ud-2.5": "a91987cf8dba83f730d9828937016c70c3539728dc0de6608ff089b075fc3e1d",
+}
+
+# The largest model is about 46 MB; anything far beyond that is not a model.
+UDPIPE_MAX_MODEL_BYTES = 128 * 1024 * 1024
+UDPIPE_DOWNLOAD_TIMEOUT = 60  # seconds per socket operation
+
+
+# Language packs organized by category
+# Using UDPipe for European languages (Python 3.14 compatible)
+# Specialized libraries for Asian languages where standard tokenization is inadequate
+
+LANGUAGE_PACKS: Dict[str, LanguagePack] = {
+    # === ASIAN LANGUAGES (Specialized libraries for better tokenization) ===
+    "Vietnamese": LanguagePack(
+        name="Vietnamese",
+        code="vi",
+        # Pin underthesea_core to 1.0.7 - version 2.0.0+ has CPU instruction compatibility issues
+        # (causes 'Illegal instruction' SIGILL on some CPUs)
+        # Dependencies must be listed BEFORE underthesea (which is installed with --no-deps)
+        packages=[
+            "underthesea_core==1.0.7",
+            "scikit-learn",
+            "python-crfsuite",
+            "joblib",
+            "PyYAML",
+            "underthesea",  # Must be LAST - installed with --no-deps to preserve pinned core
+        ],
+        size_mb=120,  # Increased due to scikit-learn
+        module_check="underthesea",
+        category="Asian"
+    ),
+    "Japanese": LanguagePack(
+        name="Japanese",
+        code="ja",
+        packages=["fugashi", "unidic-lite"],
+        size_mb=250,            # unidic-lite alone installs to 249 MB (D19)
+        module_check="fugashi",
+        category="Asian",
+        whitespace_separated=False
+    ),
+    "Chinese (Simplified)": LanguagePack(
+        name="Chinese (Simplified)",
+        code="zh",
+        packages=["jieba"],
+        size_mb=15,
+        module_check="jieba",
+        category="Asian",
+        whitespace_separated=False
+    ),
+    "Chinese (Traditional)": LanguagePack(
+        name="Chinese (Traditional)",
+        code="zh-tw",
+        packages=["jieba"],
+        size_mb=15,
+        module_check="jieba",
+        category="Asian",
+        whitespace_separated=False
+    ),
+    "Korean": LanguagePack(
+        name="Korean",
+        code="ko",
+        packages=["kiwipiepy"],
+        size_mb=90,
+        module_check="kiwipiepy",
+        category="Asian",
+        whitespace_separated=False
+    ),
+    "Thai": LanguagePack(
+        name="Thai",
+        code="th",
+        packages=["pythainlp"],
+        size_mb=50,
+        module_check="pythainlp",
+        category="Asian",
+        whitespace_separated=False
+    ),
+
+    # === EUROPEAN LANGUAGES (UDPipe models - Python 3.14 compatible) ===
+    "English": LanguagePack(
+        name="English",
+        code="en",
+        packages=["ufal.udpipe"],
+        size_mb=25,
+        module_check="ufal.udpipe",
+        udpipe_model="english-ewt-ud-2.5",
+        category="European"
+    ),
+    "German": LanguagePack(
+        name="German",
+        code="de",
+        packages=["ufal.udpipe"],
+        size_mb=20,
+        module_check="ufal.udpipe",
+        udpipe_model="german-gsd-ud-2.5",
+        category="European"
+    ),
+    "French": LanguagePack(
+        name="French",
+        code="fr",
+        packages=["ufal.udpipe"],
+        size_mb=20,
+        module_check="ufal.udpipe",
+        udpipe_model="french-gsd-ud-2.5",
+        category="European"
+    ),
+    "Spanish": LanguagePack(
+        name="Spanish",
+        code="es",
+        packages=["ufal.udpipe"],
+        size_mb=25,
+        module_check="ufal.udpipe",
+        udpipe_model="spanish-ancora-ud-2.5",
+        category="European"
+    ),
+    "Italian": LanguagePack(
+        name="Italian",
+        code="it",
+        packages=["ufal.udpipe"],
+        size_mb=20,
+        module_check="ufal.udpipe",
+        udpipe_model="italian-isdt-ud-2.5",
+        category="European"
+    ),
+    "Portuguese": LanguagePack(
+        name="Portuguese",
+        code="pt",
+        packages=["ufal.udpipe"],
+        size_mb=15,
+        module_check="ufal.udpipe",
+        udpipe_model="portuguese-bosque-ud-2.5",
+        category="European"
+    ),
+    "Dutch": LanguagePack(
+        name="Dutch",
+        code="nl",
+        packages=["ufal.udpipe"],
+        size_mb=15,
+        module_check="ufal.udpipe",
+        udpipe_model="dutch-alpino-ud-2.5",
+        category="European"
+    ),
+    "Polish": LanguagePack(
+        name="Polish",
+        code="pl",
+        packages=["ufal.udpipe"],
+        size_mb=25,
+        module_check="ufal.udpipe",
+        udpipe_model="polish-pdb-ud-2.5",
+        category="European"
+    ),
+    "Russian": LanguagePack(
+        name="Russian",
+        code="ru",
+        packages=["ufal.udpipe"],
+        size_mb=50,
+        module_check="ufal.udpipe",
+        udpipe_model="russian-syntagrus-ud-2.5",
+        category="European"
+    ),
+    "Ukrainian": LanguagePack(
+        name="Ukrainian",
+        code="uk",
+        packages=["ufal.udpipe"],
+        size_mb=20,
+        module_check="ufal.udpipe",
+        udpipe_model="ukrainian-iu-ud-2.5",
+        category="European"
+    ),
+    "Greek": LanguagePack(
+        name="Greek",
+        code="el",
+        packages=["ufal.udpipe"],
+        size_mb=15,
+        module_check="ufal.udpipe",
+        udpipe_model="greek-gdt-ud-2.5",
+        category="European"
+    ),
+    "Romanian": LanguagePack(
+        name="Romanian",
+        code="ro",
+        packages=["ufal.udpipe"],
+        size_mb=20,
+        module_check="ufal.udpipe",
+        udpipe_model="romanian-rrt-ud-2.5",
+        category="European"
+    ),
+    "Croatian": LanguagePack(
+        name="Croatian",
+        code="hr",
+        packages=["ufal.udpipe"],
+        size_mb=20,
+        module_check="ufal.udpipe",
+        udpipe_model="croatian-set-ud-2.5",
+        category="European"
+    ),
+    "Catalan": LanguagePack(
+        name="Catalan",
+        code="ca",
+        packages=["ufal.udpipe"],
+        size_mb=25,
+        module_check="ufal.udpipe",
+        udpipe_model="catalan-ancora-ud-2.5",
+        category="European"
+    ),
+    "Danish": LanguagePack(
+        name="Danish",
+        code="da",
+        packages=["ufal.udpipe"],
+        size_mb=15,
+        module_check="ufal.udpipe",
+        udpipe_model="danish-ddt-ud-2.5",
+        category="Scandinavian"
+    ),
+    "Finnish": LanguagePack(
+        name="Finnish",
+        code="fi",
+        packages=["ufal.udpipe"],
+        size_mb=25,
+        module_check="ufal.udpipe",
+        udpipe_model="finnish-tdt-ud-2.5",
+        category="Scandinavian"
+    ),
+    "Norwegian": LanguagePack(
+        name="Norwegian",
+        code="nb",
+        packages=["ufal.udpipe"],
+        size_mb=20,
+        module_check="ufal.udpipe",
+        udpipe_model="norwegian-bokmaal-ud-2.5",
+        category="Scandinavian"
+    ),
+    "Swedish": LanguagePack(
+        name="Swedish",
+        code="sv",
+        packages=["ufal.udpipe"],
+        size_mb=20,
+        module_check="ufal.udpipe",
+        udpipe_model="swedish-talbanken-ud-2.5",
+        category="Scandinavian"
+    ),
+    "Slovenian": LanguagePack(
+        name="Slovenian",
+        code="sl",
+        packages=["ufal.udpipe"],
+        size_mb=20,
+        module_check="ufal.udpipe",
+        udpipe_model="slovenian-ssj-ud-2.5",
+        category="European"
+    ),
+    "Lithuanian": LanguagePack(
+        name="Lithuanian",
+        code="lt",
+        packages=["ufal.udpipe"],
+        size_mb=15,
+        module_check="ufal.udpipe",
+        udpipe_model="lithuanian-alksnis-ud-2.5",
+        category="European"
+    ),
+
+    # === OTHER LANGUAGES ===
+    "Hebrew": LanguagePack(
+        name="Hebrew",
+        code="he",
+        packages=["ufal.udpipe"],
+        size_mb=15,
+        module_check="ufal.udpipe",
+        udpipe_model="hebrew-htb-ud-2.5",
+        category="Middle Eastern"
+    ),
+    "Indonesian": LanguagePack(
+        name="Indonesian",
+        code="id",
+        packages=["ufal.udpipe"],
+        size_mb=15,
+        module_check="ufal.udpipe",
+        udpipe_model="indonesian-gsd-ud-2.5",
+        category="Asian"
+    ),
+}
+
+# Language categories for UI grouping
+LANGUAGE_CATEGORIES = ["Asian", "European", "Scandinavian", "Middle Eastern", "Other"]
+
+# Language detection patterns
+# detect_language()'s answer for kanji that prove neither Japanese nor Chinese:
+# "Unknown" with this confidence - below the auto-open threshold, above zero, so
+# the Dictionary knows to ask a model's verdict or the user rather than give up.
+AMBIGUOUS_CJK_CONFIDENCE = 0.5
+
+UNICODE_RANGES = {
+    "Vietnamese": [
+        (0x1EA0, 0x1EF9),  # Vietnamese precomposed
+    ],
+    "Japanese": [
+        (0x3040, 0x309F),  # Hiragana
+        (0x30A0, 0x30FF),  # Katakana
+    ],
+    "Chinese (Simplified)": [
+        (0x4E00, 0x9FFF),  # CJK Unified Ideographs
+        (0x3400, 0x4DBF),  # CJK Extension A
+    ],
+    "Chinese (Traditional)": [
+        (0x4E00, 0x9FFF),  # CJK Unified Ideographs
+        (0x3400, 0x4DBF),  # CJK Extension A
+    ],
+    "Korean": [
+        (0xAC00, 0xD7AF),  # Hangul Syllables
+        (0x1100, 0x11FF),  # Hangul Jamo
+    ],
+    "Thai": [
+        (0x0E00, 0x0E7F),  # Thai
+    ],
+    "Arabic": [
+        (0x0600, 0x06FF),  # Arabic
+        (0x0750, 0x077F),  # Arabic Supplement
+    ],
+    "Hebrew": [
+        (0x0590, 0x05FF),  # Hebrew
+    ],
+    "Russian": [
+        (0x0400, 0x04FF),  # Cyrillic
+    ],
+    "Greek": [
+        (0x0370, 0x03FF),  # Greek and Coptic
+    ],
+}
+
+# Vietnamese diacritics for detection
+VIETNAMESE_CHARS = set('àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ'
+                       'ÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ')
+
+
+class NLPManager:
+    """Manages NLP language pack installation and tokenization."""
+
+    def __init__(self, config=None):
+        """Initialize NLP Manager.
+
+        Args:
+            config: Config instance for persisting installed languages
+        """
+        self.config = config
+        self._tokenizers: Dict[str, any] = {}
+        self._installed_cache: Dict[str, bool] = {}
+        self._udpipe_cache: Dict[str, any] = {}  # Cache loaded UDPipe models
+        self._subprocess_languages: set = set()  # Languages that need subprocess tokenization
+
+    def set_config(self, config):
+        """Set config reference."""
+        self.config = config
+
+    def is_installed(self, language: str) -> bool:
+        """Check if a language pack is installed.
+
+        Args:
+            language: Language name (e.g., "Vietnamese", "English")
+
+        Returns:
+            True if the language pack is installed (including basic mode)
+        """
+        # Basic mode languages are considered installed (using simple tokenization)
+        if self.config and self.config.is_nlp_basic_mode(language):
+            self._installed_cache[language] = True
+            return True
+
+        if language in self._installed_cache:
+            return self._installed_cache[language]
+
+        pack = LANGUAGE_PACKS.get(language)
+        if not pack:
+            return False
+
+        try:
+            # Ensure custom packages path is set up (important for EXE builds)
+            setup_custom_packages_path()
+
+            # Invalidate Python's import cache to detect newly installed packages
+            importlib.invalidate_caches()
+
+            # Remove module and parent modules from sys.modules if previously imported.
+            # For dotted names like "ufal.udpipe", a stale cached "ufal" parent module
+            # can prevent Python from finding newly installed "ufal.udpipe".
+            module_name = pack.module_check
+            modules_to_clear = [module_name]
+            parts = module_name.split('.')
+            for i in range(len(parts) - 1):
+                modules_to_clear.append('.'.join(parts[:i + 1]))
+            for mod_name in modules_to_clear:
+                if mod_name in sys.modules:
+                    del sys.modules[mod_name]
+
+            # For EXE builds, also check if package exists in custom directory
+            if is_frozen():
+                custom_dir = get_custom_packages_dir()
+                # Check for package directory (e.g., underthesea, jieba, fugashi)
+                pkg_name = module_name.replace('.', os.sep)
+                pkg_path = os.path.join(custom_dir, pkg_name)
+                pkg_init = os.path.join(custom_dir, pkg_name, "__init__.py")
+                pkg_file = os.path.join(custom_dir, f"{pkg_name}.py")
+
+                # Also check for C extension files (.pyd on Windows, .so on Linux)
+                # e.g., ufal/udpipe.cp311-win_amd64.pyd
+                has_extension = False
+                if '.' in module_name:
+                    parent_dir = os.path.join(custom_dir, os.sep.join(parts[:-1]))
+                    ext_name = parts[-1]
+                    if os.path.isdir(parent_dir):
+                        import glob as glob_module
+                        pyd_matches = glob_module.glob(os.path.join(parent_dir, f"{ext_name}*.pyd"))
+                        so_matches = glob_module.glob(os.path.join(parent_dir, f"{ext_name}*.so"))
+                        has_extension = bool(pyd_matches or so_matches)
+
+                if not (os.path.isdir(pkg_path) or os.path.exists(pkg_init)
+                        or os.path.exists(pkg_file) or has_extension):
+                    logging.debug(f"[IS_INSTALLED] {module_name} not found in custom dir: {custom_dir} "
+                                 f"(dir={os.path.isdir(pkg_path)}, init={os.path.exists(pkg_init)}, "
+                                 f"py={os.path.exists(pkg_file)}, ext={has_extension})")
+                    self._installed_cache[language] = False
+                    return False
+
+            direct_import_ok = False
+            try:
+                importlib.import_module(pack.module_check)
+                direct_import_ok = True
+            except (ImportError, Exception) as e:
+                logging.debug(f"[IS_INSTALLED] Direct import failed for {language} "
+                             f"({pack.module_check}): {e}")
+
+            if not direct_import_ok:
+                # In EXE mode, system Python may have a different version than the
+                # bundled Python. C extensions installed by system pip won't load here,
+                # but they work fine via subprocess. Fall back to subprocess check.
+                if is_frozen() and self._check_import_subprocess(pack.module_check):
+                    logging.debug(f"[IS_INSTALLED] {language} importable via subprocess (EXE mode)")
+                    self._subprocess_languages.add(language)
+                else:
+                    self._installed_cache[language] = False
+                    return False
+
+            # For UDPipe languages, check if model file exists
+            if pack.udpipe_model:
+                model_path = get_udpipe_model_path(pack.udpipe_model)
+                if not os.path.exists(model_path):
+                    logging.debug(f"[IS_INSTALLED] UDPipe model missing: {model_path}")
+                    self._installed_cache[language] = False
+                    return False
+
+            self._installed_cache[language] = True
+            return True
+        except Exception as e:
+            logging.warning(f"[IS_INSTALLED] Error checking {language}: {e}")
+            self._installed_cache[language] = False
+            return False
+
+    def is_any_installed(self) -> bool:
+        """Check if any language pack is installed.
+
+        Returns:
+            True if at least one language pack is installed
+        """
+        return len(self.get_installed_languages()) > 0
+
+    def get_installed_languages(self) -> List[str]:
+        """Get list of installed language names.
+
+        Returns:
+            List of installed language names
+        """
+        installed = []
+        for language in LANGUAGE_PACKS:
+            try:
+                if self.is_installed(language):
+                    installed.append(language)
+            except Exception as e:
+                logging.warning(f"Error checking if {language} is installed: {e}")
+                # Skip this language, don't crash
+                continue
+        return installed
+
+    def get_available_languages(self) -> List[str]:
+        """Get list of all available language names.
+
+        Returns:
+            List of all supported language names
+        """
+        return list(LANGUAGE_PACKS.keys())
+
+    def get_languages_by_category(self) -> Dict[str, List[str]]:
+        """Get languages grouped by category.
+
+        Returns:
+            Dict mapping category name to list of language names
+        """
+        result = {cat: [] for cat in LANGUAGE_CATEGORIES}
+        for lang_name, pack in LANGUAGE_PACKS.items():
+            cat = pack.category if pack.category in result else "Other"
+            result[cat].append(lang_name)
+
+        # Sort languages within each category
+        for cat in result:
+            result[cat].sort()
+
+        # Remove empty categories
+        return {k: v for k, v in result.items() if v}
+
+    def get_pack_info(self, language: str) -> Optional[LanguagePack]:
+        """Get language pack info.
+
+        Args:
+            language: Language name
+
+        Returns:
+            LanguagePack info or None
+        """
+        return LANGUAGE_PACKS.get(language)
+
+    def install(self, language: str,
+                progress_callback: Optional[Callable[[str, int], None]] = None) -> Tuple[bool, str]:
+        """Install a language pack.
+
+        Args:
+            language: Language name (e.g., "Vietnamese")
+            progress_callback: Callback for progress updates (message, percentage)
+
+        Returns:
+            Tuple of (success, error_message)
+        """
+        pack = LANGUAGE_PACKS.get(language)
+        if not pack:
+            return False, f"Unknown language: {language}"
+
+        try:
+            total_steps = len(pack.packages)
+            current_step = 0
+
+            # Get Python executable (handles frozen EXE case)
+            python_exe = get_python_executable()
+            if not python_exe:
+                return False, "Python not found. Please install Python and add it to PATH."
+
+            # Install pip packages
+            for package in pack.packages:
+                current_step += 1
+                progress = int((current_step / total_steps) * 80)  # 0-80%
+
+                if progress_callback:
+                    progress_callback(f"Installing {package}...", progress)
+
+                # Use Popen instead of run to avoid hanging on Windows
+                # when output buffers fill up
+                try:
+                    # Build pip command
+                    pip_cmd = [python_exe, "-m", "pip", "install", package,
+                               "--quiet", "--disable-pip-version-check"]
+
+                    # For Vietnamese: install underthesea with --no-deps to prevent
+                    # it from upgrading underthesea_core (we pinned it to 1.0.7)
+                    if package == "underthesea":
+                        pip_cmd.append("--no-deps")
+                        logging.info(f"Installing {package} with --no-deps to preserve pinned underthesea_core")
+
+                    # For EXE builds, install to custom directory to avoid conflicts
+                    frozen = is_frozen()
+                    logging.info(f"=== Install {package}: is_frozen={frozen}, python_exe={python_exe} ===")
+
+                    if frozen:
+                        custom_dir = get_custom_packages_dir()
+                        pip_cmd.extend(["--target", custom_dir])
+                        logging.info(f"Installing {package} to custom dir: {custom_dir}")
+                    else:
+                        logging.info(f"Installing {package} to system site-packages (not frozen)")
+
+                    logging.info(f"pip command: {' '.join(pip_cmd)}")
+
+                    # Use subprocess.run() to prevent pipe deadlock
+                    # (Popen + polling without reading pipes can deadlock when output > 64KB buffer)
+                    result = subprocess.run(
+                        pip_cmd,
+                        capture_output=True,  # Automatically handles pipe reading
+                        text=True,
+                        timeout=300,  # 5 minutes
+                        stdin=subprocess.DEVNULL,
+                        creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+                    )
+
+                    if result.returncode != 0:
+                        error_msg = result.stderr or f"Failed to install {package}"
+                        logging.error(f"pip install error: {error_msg}")
+                        return False, error_msg
+
+                except subprocess.TimeoutExpired:
+                    return False, f"Installation of {package} timed out (5 min)"
+                except Exception as e:
+                    logging.error(f"Error installing {package}: {e}")
+                    return False, f"Error installing {package}: {str(e)}"
+
+            # Download UDPipe model if needed
+            if pack.udpipe_model:
+                if progress_callback:
+                    progress_callback("Downloading UDPipe model...", 85)
+
+                success, error = self._download_udpipe_model(pack.udpipe_model)
+                if not success:
+                    return False, error
+
+            # Clear cache and update config
+            self._installed_cache.pop(language, None)
+            self._tokenizers.pop(language, None)
+            self._subprocess_languages.discard(language)
+
+            # Verify the installation actually works before reporting success.
+            # pip may exit 0 but the package could be unimportable (wrong Python
+            # version for C extensions, missing DLLs, EXE file path issues, etc.)
+            if progress_callback:
+                progress_callback("Verifying installation...", 90)
+
+            if not self.is_installed(language):
+                logging.warning(f"Post-install verification failed for {language}: "
+                                f"pip succeeded but is_installed() returned False")
+
+                # Auto-retry with other Python versions (EXE mode only)
+                if is_frozen() and sys.platform == 'win32':
+                    if progress_callback:
+                        progress_callback("Trying other Python versions...", 92)
+                    retry_ok = self._retry_install_with_other_pythons(
+                        language, pack, python_exe, progress_callback)
+                    if retry_ok:
+                        if self.config:
+                            self.config.remove_nlp_basic_mode(language)
+                            installed = self.config.get('nlp_installed', [])
+                            if language not in installed:
+                                installed.append(language)
+                                self.config.set('nlp_installed', installed)
+                        if progress_callback:
+                            progress_callback(f"{language} installed successfully!", 100)
+                        logging.info(f"Auto-retry succeeded for {language}")
+                        return True, ""
+
+                # Auto-retry failed or not applicable — graceful degradation
+                if pack.whitespace_separated:
+                    files_exist = False
+                    if is_frozen():
+                        custom_dir = get_custom_packages_dir()
+                        pkg_name = pack.module_check.replace('.', os.sep)
+                        pkg_path = os.path.join(custom_dir, pkg_name)
+                        pkg_init = os.path.join(custom_dir, pkg_name, "__init__.py")
+                        files_exist = os.path.isdir(pkg_path) or os.path.exists(pkg_init)
+                    else:
+                        files_exist = True
+
+                    if files_exist:
+                        logging.info(f"Falling back to basic tokenization for {language}")
+                        self._basic_mode_languages = getattr(self, '_basic_mode_languages', set())
+                        self._basic_mode_languages.add(language)
+
+                        if self.config:
+                            installed = self.config.get('nlp_installed', [])
+                            if language not in installed:
+                                installed.append(language)
+                                self.config.set('nlp_installed', installed)
+                            self.config.add_nlp_basic_mode(language)
+
+                        if progress_callback:
+                            progress_callback(f"{language} installed with basic tokenization", 100)
+
+                        return True, "BASIC_MODE"
+
+                logging.error(f"Post-install verification failed for {language}: "
+                              f"no fallback available (whitespace_separated={pack.whitespace_separated})")
+                return False, (
+                    f"{language} package was downloaded but cannot be loaded.\n\n"
+                    "Possible causes:\n"
+                    "- Python version mismatch between the app and system Python\n"
+                    "- Missing system libraries (Visual C++ Redistributable)\n"
+                    "- Package binary incompatibility\n\n"
+                    "Try installing the matching Python version or check the log for details."
+                )
+
+            # Full installation verified successfully -- clear basic mode if previously set
+            if self.config:
+                self.config.remove_nlp_basic_mode(language)
+                installed = self.config.get('nlp_installed', [])
+                if language not in installed:
+                    installed.append(language)
+                    self.config.set('nlp_installed', installed)
+
+            if progress_callback:
+                progress_callback(f"{language} installed successfully!", 100)
+
+            logging.info(f"Successfully installed {language} NLP pack")
+            return True, ""
+
+        except subprocess.TimeoutExpired:
+            return False, "Installation timed out. Please check your internet connection."
+        except Exception as e:
+            logging.error(f"Install error for {language}: {e}")
+            return False, str(e)
+
+    def _retry_install_with_other_pythons(
+        self, language: str, pack, original_python: str,
+        progress_callback: Optional[Callable] = None
+    ) -> bool:
+        """Try reinstalling with other Python versions when initial verification fails.
+
+        Discovers all available Python interpreters, cleans the custom packages
+        directory, and retries pip install + verification with each one.
+
+        Returns True if any Python version produces a working installation.
+        """
+        all_pythons = get_all_python_executables()
+        original_norm = os.path.normcase(original_python) if original_python else ""
+        candidates = [p for p in all_pythons if os.path.normcase(p) != original_norm]
+
+        if not candidates:
+            logging.info("No alternative Python versions found for retry")
+            return False
+
+        logging.info(f"Retrying {language} install with {len(candidates)} "
+                     f"alternative Python(s): {candidates}")
+
+        custom_dir = get_custom_packages_dir()
+
+        for i, alt_python in enumerate(candidates):
+            try:
+                ver_result = subprocess.run(
+                    [alt_python, '--version'],
+                    capture_output=True, text=True, timeout=10,
+                    creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+                )
+                ver_str = ver_result.stdout.strip() if ver_result.returncode == 0 else "unknown"
+            except Exception:
+                ver_str = "unknown"
+
+            logging.info(f"[RETRY {i+1}/{len(candidates)}] Trying {alt_python} ({ver_str})")
+            if progress_callback:
+                progress_callback(f"Trying {ver_str}...", 92 + i)
+
+            # Clean custom packages directory
+            if os.path.isdir(custom_dir):
+                try:
+                    shutil.rmtree(custom_dir)
+                    os.makedirs(custom_dir, exist_ok=True)
+                    logging.info(f"Cleaned custom packages dir: {custom_dir}")
+                except Exception as e:
+                    logging.warning(f"Failed to clean {custom_dir}: {e}")
+                    continue
+
+            # Reinstall all packages with this Python
+            install_ok = True
+            for package in pack.packages:
+                pip_cmd = [alt_python, "-m", "pip", "install", package,
+                           "--quiet", "--disable-pip-version-check",
+                           "--target", custom_dir]
+                if package == "underthesea":
+                    pip_cmd.append("--no-deps")
+
+                try:
+                    result = subprocess.run(
+                        pip_cmd, capture_output=True, text=True,
+                        timeout=300, stdin=subprocess.DEVNULL,
+                        creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+                    )
+                    if result.returncode != 0:
+                        logging.warning(f"[RETRY] pip install {package} failed with "
+                                        f"{alt_python}: {result.stderr[:200]}")
+                        install_ok = False
+                        break
+                except Exception as e:
+                    logging.warning(f"[RETRY] pip install {package} error: {e}")
+                    install_ok = False
+                    break
+
+            if not install_ok:
+                continue
+
+            # Clear caches and verify
+            self._installed_cache.pop(language, None)
+            self._tokenizers.pop(language, None)
+            self._subprocess_languages.discard(language)
+
+            if self.is_installed(language):
+                logging.info(f"[RETRY] SUCCESS with {alt_python} ({ver_str})")
+                if self.config:
+                    self.config.set_nlp_working_python(alt_python)
+                return True
+
+            logging.info(f"[RETRY] Verification still failed with {alt_python}")
+
+        logging.warning(f"All {len(candidates)} alternative Python versions failed for {language}")
+        return False
+
+    def _download_udpipe_model(self, model_name: str) -> Tuple[bool, str]:
+        """Download a UDPipe model from the LINDAT repository.
+
+        The server certificate is always verified: there is no unverified retry, because the model file
+        is parsed by a native library. The bytes are written to a temporary file, checked against the
+        pinned SHA-256 and only then renamed, so an interrupted or tampered download never leaves a model
+        behind.
+
+        Args:
+            model_name: UDPipe model name (e.g., "english-ewt-ud-2.5")
+
+        Returns:
+            Tuple of (success, error_message)
+        """
+        import os
+        import ssl
+        import urllib.request
+        import urllib.error
+
+        url = UDPIPE_MODEL_URLS.get(model_name)
+        if not url:
+            return False, f"Unknown UDPipe model: {model_name}"
+
+        expected_digest = UDPIPE_MODEL_SHA256.get(model_name)
+        if not expected_digest:
+            return False, (f"No verified checksum is recorded for UDPipe model {model_name}; "
+                           "refusing to download it.")
+
+        model_path = get_udpipe_model_path(model_name)
+
+        # An existing file only counts when it matches the pinned digest (an older build could have
+        # left a truncated or altered one behind).
+        if os.path.exists(model_path):
+            if _sha256_of_file(model_path) == expected_digest:
+                logging.info(f"UDPipe model already exists: {model_path}")
+                return True, ""
+            logging.warning(f"UDPipe model failed its checksum, downloading it again: {model_path}")
+
+        part_path = model_path + ".part"
+        try:
+            os.makedirs(get_udpipe_model_dir(), exist_ok=True)
+
+            logging.info(f"Downloading UDPipe model from: {url}")
+            digest = hashlib.sha256()
+            received = 0
+            with urllib.request.urlopen(url, timeout=UDPIPE_DOWNLOAD_TIMEOUT) as response, \
+                    open(part_path, 'wb') as out_file:
+                while True:
+                    chunk = response.read(1 << 20)
+                    if not chunk:
+                        break
+                    received += len(chunk)
+                    if received > UDPIPE_MAX_MODEL_BYTES:
+                        error_msg = (f"UDPipe model download is too large "
+                                     f"(more than {UDPIPE_MAX_MODEL_BYTES} bytes); stopped.")
+                        logging.error(error_msg)
+                        return False, error_msg
+                    digest.update(chunk)
+                    out_file.write(chunk)
+
+            if digest.hexdigest() != expected_digest:
+                error_msg = f"UDPipe model {model_name} failed its checksum; it was discarded."
+                logging.error(error_msg)
+                return False, error_msg
+
+            os.replace(part_path, model_path)
+            logging.info(f"UDPipe model downloaded to: {model_path}")
+            return True, ""
+
+        except (ssl.SSLError, urllib.error.URLError) as e:
+            reason = e.reason if isinstance(e, urllib.error.URLError) else e
+            if isinstance(reason, ssl.SSLError):
+                error_msg = ("Could not verify the certificate of the language model server, so nothing was "
+                             "downloaded. Check that Windows trusts your network's certificate, or try "
+                             f"another network. ({reason})")
+            else:
+                error_msg = f"Failed to download UDPipe model: {e}"
+            logging.error(error_msg)
+            return False, error_msg
+        except Exception as e:
+            error_msg = f"Error downloading UDPipe model: {e}"
+            logging.error(error_msg)
+            return False, error_msg
+        finally:
+            # Whatever happened above, a partial file must not survive; the installed model is untouched.
+            if os.path.exists(part_path):
+                os.remove(part_path)
+
+    def uninstall(self, language: str,
+                  progress_callback: Optional[Callable[[str, int], None]] = None) -> Tuple[bool, str]:
+        """Uninstall a language pack.
+
+        Actually removes pip packages and UDPipe models.
+        Shared packages (like ufal.udpipe) are NOT removed since they may be used
+        by other languages.
+
+        Args:
+            language: Language name
+            progress_callback: Callback for progress updates (message, percentage)
+
+        Returns:
+            Tuple of (success, error_message)
+        """
+        pack = LANGUAGE_PACKS.get(language)
+        if not pack:
+            return False, f"Unknown language: {language}"
+
+        logging.info(f"=== Starting uninstall of {language} ===")
+
+        try:
+            import os  # Import at top of try block (needed for all languages, not just UDPipe)
+
+            # 0. FIRST: Clear caches and remove from sys.modules to release file locks
+            #    This MUST happen BEFORE pip uninstall or files may be locked
+            self._installed_cache.pop(language, None)
+            self._tokenizers.pop(language, None)
+            self._subprocess_languages.discard(language)
+
+            # Remove module from sys.modules to release file handles
+            module_name = pack.module_check
+            modules_to_remove = [key for key in list(sys.modules.keys())
+                               if key == module_name or key.startswith(f"{module_name}.")]
+            for mod in modules_to_remove:
+                try:
+                    del sys.modules[mod]
+                except KeyError:
+                    pass
+            if modules_to_remove:
+                logging.info(f"Released {len(modules_to_remove)} modules from memory for {language}")
+
+            # Force garbage collection to release any remaining handles
+            from src.utils import gc_owner
+            gc_owner.collect()
+
+            # Clear UDPipe cache if present
+            if pack.udpipe_model and pack.udpipe_model in self._udpipe_cache:
+                del self._udpipe_cache[pack.udpipe_model]
+
+            # Packages that are shared between languages - don't uninstall these
+            shared_packages = {'ufal.udpipe'}
+
+            total_steps = len(pack.packages) + (1 if pack.udpipe_model else 0)
+            current_step = 0
+
+            # 1. Remove UDPipe model file if present
+            if pack.udpipe_model:
+                current_step += 1
+                progress = int((current_step / total_steps) * 80)
+
+                if progress_callback:
+                    progress_callback("Removing UDPipe model...", progress)
+
+                model_path = get_udpipe_model_path(pack.udpipe_model)
+                if os.path.exists(model_path):
+                    try:
+                        os.remove(model_path)
+                        logging.info(f"Removed UDPipe model: {model_path}")
+                    except Exception as e:
+                        logging.warning(f"Could not remove UDPipe model {model_path}: {e}")
+
+            # Get Python executable (handles frozen EXE case)
+            python_exe = get_python_executable()
+
+            # 2. Uninstall pip packages (only those NOT shared)
+            for package in pack.packages:
+                if package not in shared_packages:
+                    current_step += 1
+                    progress = int((current_step / total_steps) * 80)
+
+                    if progress_callback:
+                        progress_callback(f"Removing {package}...", progress)
+
+                    # For EXE builds, directly remove from custom directory
+                    if is_frozen():
+                        custom_dir = get_custom_packages_dir()
+                        # Package name normalization (e.g., "unidic-lite" -> "unidic_lite")
+                        pkg_dir_name = package.replace('-', '_').lower()
+                        pkg_path = os.path.join(custom_dir, pkg_dir_name)
+
+                        if os.path.isdir(pkg_path):
+                            try:
+                                shutil.rmtree(pkg_path)
+                                logging.info(f"Removed package directory: {pkg_path}")
+                            except Exception as e:
+                                logging.warning(f"Could not remove {pkg_path}: {e}")
+
+                        # Also remove .dist-info directory
+                        import glob as glob_module
+                        dist_info_pattern = os.path.join(custom_dir, f"{pkg_dir_name}*.dist-info")
+                        for dist_dir in glob_module.glob(dist_info_pattern):
+                            try:
+                                shutil.rmtree(dist_dir)
+                                logging.info(f"Removed dist-info: {dist_dir}")
+                            except Exception as e:
+                                logging.warning(f"Could not remove {dist_dir}: {e}")
+                        continue
+
+                    # For source code, use pip uninstall
+                    # Skip uninstall if Python not found (packages installed externally)
+                    if not python_exe:
+                        logging.warning(f"Python not found, skipping pip uninstall of {package}")
+                        continue
+
+                    logging.info(f"Running: pip uninstall {package} -y")
+                    # Use Popen for more control over timeout
+                    # CREATE_NO_WINDOW on Windows to prevent console popup
+                    creation_flags = 0x08000000 if sys.platform == 'win32' else 0
+                    proc = subprocess.Popen(
+                        [python_exe, "-m", "pip", "uninstall", package, "-y"],
+                        stdin=subprocess.DEVNULL,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                        creationflags=creation_flags
+                    )
+                    try:
+                        _, stderr = proc.communicate(timeout=60)
+                        logging.info(f"pip uninstall {package} returned: {proc.returncode}")
+                        if proc.returncode != 0:
+                            logging.warning(f"Could not uninstall {package}: {stderr}")
+                    except subprocess.TimeoutExpired:
+                        proc.kill()
+                        proc.communicate()  # Clean up
+                        logging.error(f"Timeout uninstalling {package}")
+
+            # 5. Force is_installed() to return False by caching False
+            self._installed_cache[language] = False
+
+            # 6. Update config
+            if self.config:
+                installed = self.config.get('nlp_installed', [])
+                if language in installed:
+                    installed.remove(language)
+                    self.config.set('nlp_installed', installed)
+
+            if progress_callback:
+                progress_callback(f"{language} uninstalled successfully!", 100)
+
+            logging.info(f"=== Successfully uninstalled {language} NLP pack ===")
+            return True, ""
+
+        except subprocess.TimeoutExpired as e:
+            logging.error(f"=== Uninstall timeout for {language}: {e} ===")
+            return False, "Uninstall timed out."
+        except Exception as e:
+            logging.error(f"Uninstall error for {language}: {e}")
+            return False, str(e)
+
+    def detect_language(self, text: str) -> Tuple[str, float]:
+        """Detect language of text.
+
+        Japanese vs Chinese is decided from evidence only (`lang_id`, Decision 22):
+        any kana -> ("Japanese", 1.0); a kanji only one of the languages writes ->
+        that language, 0.9; kanji that prove nothing -> ("Unknown",
+        AMBIGUOUS_CJK_CONFIDENCE), which the Dictionary settles with a model's
+        verdict or the user. It used to answer "Chinese (Simplified)" for every
+        kanji-only text and to score ordinary Japanese sentences below the
+        threshold (TODO.md F4).
+
+        Args:
+            text: Text to analyze
+
+        Returns:
+            Tuple of (language_name, confidence) where confidence is 0.0-1.0
+        """
+        if not text or not text.strip():
+            return "Unknown", 0.0
+
+        text = text.strip()
+        char_counts = {lang: 0 for lang in LANGUAGE_PACKS}
+        total_chars = 0
+        latin_chars = 0
+
+        for char in text:
+            if char.isspace():
+                continue
+            total_chars += 1
+            code = ord(char)
+
+            # Check Vietnamese first (Latin-based with diacritics)
+            if char in VIETNAMESE_CHARS:
+                char_counts["Vietnamese"] += 2  # Weight Vietnamese higher
+
+            # Check Unicode ranges
+            for lang, ranges in UNICODE_RANGES.items():
+                for start, end in ranges:
+                    if start <= code <= end:
+                        char_counts[lang] += 1
+                        break
+
+            # Latin characters (could be many European languages)
+            if 0x0041 <= code <= 0x007A:  # A-Z, a-z
+                latin_chars += 1
+                if char_counts["Vietnamese"] > 0:
+                    char_counts["Vietnamese"] += 0.5
+                else:
+                    char_counts["English"] += 0.3
+                    char_counts["French"] += 0.3
+                    char_counts["German"] += 0.3
+                    char_counts["Spanish"] += 0.3
+
+        if total_chars == 0:
+            return "Unknown", 0.0
+
+        # Find language with highest count
+        max_lang = max(char_counts, key=char_counts.get)
+        max_count = char_counts[max_lang]
+
+        if max_count == 0:
+            return "Unknown", 0.0
+
+        confidence = min(max_count / total_chars, 1.0)
+
+        # Chinese vs Japanese (both write kanji): evidence, never a guess.
+        if max_lang in ["Chinese (Simplified)", "Chinese (Traditional)", "Japanese"]:
+            if lang_id.has_kana(text):
+                max_lang, confidence = "Japanese", 1.0
+            else:
+                # A glyph, or two Chinese function words in a sentence (K6)
+                evidence = lang_id.text_evidence(text)
+                if evidence:
+                    max_lang, confidence = evidence.language, 0.9
+                else:
+                    max_lang, confidence = "Unknown", AMBIGUOUS_CJK_CONFIDENCE
+
+        # For pure Latin text (European languages), prioritize installed languages
+        # This solves the problem where multiple languages have equal scores
+        if latin_chars > 0 and latin_chars / total_chars > 0.8:
+            # Text is mostly Latin - check which European languages are installed
+            european_langs = ["English", "German", "French", "Spanish", "Italian",
+                            "Portuguese", "Dutch", "Polish", "Danish", "Swedish",
+                            "Norwegian", "Finnish", "Romanian", "Croatian", "Catalan",
+                            "Slovenian", "Lithuanian", "Indonesian"]
+            installed_european = [lang for lang in european_langs if self.is_installed(lang)]
+
+            if installed_european:
+                # If only one European language is installed, use it with high confidence
+                if len(installed_european) == 1:
+                    max_lang = installed_european[0]
+                    confidence = 0.85  # High confidence for single installed language
+                else:
+                    # Multiple European languages installed - pick the one with highest score
+                    # among installed languages
+                    best_installed = max(installed_european, key=lambda l: char_counts.get(l, 0))
+                    if char_counts.get(best_installed, 0) > 0:
+                        max_lang = best_installed
+                        confidence = 0.75  # Medium-high confidence
+
+        return max_lang, confidence
+
+    def tokenize(self, text: str, language: str) -> List[str]:
+        """Tokenize text using appropriate NLP library.
+
+        Args:
+            text: Text to tokenize
+            language: Language name
+
+        Returns:
+            List of tokens (words/phrases)
+        """
+        logging.info(f"[TOKENIZE] Called for language={language}, text_len={len(text)}")
+
+        if not self.is_installed(language):
+            logging.info(f"[TOKENIZE] {language} not installed, using simple tokenize")
+            return self._simple_tokenize(text)
+
+        # Lazy load tokenizer
+        if language not in self._tokenizers:
+            logging.info(f"[TOKENIZE] Loading tokenizer for {language}")
+            self._load_tokenizer(language)
+
+        tokenizer = self._tokenizers.get(language)
+        if not tokenizer:
+            logging.warning(f"[TOKENIZE] Tokenizer for {language} is None, using simple tokenize")
+            return self._simple_tokenize(text)
+
+        try:
+            logging.info(f"[TOKENIZE] Calling tokenizer for {language}: {tokenizer}")
+            result = tokenizer(text)
+            logging.info(f"[TOKENIZE] Result: {len(result)} tokens")
+            return result
+        except Exception as e:
+            logging.error(f"Tokenization error for {language}: {e}")
+            return self._simple_tokenize(text)
+
+    def _simple_tokenize(self, text: str) -> List[str]:
+        """Simple whitespace-based tokenization fallback.
+
+        Args:
+            text: Text to tokenize
+
+        Returns:
+            List of tokens
+        """
+        return re.findall(r'\S+', text)
+
+    def _check_import_subprocess(self, module_name: str) -> bool:
+        """Check if a module is importable via system Python subprocess.
+
+        Used in EXE mode when direct import fails (Python version mismatch).
+        The system Python that pip used may have a different version than the
+        bundled Python in the EXE, so C extensions work there but not here.
+
+        Args:
+            module_name: Module to check (e.g., "ufal.udpipe", "fugashi")
+
+        Returns:
+            True if system Python can import the module
+        """
+        python_exe = get_python_executable()
+        if not python_exe:
+            return False
+
+        try:
+            env = None
+            if is_frozen():
+                custom_dir = get_custom_packages_dir()
+                env = os.environ.copy()
+                pythonpath = env.get('PYTHONPATH', '')
+                env['PYTHONPATH'] = f"{custom_dir};{pythonpath}" if pythonpath else custom_dir
+
+            result = subprocess.run(
+                [python_exe, "-c", f"import {module_name}; print('OK')"],
+                capture_output=True, text=True, timeout=15,
+                stdin=subprocess.DEVNULL, env=env,
+                creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+            )
+            return result.returncode == 0 and 'OK' in result.stdout
+        except Exception as e:
+            logging.debug(f"Subprocess import check failed for {module_name}: {e}")
+            return False
+
+    def _safe_tokenize_subprocess(self, text: str, language: str) -> List[str]:
+        """Tokenize text via system Python subprocess.
+
+        Fallback for EXE mode when the bundled Python can't import C extensions
+        but the system Python (used for pip install) can.
+
+        Args:
+            text: Text to tokenize
+            language: Language name
+
+        Returns:
+            List of tokens, or simple whitespace tokens if subprocess fails
+        """
+        import json
+
+        pack = LANGUAGE_PACKS.get(language)
+        if not pack:
+            return self._simple_tokenize(text)
+
+        script = self._build_subprocess_tokenize_script(language)
+        if not script:
+            return self._simple_tokenize(text)
+
+        try:
+            python_exe = get_python_executable()
+            if not python_exe:
+                return self._simple_tokenize(text)
+
+            env = None
+            if is_frozen():
+                custom_dir = get_custom_packages_dir()
+                env = os.environ.copy()
+                pythonpath = env.get('PYTHONPATH', '')
+                env['PYTHONPATH'] = f"{custom_dir};{pythonpath}" if pythonpath else custom_dir
+
+            result = subprocess.run(
+                [python_exe, "-c", script],
+                input=text,
+                capture_output=True, text=True, timeout=15,
+                env=env, encoding='utf-8',
+                creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+            )
+
+            if result.returncode == 0 and result.stdout.strip():
+                output = json.loads(result.stdout.strip())
+                if isinstance(output, list):
+                    return output
+                elif isinstance(output, dict) and "error" in output:
+                    logging.warning(f"Subprocess tokenize error for {language}: {output['error']}")
+            else:
+                logging.warning(f"Subprocess tokenize failed for {language} (code {result.returncode})")
+
+        except subprocess.TimeoutExpired:
+            logging.warning(f"Subprocess tokenize timed out for {language}")
+        except Exception as e:
+            logging.warning(f"Subprocess tokenize exception for {language}: {e}")
+
+        return self._simple_tokenize(text)
+
+    def _build_subprocess_tokenize_script(self, language: str) -> Optional[str]:
+        """Build a Python script string for subprocess tokenization.
+
+        Args:
+            language: Language name
+
+        Returns:
+            Python script string, or None if language not supported
+        """
+        pack = LANGUAGE_PACKS.get(language)
+        if not pack:
+            return None
+
+        header = (
+            "import sys, json\n"
+            "sys.stdout.reconfigure(encoding='utf-8')\n"
+            "text = sys.stdin.read()\n"
+            "try:\n"
+        )
+        footer = (
+            "    print(json.dumps(result, ensure_ascii=False))\n"
+            "except Exception as e:\n"
+            '    print(json.dumps({"error": str(e)}))\n'
+        )
+
+        if language == "Japanese":
+            body = (
+                "    import fugashi\n"
+                "    tagger = fugashi.Tagger()\n"
+                "    result = [word.surface for word in tagger(text)]\n"
+            )
+        elif language in ("Chinese (Simplified)", "Chinese (Traditional)"):
+            body = (
+                "    import jieba\n"
+                "    result = list(jieba.cut(text))\n"
+            )
+        elif language == "Korean":
+            body = (
+                "    from kiwipiepy import Kiwi\n"
+                "    kiwi = Kiwi()\n"
+                "    result = [token.form for token in kiwi.tokenize(text)]\n"
+            )
+        elif language == "Thai":
+            body = (
+                "    from pythainlp.tokenize import word_tokenize\n"
+                "    result = word_tokenize(text)\n"
+            )
+        elif pack.udpipe_model:
+            model_path = get_udpipe_model_path(pack.udpipe_model).replace('\\', '\\\\')
+            body = (
+                "    from ufal.udpipe import Model, Pipeline, ProcessingError\n"
+                f"    model = Model.load(r'{model_path}')\n"
+                "    if not model:\n"
+                '        raise RuntimeError("Failed to load UDPipe model")\n'
+                '    pipeline = Pipeline(model, "tokenize", Pipeline.DEFAULT, Pipeline.NONE, "horizontal")\n'
+                "    error = ProcessingError()\n"
+                "    processed = pipeline.process(text, error)\n"
+                "    result = processed.split()\n"
+            )
+        else:
+            return None
+
+        return header + body + footer
+
+    def _safe_tokenize_vietnamese(self, text: str) -> List[str]:
+        """Tokenize Vietnamese using subprocess to isolate potential native code crashes.
+
+        underthesea uses native code (underthesea_core, python-crfsuite) that may
+        cause 'Illegal instruction' (SIGILL) on some CPUs. This cannot be caught
+        by Python try-except. Running in subprocess isolates the crash and allows
+        graceful fallback to simple tokenization.
+
+        Args:
+            text: Text to tokenize
+
+        Returns:
+            List of Vietnamese tokens, or simple whitespace tokens if crash occurs
+        """
+        import json
+
+        # Build tokenization script - handles both success and Python-level errors
+        # IMPORTANT: Must set UTF-8 encoding for Vietnamese characters on Windows
+        script = f'''
+import sys
+import json
+sys.stdout.reconfigure(encoding='utf-8')
+try:
+    from underthesea import word_tokenize
+    result = word_tokenize({repr(text)})
+    print(json.dumps(result, ensure_ascii=False))
+except Exception as e:
+    print(json.dumps({{"error": str(e)}}))
+'''
+
+        try:
+            # Find Python executable (handles EXE mode where sys.executable is the EXE)
+            python_exe = get_python_executable()
+            if not python_exe:
+                logging.warning("No Python executable found for Vietnamese tokenization, using simple tokenize")
+                return self._simple_tokenize(text)
+
+            # Ensure custom packages path is available for the subprocess
+            env = None
+            if is_frozen():
+                import os
+                custom_dir = get_custom_packages_dir()
+                env = os.environ.copy()
+                pythonpath = env.get('PYTHONPATH', '')
+                if pythonpath:
+                    env['PYTHONPATH'] = f"{custom_dir};{pythonpath}"
+                else:
+                    env['PYTHONPATH'] = custom_dir
+
+            # Run in subprocess with timeout
+            # IMPORTANT: encoding='utf-8' is required for Vietnamese characters on Windows
+            result = subprocess.run(
+                [python_exe, "-c", script],
+                capture_output=True,
+                text=True,
+                timeout=10,
+                env=env,
+                encoding='utf-8',
+                creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+            )
+
+            if result.returncode == 0 and result.stdout.strip():
+                try:
+                    output = json.loads(result.stdout.strip())
+                    if isinstance(output, list):
+                        logging.debug(f"Vietnamese tokenization success: {len(output)} tokens")
+                        return output
+                    elif isinstance(output, dict) and "error" in output:
+                        logging.warning(f"Vietnamese tokenization Python error: {output['error']}")
+                except json.JSONDecodeError:
+                    # The output is the user's text, tokenized: its size, never its content
+                    logging.warning(f"Vietnamese tokenization invalid JSON output ({len(result.stdout or '')} chars)")
+            else:
+                # Non-zero return code = crash (SIGILL, segfault, etc.)
+                logging.warning(
+                    f"Vietnamese tokenization subprocess failed (code {result.returncode}). "
+                    f"stderr: {result.stderr[:200] if result.stderr else 'none'}"
+                )
+                # Cache the failure - update tokenizer cache to avoid repeated subprocess calls
+                self._vietnamese_subprocess_failed = True
+                self._tokenizers["Vietnamese"] = self._simple_tokenize
+
+        except subprocess.TimeoutExpired:
+            logging.warning("Vietnamese tokenization subprocess timed out")
+            self._vietnamese_subprocess_failed = True
+            self._tokenizers["Vietnamese"] = self._simple_tokenize
+        except Exception as e:
+            logging.warning(f"Vietnamese tokenization subprocess error: {e}")
+            self._vietnamese_subprocess_failed = True
+            self._tokenizers["Vietnamese"] = self._simple_tokenize
+
+        # Fallback to simple tokenization
+        return self._simple_tokenize(text)
+
+    def _tokenize_with_udpipe(self, text: str, model) -> List[str]:
+        """Tokenize text using UDPipe model with compound word grouping.
+
+        Uses UDPipe's dependency parsing to identify and group:
+        - Phrasal verbs: "give up", "break down"
+        - Compound nouns: "ice cream", "New York"
+        - Named entities: "Osaka Castle", "John Smith"
+
+        Args:
+            text: Text to tokenize
+            model: Loaded UDPipe model
+
+        Returns:
+            List of tokens with multi-word expressions merged
+        """
+        try:
+            from ufal.udpipe import Pipeline, ProcessingError
+
+            # Create pipeline for full parsing (tokenize + tag + parse)
+            # This gives us dependency relations needed for compound detection
+            pipeline = Pipeline(model, "tokenize", Pipeline.DEFAULT, Pipeline.DEFAULT, "conllu")
+            error = ProcessingError()
+
+            # Process text
+            processed = pipeline.process(text, error)
+
+            if error.occurred():
+                logging.warning(f"UDPipe processing error: {error.message}")
+                return self._simple_tokenize(text)
+
+            # Parse CoNLL-U format to extract tokens with dependency info
+            parsed_tokens = self._parse_conllu(processed)
+
+            if not parsed_tokens:
+                return self._simple_tokenize(text)
+
+            # Group multi-word expressions based on dependency relations
+            grouped_tokens = self._group_multi_word_expressions(parsed_tokens)
+
+            return grouped_tokens if grouped_tokens else self._simple_tokenize(text)
+
+        except Exception as e:
+            logging.error(f"UDPipe tokenization error: {e}")
+            return self._simple_tokenize(text)
+
+    def _parse_conllu(self, conllu_output: str) -> List[ParsedToken]:
+        """Parse CoNLL-U output into structured tokens.
+
+        CoNLL-U format columns (tab-separated):
+        0: ID (word index in sentence, 1-based)
+        1: FORM (word form/surface)
+        2: LEMMA (lemma/dictionary form)
+        3: UPOS (universal POS tag)
+        4: XPOS (language-specific POS tag)
+        5: FEATS (morphological features)
+        6: HEAD (head token ID, 0 = root)
+        7: DEPREL (dependency relation to head)
+        8: DEPS (enhanced dependencies)
+        9: MISC (miscellaneous)
+
+        Args:
+            conllu_output: Raw CoNLL-U formatted string from UDPipe
+
+        Returns:
+            List of ParsedToken objects with dependency information
+        """
+        tokens = []
+        # Track sentence offset to make token IDs unique across sentences
+        # Each sentence in CoNLL-U has IDs starting from 1, so we need to add offset
+        sentence_offset = 0
+        last_token_id = 0
+
+        for line in conllu_output.split('\n'):
+            line = line.strip()
+            # Skip comments and empty lines
+            if not line or line.startswith('#'):
+                continue
+
+            parts = line.split('\t')
+
+            # Must have at least 8 columns for dependency info
+            if len(parts) < 8:
+                continue
+
+            # Skip multi-word tokens (ID like "1-2") and empty nodes (ID like "1.1")
+            if '-' in parts[0] or '.' in parts[0]:
+                continue
+
+            # Check if first column is a valid integer (token ID)
+            try:
+                token_id = int(parts[0])
+            except ValueError:
+                continue
+
+            # Detect new sentence (token ID resets to 1 or lower than previous)
+            if token_id <= last_token_id:
+                # New sentence starts - update offset
+                sentence_offset = len(tokens)
+
+            last_token_id = token_id
+
+            # Parse HEAD (could be "_" if not available)
+            try:
+                head = int(parts[6]) if parts[6] != '_' else 0
+            except ValueError:
+                head = 0
+
+            # Get dependency relation
+            deprel = parts[7] if parts[7] != '_' else ''
+
+            # Get universal POS tag (column 3)
+            upos = parts[3] if parts[3] != '_' else ''
+
+            # Make IDs unique across sentences by adding offset
+            global_id = sentence_offset + token_id
+            global_head = sentence_offset + head if head > 0 else 0
+
+            token = ParsedToken(
+                id=global_id,
+                form=parts[1],
+                head=global_head,
+                deprel=deprel,
+                upos=upos
+            )
+            tokens.append(token)
+
+        return tokens
+
+    def _validate_compound_pos(self, dependent: ParsedToken, head: ParsedToken) -> bool:
+        """Validate if dependent-head pair should be grouped based on POS tags.
+
+        Uses COMPOUND_POS_CONSTRAINTS to determine if the POS combination is valid.
+        This prevents incorrect groupings like "Osaka fast" (PROPN + ADJ).
+
+        Args:
+            dependent: The dependent token (e.g., "fast" in "Osaka fast")
+            head: The head token (e.g., "Osaka" in "Osaka fast")
+
+        Returns:
+            True if the pair should be grouped, False otherwise
+        """
+        deprel = dependent.deprel
+        if not deprel:
+            return False
+
+        deprel_base = deprel.split(':')[0]
+
+        # Get constraint for this relation
+        constraint = None
+        if deprel in COMPOUND_POS_CONSTRAINTS:
+            constraint = COMPOUND_POS_CONSTRAINTS[deprel]
+        elif deprel_base in COMPOUND_POS_CONSTRAINTS:
+            constraint = COMPOUND_POS_CONSTRAINTS[deprel_base]
+
+        # No constraint = always allow (fixed, goeswith, flat:foreign)
+        if constraint is None:
+            return True
+
+        # Get POS tags
+        dep_pos = dependent.upos
+        head_pos = head.upos
+
+        # Skip if either POS is missing
+        if not dep_pos or not head_pos:
+            return False
+
+        # For 'flat' relations: both must be PROPN (proper names only)
+        if deprel_base == 'flat':
+            return dep_pos == 'PROPN' and head_pos == 'PROPN'
+
+        # For 'compound': validate based on subtype
+        if deprel_base == 'compound':
+            # compound:prt = phrasal verb particles (head must be VERB)
+            if deprel == 'compound:prt':
+                return head_pos == 'VERB'
+            # Regular compound: both must be noun-like (NOUN, PROPN)
+            # Also allow VERB as head (e.g., "ice-skating")
+            return dep_pos in constraint and head_pos in {'NOUN', 'PROPN', 'VERB'}
+
+        return True  # Default allow for other relations
+
+    def _group_multi_word_expressions(self, tokens: List[ParsedToken]) -> List[str]:
+        """Group tokens that form multi-word expressions based on dependency relations.
+
+        Handles:
+        - Phrasal verbs: "give up", "break down" (deprel: compound:prt)
+        - Compound nouns: "ice cream", "New York" (deprel: compound, flat)
+        - Named entities: "Osaka Castle", "John Smith" (deprel: flat:name)
+
+        Args:
+            tokens: List of ParsedToken with dependency information
+
+        Returns:
+            List of string tokens with compounds/phrases merged
+        """
+        if not tokens:
+            return []
+
+        # Build a map of token ID to token for quick lookup
+        token_map = {t.id: t for t in tokens}
+
+        # Track which tokens have been merged (consumed)
+        consumed = set()
+
+        # Build groups: head_id -> [dependent tokens that should be merged]
+        groups = {}
+        for token in tokens:
+            # Check if this token should be merged with its head
+            # Also check for subtypes like "compound:prt"
+            deprel_base = token.deprel.split(':')[0] if token.deprel else ''
+            if (token.deprel in COMPOUND_RELATIONS or
+                deprel_base in COMPOUND_RELATIONS) and token.head in token_map:
+
+                # Validate POS compatibility before grouping
+                head_token = token_map[token.head]
+                if not self._validate_compound_pos(token, head_token):
+                    continue  # Skip invalid groupings (e.g., "Osaka fast", "butterfly because")
+
+                head_id = token.head
+                if head_id not in groups:
+                    groups[head_id] = []
+                groups[head_id].append(token)
+                consumed.add(token.id)
+
+        # Build result by iterating through tokens in order
+        result = []
+        for token in tokens:
+            if token.id in consumed:
+                # This token is part of a compound and will be included with its head
+                continue
+
+            if token.id in groups:
+                # This token is the head of a compound - merge with dependents
+                # Collect all parts (head + dependents) and sort by position
+                all_parts = [token] + groups[token.id]
+                all_parts.sort(key=lambda t: t.id)
+
+                # Merge into single token text
+                merged_text = ' '.join(t.form for t in all_parts)
+                result.append(merged_text)
+            else:
+                # Single token - not part of any compound
+                result.append(token.form)
+
+        return result
+
+    def _load_tokenizer(self, language: str):
+        """Load tokenizer for a language.
+
+        If the language needs subprocess mode (EXE Python version mismatch),
+        uses subprocess-based tokenization via system Python automatically.
+
+        Args:
+            language: Language name
+        """
+        pack = LANGUAGE_PACKS.get(language)
+        if not pack:
+            self._tokenizers[language] = None
+            return
+
+        # If this language is in basic mode (install succeeded but import failed,
+        # falls back to whitespace tokenization)
+        basic_mode_langs = getattr(self, '_basic_mode_languages', set())
+        if language in basic_mode_langs:
+            logging.info(f"[LOAD_TOKENIZER] {language}: using basic mode (simple tokenize)")
+            self._tokenizers[language] = self._simple_tokenize
+            return
+        if self.config and self.config.is_nlp_basic_mode(language):
+            logging.info(f"[LOAD_TOKENIZER] {language}: using basic mode from config")
+            self._basic_mode_languages = getattr(self, '_basic_mode_languages', set())
+            self._basic_mode_languages.add(language)
+            self._tokenizers[language] = self._simple_tokenize
+            return
+
+        # If this language was marked as subprocess-only (EXE mode, direct
+        # import failed but system Python can import it), use subprocess
+        if language in self._subprocess_languages:
+            logging.info(f"[LOAD_TOKENIZER] {language}: using subprocess mode (EXE compatibility)")
+            self._tokenizers[language] = lambda t, lang=language: self._safe_tokenize_subprocess(t, lang)
+            return
+
+        try:
+            # Specialized tokenizers for Asian languages
+            if language == "Vietnamese":
+                # Use subprocess isolation for Vietnamese tokenization
+                # underthesea_core 2.0.0 has CPU instruction issues (SIGILL) on some machines
+                # Subprocess isolation protects the main app from crashes
+                # New installations will get underthesea_core==1.0.7 (pinned in packages list)
+                flag_value = getattr(self, '_vietnamese_subprocess_failed', False)
+                logging.info(f"[LOAD_TOKENIZER] Vietnamese: _vietnamese_subprocess_failed={flag_value}")
+                if flag_value:
+                    logging.info("Vietnamese tokenization: using simple fallback (previous crash)")
+                    self._tokenizers[language] = self._simple_tokenize
+                else:
+                    logging.info("Vietnamese tokenization: using subprocess isolation")
+                    self._tokenizers[language] = self._safe_tokenize_vietnamese
+
+            elif language == "Japanese":
+                import fugashi
+                tagger = fugashi.Tagger()
+                self._tokenizers[language] = lambda t: [word.surface for word in tagger(t)]
+
+            elif language in ["Chinese (Simplified)", "Chinese (Traditional)"]:
+                import jieba
+                self._tokenizers[language] = lambda t: list(jieba.cut(t))
+
+            elif language == "Korean":
+                from kiwipiepy import Kiwi
+                kiwi = Kiwi()
+                self._tokenizers[language] = lambda t: [token.form for token in kiwi.tokenize(t)]
+
+            elif language == "Thai":
+                from pythainlp.tokenize import word_tokenize as thai_tokenize
+                self._tokenizers[language] = lambda t: thai_tokenize(t)
+
+            # UDPipe-based tokenizers
+            elif pack.udpipe_model:
+                import os
+                from ufal.udpipe import Model, Pipeline, ProcessingError  # noqa: F401 - import probe
+                model_path = get_udpipe_model_path(pack.udpipe_model)
+                if os.path.exists(model_path):
+                    model = Model.load(model_path)
+                    if model:
+                        # Cache the model
+                        self._udpipe_cache[pack.udpipe_model] = model
+                        self._tokenizers[language] = lambda t, m=model: self._tokenize_with_udpipe(t, m)
+                    else:
+                        logging.error(f"Failed to load UDPipe model: {model_path}")
+                        self._tokenizers[language] = self._simple_tokenize
+                else:
+                    logging.warning(f"UDPipe model not found: {model_path}")
+                    self._tokenizers[language] = self._simple_tokenize
+
+            else:
+                # Fallback to simple tokenization
+                self._tokenizers[language] = self._simple_tokenize
+
+            logging.info(f"Loaded tokenizer for {language}")
+
+        except Exception as e:
+            logging.error(f"Failed to load tokenizer for {language}: {e}")
+            # Last resort: if direct import failed but subprocess works, use that
+            if is_frozen() and self._check_import_subprocess(pack.module_check):
+                logging.info(f"[LOAD_TOKENIZER] {language}: falling back to subprocess mode")
+                self._subprocess_languages.add(language)
+                self._tokenizers[language] = lambda t, lang=language: self._safe_tokenize_subprocess(t, lang)
+            else:
+                self._tokenizers[language] = None
+
+    def verify_installation(self, language: str) -> bool:
+        """Verify that a language pack is properly installed and working.
+
+        Args:
+            language: Language name
+
+        Returns:
+            True if installation is valid and working
+        """
+        if not self.is_installed(language):
+            return False
+
+        try:
+            # Try to tokenize a simple test string
+            test_strings = {
+                "Vietnamese": "Xin chào",
+                "English": "Hello world",
+                "Japanese": "こんにちは",
+                "Chinese (Simplified)": "你好世界",
+                "Chinese (Traditional)": "你好世界",
+                "Korean": "안녕하세요",
+                "Thai": "สวัสดี",
+                "Arabic": "مرحبا",
+                "Hebrew": "שלום",
+                "Russian": "Привет",
+                "German": "Hallo Welt",
+                "French": "Bonjour monde",
+                "Spanish": "Hola mundo",
+            }
+
+            test_text = test_strings.get(language, "test")
+            tokens = self.tokenize(test_text, language)
+
+            return len(tokens) > 0
+
+        except Exception as e:
+            logging.error(f"Verification failed for {language}: {e}")
+            return False
+
+    def get_total_installed_size(self) -> int:
+        """Get total size of installed language packs in MB.
+
+        Returns:
+            Total size in MB
+        """
+        total = 0
+        for language in self.get_installed_languages():
+            pack = LANGUAGE_PACKS.get(language)
+            if pack:
+                total += pack.size_mb
+        return total
+
+    def get_language_count(self) -> Tuple[int, int]:
+        """Get count of installed and available languages.
+
+        Returns:
+            Tuple of (installed_count, total_count)
+        """
+        return len(self.get_installed_languages()), len(LANGUAGE_PACKS)
+
+
+# Global instance (will be initialized with config in app.py)
+nlp_manager = NLPManager()

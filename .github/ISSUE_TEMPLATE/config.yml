@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: User Guide & Troubleshooting (English)
+    url: https://github.com/Masaru-urasaM/CrossTrans2/blob/main/docs/USER_GUIDE.md
+    about: Step-by-step setup, shortcuts, API keys, and common troubleshooting answers.
+  - name: Hướng dẫn sử dụng (Tiếng Việt)
+    url: https://github.com/Masaru-urasaM/CrossTrans2/blob/main/docs/USER_GUIDE_VI.md
+    about: Hướng dẫn cài đặt, lấy API key miễn phí và sử dụng chi tiết bằng tiếng Việt.
+  - name: Security Vulnerability Report
+    url: https://github.com/Masaru-urasaM/CrossTrans2/security/advisories/new
+    about: Report security issues privately instead of opening a public issue.

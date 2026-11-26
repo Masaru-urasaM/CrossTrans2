@@ -1,0 +1,29 @@
+# Runtime dependencies. Test and build tools are in requirements-dev.txt.
+#
+# Install with the constraints file so every machine gets the versions the suite was run against:
+#     python -m pip install -r requirements.txt -c constraints.txt
+# constraints.txt pins every package, including the transitive ones this file does not name.
+pyperclip==1.8.2
+pystray==0.19.5
+# Pillow 13 carries the fixes for the advisories against 12.3.0; ttkbootstrap 2.2.4 is the first release that
+# accepts it (pillow<14). See CHANGELOG Phase 20.
+Pillow==13.0.0
+ttkbootstrap==2.2.4
+pywin32==311
+keyboard==0.13.5
+packaging==24.0
+python-docx>=0.8.11
+pysrt>=1.1.2
+chardet>=5.0.0
+tkinterdnd2==0.6.4
+PyAudioWPatch==0.2.12.9
+av>=16.0.0
+numpy>=2.3.0
+windnd>=1.0.7
+pypdf>=7.0.1  # Text extraction from PDFs (successor of the deprecated PyPDF2)
+PyMuPDF>=1.24.3  # Scanned PDF OCR; "import pymupdf" needs 1.24.3 or newer
+pykakasi>=2.2.1  # Furigana: offline kanji-to-hiragana conversion
+
+# Windows Hello authentication (OPTIONAL - requires Visual Studio Build Tools to compile)
+# Skip if you don't need fingerprint/face recognition - app will use password fallback
+# Windows Hello uses the native desktop WinRT interop ABI; no projection package is required.

@@ -1,0 +1,15 @@
+# Text is stored with LF in the repository. Checkouts use the platform's native endings, so the result no
+# longer depends on a machine's core.autocrlf setting.
+* text=auto
+
+# Windows scripts and the installer script must stay CRLF in the working tree (batch files with
+# goto/call labels misbehave with LF-only endings).
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.iss text eol=crlf
+
+# Never touch binary assets.
+*.png binary
+*.ico binary
+*.wav binary

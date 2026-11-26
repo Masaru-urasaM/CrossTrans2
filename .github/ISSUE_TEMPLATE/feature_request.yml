@@ -1,0 +1,26 @@
+name: Feature Request
+description: Suggest an improvement or new feature for CrossTrans 2
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem or workflow would this improve?
+      description: Describe the use case or friction you run into today.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Describe how you envision this feature working.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered (optional)
+      description: Any workarounds or alternative ideas you have thought about.

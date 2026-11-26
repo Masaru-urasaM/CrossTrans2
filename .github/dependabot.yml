@@ -1,0 +1,16 @@
+# Dependabot (TODO Task 18, 2026-11-19). Vulnerability alerts are on for the repository; this file adds
+# version updates for the GitHub Actions the two workflows use, grouped into one monthly pull request.
+#
+# pip is left out on purpose: Dependabot does not read constraints.txt, where every package is pinned,
+# so its pull requests would change requirements.txt alone and drift from the versions the suite was run
+# against. The pinned set is checked with pip-audit instead (CHANGELOG Phase 47):
+#     pip-audit -r constraints.txt --no-deps --disable-pip
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ['*']

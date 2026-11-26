@@ -1,0 +1,806 @@
+"""
+Translation Service for CrossTrans.
+Handles text translation using AI APIs with clipboard integration.
+"""
+import time
+import queue
+import logging
+import threading
+from collections import OrderedDict
+from typing import Optional, Callable, Tuple, Dict, TYPE_CHECKING
+
+from src.constants import COOLDOWN
+from src.core import furigana
+from src.core.text_cleanup import strip_thinking_tags
+from src.core.translation_alignment import (AlignedText, attach_alignment, build_prompt,
+                                             eligible, parse_answer)
+from src.core.clipboard import ClipboardManager
+from src.core.dictionary_prompt import build_dictionary_prompt, extract_context
+from src.core import lang_id
+from src.core.source_marker import (parse_source_marker, source_clause, stated_clause,
+                                    strip_stray_markers)
+from src.core.api_manager import AIAPIManager
+from src.core.history import HistoryManager
+from src.core.key_usage import KeyUsage
+from src.core.provider_health import ProviderHealthManager
+from src.core.result_status import FailureText, mark_translation
+from src.core.translation_task import (TranslationQueue, active_write, check_current,
+                                       current_task)
+if TYPE_CHECKING:
+    from config import Config
+
+
+class TranslationService:
+    """Handles all translation-related operations."""
+
+    # The language a model reported for the most recent translation of ambiguous
+    # kanji-only text (its [[SOURCE: ...]] line, Decision 22), or None. Like
+    # last_attribution: read it right after the call it belongs to. Class-level
+    # defaults, because tests and tools build the service with __new__.
+    last_source_language: Optional[str] = None
+    # Verdicts for the texts translated this session, newest last; History keeps
+    # them across restarts (source_verdict()).
+    SOURCE_VERDICTS_MAX = 64
+    _source_verdicts_lock = threading.Lock()
+    _selection_lock = threading.Lock()
+
+    def __init__(self, config: Config,
+                 notification_callback: Optional[Callable[[str], None]] = None) -> None:
+        self.config: Config = config
+        self.api_manager: AIAPIManager = AIAPIManager()
+        self.key_usage_events = queue.SimpleQueue()
+        self.key_usage = KeyUsage(config)
+        self.api_manager.usage_callback = self.key_usage_events.put
+        self.last_translation_time: float = 0
+        self.last_grammar_fix_time: float = 0
+        self.translation_queue: queue.Queue[Tuple[str, str, str, Optional[Dict]]] = TranslationQueue()
+        self.notification_callback: Optional[Callable[[str], None]] = notification_callback
+        self.history_manager: HistoryManager = HistoryManager(config)
+        self.health_manager: ProviderHealthManager = ProviderHealthManager(config)
+        # Who produced the most recent result: "model (Provider)", the trial
+        # proxy, or a cache hit's stored credit. The popup shows it as a note;
+        # None means "nothing worth naming" and the note is left off entirely.
+        self.last_attribution: Optional[str] = None
+        self._configure_api()
+
+    def _configure_api(self) -> bool:
+        """Configure user-owned keys only; missing or failed keys never enable a proxy."""
+        api_keys = self.config.get_api_keys()
+        self.api_manager.configure(api_keys, self.notification_callback, self.health_manager,
+                                   model_rotation_enabled=self.config.get_model_rotation())
+        return any(item.get('api_key', '').strip() for item in api_keys)
+
+
+    def is_trial_mode(self) -> bool:
+        """Legacy caller compatibility: CrossTrans 2 has no Trial runtime."""
+        return False
+
+    def get_trial_info(self) -> None:
+        """Reserved queue metadata; retained while consumers share the existing tuple shape."""
+        return None
+
+    def flush_key_usage(self):
+        """Called by the UI queue pump so workers never save config or call widgets."""
+        changed = 0
+        while True:
+            try:
+                event = self.key_usage_events.get_nowait()
+            except queue.Empty:
+                break
+            changed += bool(self.key_usage.apply(event))
+        return changed
+
+    def reconfigure(self):
+        """Reconfigure API (call after API key change)."""
+        self._configure_api()
+
+    @staticmethod
+    def _is_japanese_text(text: str) -> bool:
+        """Check if text contains Japanese characters (hiragana, katakana, or kanji)."""
+        return furigana.is_japanese(text)
+
+    @staticmethod
+    def generate_furigana(text: str, lang_hint: Optional[str] = None) -> Optional[str]:
+        """Generate furigana annotations for Japanese text (offline).
+
+        Delegates to src.core.furigana, which aligns each reading onto the kanji
+        runs inside its token (so okurigana is never covered by the ruby) and
+        suppresses any reading it cannot map deterministically.
+
+        Args:
+            text: Source text to annotate.
+            lang_hint: Language name the caller already knows, e.g. "Japanese".
+                Needed for kanji-only text, which has no kana to prove it is
+                Japanese rather than Chinese.
+
+        Returns:
+            String with {kanji|reading} notation, or None when no ruby applies.
+        """
+        return furigana.generate_notation(text, lang_hint)
+
+    def _strip_thinking_tags(self, text: str) -> str:
+        """Remove AI thinking/reasoning tags from response.
+
+        The API manager already strips its own results; this still covers the
+        trial-proxy path, which does not go through it.
+
+        Args:
+            text: Raw API response text
+
+        Returns:
+            Cleaned text with thinking tags removed
+        """
+        return strip_thinking_tags(text)
+
+    def translate_text(self, text: str, target_language: str,
+                       custom_prompt: Optional[str] = None,
+                       skip_cache: bool = False,
+                       source_language: Optional[str] = None,
+                       allow_linked: bool = False, cache_for_auto: bool = False,
+                       save_history: bool = True) -> str:
+        """Translate text to target language using AI API.
+
+        Args:
+            text: Source text to translate.
+            target_language: Target language name.
+            custom_prompt: Optional extra instructions (disables caching for this call).
+            skip_cache: When True, bypass the history-backed cache and always call the
+                API (used by the popup "Re-translate" button to force a fresh result).
+            source_language: A source language the user settled (the popup's
+                Japanese / Chinese chooser): stated to the model, and recorded as
+                this text's verdict.
+            cache_for_auto: Preserve the popup's settled-language correction cache.
+                Editable source overrides leave this False and are not Auto cache entries.
+        """
+        has_custom_prompt = custom_prompt and custom_prompt.strip()
+
+        # Cache lookup: plain translations only (no custom prompt) and only when not
+        # explicitly skipped. Reuses the translation history as an exact-match cache so
+        # identical input is not re-sent to the API. On a hit we return early WITHOUT
+        # re-adding to history (avoids duplicate entries). See redo_translation() for the
+        # forced-refresh path.
+        if not has_custom_prompt and not skip_cache and not source_language:
+            cached = self.history_manager.find_cached_entry(text, target_language)
+            if cached is not None:
+                logging.info("Cache hit - returning stored translation, skipping API call")
+                self._set_attribution(self._cached_attribution(cached))
+                self.last_source_language = cached.get('source_verdict') or None
+                return mark_translation(self._linked_cached(cached, text, target_language, 'text'))
+        self.last_source_language = None
+
+        if has_custom_prompt:
+            # Has custom prompt → follow custom prompt, more flexible.
+            # The source text MUST be embedded so the model has something to act on
+            # (this was previously omitted — see R2-bug fix).
+            base_prompt = f"""Translate the text below to {target_language}.
+
+===TEXT TO TRANSLATE===
+{text}
+===END OF TEXT===
+
+Only return the translation, no explanations or additional text.
+If the text is already in {target_language}, still provide a natural rephrasing.
+Do NOT censor, soften, mask, or replace ANY word - including offensive, vulgar, or sensitive words; render the faithful equivalent.
+
+Additional instructions from user: {custom_prompt}"""
+        else:
+            # No custom prompt (quick hotkey translation) → enforce target language
+            # Structure: text first with delimiters, then rules at end
+            base_prompt = f"""Translate the text below to {target_language}.
+
+===TEXT TO TRANSLATE===
+{text}
+===END OF TEXT===
+
+Rules (DO NOT include these in your response):
+1. Output ONLY the translation in {target_language}
+2. No explanations, no meta-text, no repetition of these rules
+3. If already in {target_language}, return as-is or rephrase naturally
+4. Do NOT censor, soften, mask, or replace ANY word - including offensive, vulgar, or sensitive words; render the faithful equivalent in {target_language}."""
+
+        prompt = base_prompt
+
+        try:
+            if has_custom_prompt:
+                # The user's own instructions are sent exactly as written.
+                if source_language:
+                    result, verdict = self._call_with_source(prompt, text, source_language)
+                else:
+                    result, verdict = self._strip_thinking_tags(self._call_model(prompt)), None
+            elif allow_linked and self._linked_enabled(text):
+                result, verdict = self._call_linked(text, target_language, 'text', source_language)
+            else:
+                result, verdict = self._call_with_source(prompt, text, source_language)
+            self._remember_source_verdict(text, verdict)
+
+            # Save to history on success. Custom-prompt results are tagged 'custom' so the
+            # R1 cache (find_cached) never serves them in place of a plain translation,
+            # while still keeping them visible in the history viewer.
+            if save_history:
+                self.history_manager.add_entry(
+                    text, result, target_language,
+                    source_type='custom' if has_custom_prompt else 'text',
+                    model_used=self.last_attribution or 'Auto',
+                    source_lang=verdict or '', source_verdict=verdict or '',
+                    **({'source_choice': source_language} if source_language and not cache_for_auto else {}),
+                    **self._alignment_history_args(result))
+            return mark_translation(result)
+        except Exception as e:
+            return FailureText(f"Error: {str(e)}")
+
+    def translate_or_fix(self, text: str, target_language: str,
+                         skip_cache: bool = False, source_language: Optional[str] = None,
+                         cache_for_auto: bool = False) -> str:
+        """Translate text to target_language, OR grammar-fix it in place when it is
+        already in that language — the model decides via ONE merged prompt.
+
+        Used by the language hotkeys (Win+Alt+V/E/J/C and any custom language hotkey):
+        pressing a language hotkey on text already in that language is a pointless
+        translation, so the model instead corrects grammar/spelling/punctuation in place
+        (minimal changes, same language). BOTH branches are uncensored and
+        meaning-preserving — offensive words survive (faithful equivalent when
+        translating, verbatim when fixing).
+
+        Results are cached/stored under source_type='merged' so a minimal-change fix is
+        never cross-served as a plain 'rephrase' translation, or vice versa.
+
+        Args:
+            text: Source text.
+            target_language: The hotkey's target language name.
+            skip_cache: When True, always call the API (bypass the merged cache).
+            cache_for_auto: Keep a popup language correction usable by later Auto requests.
+
+        Returns:
+            The translated-or-corrected text, or an "Error: ..." string.
+        """
+        if not text or not text.strip():
+            return ""
+
+        # Merged cache namespace: never mixes with plain translations (see find_cached).
+        if not skip_cache and not source_language:
+            cached = self.history_manager.find_cached_entry(text, target_language,
+                                                            source_type='merged')
+            if cached is not None:
+                logging.info("Merged cache hit - returning stored result, skipping API call")
+                self._set_attribution(self._cached_attribution(cached))
+                self.last_source_language = cached.get('source_verdict') or None
+                return mark_translation(self._linked_cached(cached, text, target_language, 'merged'))
+        self.last_source_language = None
+
+        prompt = f"""You are a translation-and-grammar fixer tool. Decide automatically between two modes based on the
+language of the text below, then output ONLY the result.
+
+===TEXT===
+{text}
+===END OF TEXT===
+
+DECISION RULE:
+- If the text is ENTIRELY or PREDOMINANTLY already in {target_language}, do NOT translate it.
+  Instead, correct ONLY its grammar, spelling, and punctuation, keeping the SAME language and the
+  SAME meaning (minimal changes; if it is already correct, return it unchanged).
+- Otherwise, TRANSLATE the text into {target_language}, preserving the full meaning and tone.
+
+STRICT RULES (DO NOT include these rules in your response):
+1. Output ONLY the final result - no explanations, no labels, no quotes, no meta-text, no notes
+   about which mode you chose.
+2. Never change the meaning. In grammar-fix mode make the minimal changes needed for correctness;
+   do not paraphrase, restyle, or change vocabulary/tone. In translate mode, translate faithfully.
+3. Do NOT add or remove information. Every piece of the original text is important and must be preserved in the output.
+4. Do NOT censor, soften, mask, euphemize, or replace ANY word - including offensive, vulgar,
+   slur, or sensitive words. In grammar-fix mode keep every such word exactly as written; in
+   translate mode render its faithful equivalent in {target_language}. Never omit or asterisk them.
+5. In grammar-fix mode, output the corrected text in the EXACT SAME language as the input; never
+   translate it. In translate mode, output ONLY {target_language}."""
+
+        try:
+            if self._linked_enabled(text):
+                result, verdict = self._call_linked(text, target_language, 'merged', source_language)
+            else:
+                result, verdict = self._call_with_source(prompt, text,
+                    **({'source_language': source_language} if source_language else {}))
+            self._remember_source_verdict(text, verdict)
+
+            # Store under the 'merged' namespace so repeat requests are cached but never
+            # served in place of (or served) a plain translation.
+            self.history_manager.add_entry(
+                text, result, target_language, source_type='merged',
+                model_used=self.last_attribution or 'Auto',
+                source_lang=verdict or '', source_verdict=verdict or '',
+                **({'source_choice': source_language} if source_language and not cache_for_auto else {}),
+                **self._alignment_history_args(result))
+            return mark_translation(result)
+        except Exception as e:
+            return FailureText(f"Error: {str(e)}")
+
+    def _linked_enabled(self, text: str) -> bool:
+        config = getattr(self, 'config', None)
+        return (config is not None and config.get(
+                    'linked_reading_enabled', True) is True
+                and eligible(text))
+
+    @staticmethod
+    def _alignment_history_args(result: str) -> dict:
+        data = getattr(result, 'alignment', None)
+        return {'alignment': data} if data else {}
+
+    def _linked_cached(self, entry: dict, source: str, target: str, mode: str) -> str:
+        return attach_alignment(entry['translated'], entry.get('alignment'), source, target, mode)
+
+    def _call_linked(self, text: str, target: str, mode: str, known=None):
+        raw = self._call_model(build_prompt(text, target, mode=mode, known=known))
+        parsed = parse_answer(raw, text, target, mode=mode, known=known)
+        logging.info(f"[LinkedReading] status={parsed.status} chars={len(text)}")
+        result = AlignedText(parsed.text, parsed.metadata) if parsed.metadata else parsed.text
+        return result, parsed.verdict
+
+    def dictionary_lookup(self, text, target_language: str,
+                          source_language: Optional[str] = None,
+                          context: Optional[str] = None) -> str:
+        """Perform dictionary lookup for one or more words.
+
+        Accepts either a single word/phrase (str) or a list of words.
+        For multiple words, makes a single optimized API call.
+
+        Args:
+            text: Word/phrase (str) or list of words to look up
+            target_language: Target language for definitions/translations
+            source_language: The words' language when the caller knows it - see
+                `dictionary_prompt.dictionary_source_language()`. None lets the model
+                decide, and it names its decision in field 2.
+            context: The text the words were selected from. Only the sentences that
+                contain a word are sent (`dictionary_prompt.extract_context()`).
+
+        Returns:
+            Dictionary-formatted response with translation, definition, etc.
+        """
+        # Normalize input: convert string to single-item list
+        if isinstance(text, str):
+            words = [text]
+        else:
+            words = list(text)
+
+        if not words:
+            return ""
+
+        context_text = extract_context(context, words)
+        # Counts and language names only - never the user's text.
+        logging.info(f"[Dictionary] lookup n={len(words)} source={source_language or 'auto'} "
+                     f"target={target_language} context_chars={len(context_text)}")
+        prompt = build_dictionary_prompt(words, target_language, source_language, context_text)
+
+        try:
+            result = self._call_model(prompt)
+
+            # Clean up AI thinking tags from result
+            result = self._strip_thinking_tags(result)
+            return mark_translation(result)
+        except Exception as e:
+            return FailureText(f"Error: {str(e)}")
+
+    def fix_grammar(self, text: str) -> str:
+        """Correct grammar, spelling, and punctuation of text WITHOUT translating it.
+
+        The output is the SAME text in the SAME language with only grammatical errors
+        fixed. It does NOT paraphrase, change vocabulary/meaning/tone, add or remove
+        information, or censor any word (including offensive ones). If the text is already
+        correct it is returned unchanged. Used by the Fix Grammar hotkey and the main
+        window "Fix Grammar" button. The result is NOT written to history.
+
+        Args:
+            text: Source text whose grammar should be corrected.
+
+        Returns:
+            The grammar-corrected text in the same language, or an "Error: ..." string.
+        """
+        if not text or not text.strip():
+            return ""
+
+        # Strict prompt: fix only grammar, never translate, never censor, never rephrase.
+        prompt = f"""You are a grammar correction tool. Correct ONLY the grammar, spelling, and punctuation of the text below.
+
+===TEXT===
+{text}
+===END OF TEXT===
+
+STRICT RULES (DO NOT include these rules in your response):
+1. Output the corrected text in the EXACT SAME LANGUAGE as the input. NEVER translate it.
+2. Fix ONLY grammar, spelling, punctuation, subject-verb agreement, verb tense, articles, prepositions, and word order.
+3. Make the MINIMAL changes needed for grammatical correctness.
+4. Do NOT paraphrase, improve style, change vocabulary, or alter the meaning or tone.
+5. Do NOT add or remove information.
+6. Do NOT censor, soften, mask, or replace ANY word - including offensive, vulgar, or sensitive words. Keep every word exactly as written.
+7. If the text is already grammatically correct, return it unchanged.
+8. Output ONLY the corrected text - no explanations, no quotes, no labels, no meta-text."""
+
+        try:
+            result = self._call_model(prompt)
+
+            # Clean up AI thinking tags from result
+            result = self._strip_thinking_tags(result)
+            return mark_translation(result)
+        except Exception as e:
+            return FailureText(f"Error: {str(e)}")
+
+    def _call_with_source(self, prompt: str, text: str,
+                          source_language: Optional[str] = None) -> Tuple[str, Optional[str]]:
+        """Call the model about `text` with its source-language clause appended.
+
+        Mostly-CJK text gets its language stated when the characters prove it, or
+        the model is asked to name it on a marker line, which is read and removed
+        here (Decision 22, `source_marker`). Any other text is sent unchanged.
+        A `source_language` the user settled is stated instead, and is the verdict.
+
+        Returns:
+            (result without the marker, the verdict or None)
+        """
+        if source_language:
+            clause = stated_clause(source_language)
+            result = self._strip_thinking_tags(self._call_model(prompt + clause.text))
+            logging.info(f"[LangID] translation verdict={clause.stated} via=user "
+                         f"chars={len(text)}")
+            return strip_stray_markers(result), clause.stated
+        clause = source_clause(text)
+        result = self._strip_thinking_tags(self._call_model(prompt + clause.text))
+        if not clause.asks:
+            return strip_stray_markers(result), None
+        result, verdict, found = parse_source_marker(result)
+        # Counts and language names only - never the user's text.
+        logging.info(f"[LangID] translation verdict={verdict or 'none'} "
+                     f"marker={'found' if found else 'missing'} chars={len(text)}")
+        return result, verdict
+
+    def _source_verdict_store(self) -> "OrderedDict[str, str]":
+        store = self.__dict__.get('_source_verdicts')
+        if store is None:
+            with self._source_verdicts_lock:
+                store = self.__dict__.setdefault('_source_verdicts', OrderedDict())
+        return store
+
+    @active_write
+    def _remember_source_verdict(self, text: str, verdict: Optional[str]) -> None:
+        """Record a call's verdict: as `last_source_language`, and for the text."""
+        self.last_source_language = verdict
+        if not verdict or not text:
+            return
+        self._store_source_verdict(text, verdict)
+
+    def _store_source_verdict(self, text: str, verdict: str) -> None:
+        store = self._source_verdict_store()
+        with self._source_verdicts_lock:
+            store[text] = verdict
+            store.move_to_end(text)
+            while len(store) > self.SOURCE_VERDICTS_MAX:
+                store.popitem(last=False)
+
+    def remember_user_source(self, text: str, language: str) -> Optional[str]:
+        """Record the language the user settled for `text` outside a translation -
+        the Dictionary's "Kanji-only text: Japanese or Chinese?" dialog, or before
+        a re-translation the user asked for (K3).
+
+        Kept like a model's verdict: for this session, and on History's entries
+        of exactly this text so it survives a restart - where it replaces a
+        model's, since the user's pick outranks it (Decision 22). It leaves
+        `last_source_language` alone: that belongs to the last translation.
+
+        Returns:
+            The verdict recorded, or None when `language` is neither Japanese nor
+            Chinese (a pick of another pack says nothing about the kanji).
+        """
+        verdict = lang_id.normalize_language(language)
+        if not text or not (verdict == lang_id.JAPANESE or verdict in lang_id.CHINESE):
+            return None
+        self._store_source_verdict(text, verdict)
+        setter = getattr(getattr(self, 'history_manager', None), 'set_source_verdict', None)
+        if setter:
+            setter(text, verdict)
+        # Counts and language names only - never the user's text.
+        logging.info(f"[LangID] user settled source={verdict} chars={len(text)}")
+        return verdict
+
+    def source_language(self, text: str) -> Optional[str]:
+        """The language of a source text as far as it is settled: its characters
+        first, else the verdict for exactly this text (Decision 22), else None.
+        Never a guess, and never a request."""
+        if not text or not text.strip():
+            return None
+        return lang_id.resolve(text, model=self.source_verdict(text.strip())).language
+
+    def _source_hint(self, text: str) -> Optional[str]:
+        """The reading hint for a source text: "Japanese" when source_language()
+        says so, else None."""
+        return lang_id.JAPANESE if self.source_language(text) == lang_id.JAPANESE else None
+
+    def source_verdict(self, text: str) -> Optional[str]:
+        """The language a model reported for exactly this text, or None.
+
+        This session's translations first, then History, which keeps verdicts
+        across restarts. Only ever a model's verdict - never a label guessed from
+        the characters (History's `source_lang` is often that).
+        """
+        if not text:
+            return None
+        store = self._source_verdict_store()
+        with self._source_verdicts_lock:
+            verdict = store.get(text)
+        if verdict:
+            return verdict
+        finder = getattr(self.history_manager, 'find_source_verdict', None)
+        return finder(text) if finder else None
+
+    @active_write
+    def _set_attribution(self, attribution):
+        self.last_attribution = attribution
+        task = current_task()
+        if task:
+            task.attribution = attribution
+
+    def _call_model(self, prompt: str) -> str:
+        """Send one prompt to whichever backend is active and record who answered.
+
+        Every live call in this class goes through here, so `last_attribution`
+        is set in exactly one place. A normal call names whatever the API
+        manager actually reached - not necessarily the configured model, since
+        auto-detection and model rotation substitute one silently. Trial mode
+        names its fixed proxy model instead.
+
+        Failures propagate: the attribution is only touched on success, so a
+        failed call never credits a model with a result it did not produce.
+        """
+        result = self.api_manager.translate(prompt)
+        self._set_attribution(self.api_manager.last_attribution)
+        return result
+
+    @staticmethod
+    def _cached_attribution(entry: Dict) -> Optional[str]:
+        """Credit for a cache hit: whoever produced the stored entry.
+
+        Entries written before the credit was recorded carry the placeholder
+        'Auto', which names nothing - those get no note at all rather than a
+        made-up one. Crediting the model that merely ran most recently would be
+        worse than saying nothing.
+        """
+        stored = (entry.get('model_used') or '').strip()
+        if not stored or stored == 'Auto':
+            return None
+        return f"{stored}, cached"
+
+
+    def get_selected_text(self) -> Optional[str]:
+        """Get currently selected text by simulating Ctrl+C."""
+        with self._selection_lock:
+            check_current()
+            return self._capture_selected_text()
+
+    def _capture_selected_text(self) -> Optional[str]:
+        from src.core.selection_capture import capture_selected_text
+        text, copy_failed = capture_selected_text(clipboard=ClipboardManager)
+        self._selection_copy_failed = copy_failed
+        return text
+
+    def _selection_failure(self):
+        if getattr(self, '_selection_copy_failed', False):
+            return ('No text received. Copying from the active application failed during Ctrl+C capture. '
+                    'The application may block clipboard access or run as Administrator. '
+                    'Use Screenshot Translate (Win+Alt+S) or copy and paste the text into Translate manually.')
+        return ('No text received after three Ctrl+C attempts. The active application did not place '
+                'selected text on the clipboard. Select text and keep that application focused, '
+                'or use Screenshot Translate (Win+Alt+S) or copy and paste it into Translate manually.')
+
+    def do_translate_or_fix(self, target_language: str,
+                            on_captured: Optional[Callable[[], None]] = None) -> None:
+        """Merged translate-or-fix for the language hotkeys (Win+Alt+V/E/J/C + custom).
+
+        Captures the live selection via Ctrl+C, honors the shared translation cooldown,
+        surfaces trial info and generates furigana for Japanese source, and calls
+        translate_or_fix() so the model auto-decides between translating and
+        grammar-fixing text already in target_language. The result is queued as the
+        5-tuple (original, result, target_language, trial_info, furigana_text) -
+        is_grammar stays False downstream - because the output is always genuinely in
+        target_language in both branches.
+        """
+        current_time = time.time()
+        if current_time - self.last_translation_time < COOLDOWN:
+            logging.info("Cooldown active, please wait...")
+            self.translation_queue.put(("", FailureText("Please wait a moment...", kind='notice'),
+                                        target_language, None))
+            return
+
+        self.last_translation_time = current_time
+        logging.info(f"Translate-or-fix for {target_language}...")
+
+        try:
+            if not self._configure_api():
+                error_msg = FailureText(
+                    "Error: No API key configured.\n\nPlease add your AI API key in Settings.\n\n"
+                    "Go to Settings > Guide tab for instructions on getting a free API key."
+                )
+                logging.warning(error_msg)
+                self.translation_queue.put(("", error_msg, target_language, None))
+                return
+
+            selected_text = self.get_selected_text()
+
+            if selected_text:
+                logging.info(f"Selected text: {len(selected_text)} chars")
+                if on_captured is not None:
+                    on_captured()
+
+                # One merged prompt: translate, or grammar-fix if already in target_language.
+                result = self.translate_or_fix(selected_text, target_language)
+
+                # Generate furigana offline if enabled and source is Japanese. The
+                # hint lets kanji-only text the model called Japanese be read (J6).
+                furigana_text = None
+                if (self.config.get_furigana_enabled()
+                        and self._is_japanese_text(selected_text)):
+                    logging.info("Japanese text detected, generating furigana offline")
+                    furigana_text = self.generate_furigana(selected_text,
+                                                           self._source_hint(selected_text))
+
+                logging.info("Translate-or-fix complete!")
+
+                # Include trial info if in trial mode
+                trial_info = self.get_trial_info()
+                self.translation_queue.put((selected_text, result, target_language, trial_info, furigana_text))
+            else:
+                error_msg = FailureText(self._selection_failure())
+                logging.warning(error_msg)
+                self.translation_queue.put(("", error_msg, target_language, None))
+        except Exception as e:
+            error_msg = FailureText(f"Error: {str(e)}")
+            logging.error(error_msg)
+            self.translation_queue.put(("", error_msg, target_language, None))
+
+    def redo_translation(self, text: str, target_language: str,
+                         source_language: Optional[str] = None, mode: str = 'text') -> None:
+        """Force a fresh API translation of already-known text (bypass cache).
+
+        Used by the Quick Translate popup "Re-translate" button when a cached or
+        previous result is bad, so the user is never stuck with it. Unlike
+        do_translate_or_fix(), this does NOT capture the selection again and does NOT
+        apply COOLDOWN — it operates on text already obtained. The result is pushed to
+        translation_queue in the same 5-tuple format as do_translate_or_fix().
+
+        `source_language` is the popup chooser's answer for kanji-only text the
+        model could not place (J6): stated to the model, and recorded.
+        """
+        logging.info(f"Re-translating to {target_language} (forced, skip cache)...")
+
+        try:
+            if not self._configure_api():
+                error_msg = FailureText(
+                    "Error: No API key configured.\n\nPlease add your AI API key in Settings.\n\n"
+                    "Go to Settings > Guide tab for instructions on getting a free API key."
+                )
+                logging.warning(error_msg)
+                self.translation_queue.put(("", error_msg, target_language, None))
+                return
+
+            if not text:
+                error_msg = FailureText("No text to re-translate.", kind='notice')
+                logging.warning(error_msg)
+                self.translation_queue.put(("", error_msg, target_language, None))
+                return
+
+            # Force a real API call, bypassing the history-backed cache.
+            translated = (self.translate_or_fix(text, target_language, skip_cache=True,
+                          **({'source_language': source_language, 'cache_for_auto': True} if source_language else {}))
+                          if mode == 'merged' else
+                          self.translate_text(text, target_language, skip_cache=True,
+                                             source_language=source_language,
+                                             **({'cache_for_auto': True} if source_language else {}),
+                                             **({'allow_linked': True} if self._linked_enabled(text) else {})))
+
+            # Generate furigana offline if enabled and source is Japanese (plain path).
+            furigana_text = None
+            if self.config.get_furigana_enabled() and self._is_japanese_text(text):
+                logging.info("Japanese text detected, generating furigana offline")
+                furigana_text = self.generate_furigana(text, self._source_hint(text))
+
+            logging.info("Re-translation complete!")
+
+            trial_info = self.get_trial_info()
+            self.translation_queue.put((text, translated, target_language, trial_info, furigana_text))
+        except Exception as e:
+            error_msg = FailureText(f"Error: {str(e)}")
+            logging.error(error_msg)
+            self.translation_queue.put(("", error_msg, target_language, None))
+
+    def do_grammar_fix(self, on_captured: Optional[Callable[[], None]] = None) -> None:
+        """Fix the grammar of the currently selected text and queue the result.
+
+        Mirrors do_translate_or_fix() (captures the live selection via Ctrl+C, honors a
+        cooldown, surfaces trial info) but calls fix_grammar() instead of translating.
+        The result is pushed to translation_queue as a 6-tuple
+        (original, corrected, "Grammar", trial_info, None, True) so the queue checker can
+        route it to the grammar popup (Copy/Replace only). Not saved to history.
+        """
+        current_time = time.time()
+        if current_time - self.last_grammar_fix_time < COOLDOWN:
+            logging.info("Grammar-fix cooldown active, please wait...")
+            self.translation_queue.put(("", FailureText("Please wait a moment...", kind='notice'),
+                                        "Grammar", None, None, True))
+            return
+
+        self.last_grammar_fix_time = current_time
+        logging.info("Fixing grammar of selected text...")
+
+        try:
+            if not self._configure_api():
+                error_msg = FailureText(
+                    "Error: No API key configured.\n\nPlease add your AI API key in Settings.\n\n"
+                    "Go to Settings > Guide tab for instructions on getting a free API key."
+                )
+                logging.warning(error_msg)
+                self.translation_queue.put(("", error_msg, "Grammar", None, None, True))
+                return
+
+            selected_text = self.get_selected_text()
+
+            if selected_text:
+                logging.info(f"Selected text for grammar fix: {len(selected_text)} chars")
+                if on_captured is not None:
+                    on_captured()
+
+                corrected = self.fix_grammar(selected_text)
+
+                logging.info("Grammar fix complete!")
+
+                # Include trial info if in trial mode
+                trial_info = self.get_trial_info()
+                self.translation_queue.put((selected_text, corrected, "Grammar", trial_info, None, True))
+            else:
+                error_msg = FailureText(self._selection_failure())
+                logging.warning(error_msg)
+                self.translation_queue.put(("", error_msg, "Grammar", None, None, True))
+        except Exception as e:
+            error_msg = FailureText(f"Error: {str(e)}")
+            logging.error(error_msg)
+            self.translation_queue.put(("", error_msg, "Grammar", None, None, True))
+
+    def ask_freeform(self, raw_prompt: str, target_language: str) -> None:
+        """Send a raw user-authored prompt to the AI verbatim (freeform ask).
+
+        Used by the Quick Translate popup "Custom Prompt" mode: the entire editable-box
+        content IS the prompt — there is NO translate wrapper, so this does not depend on
+        the custom_prompt branch of translate_text(). Freeform asks are one-offs: the
+        result is NOT written to history and is never served from / written to the R1
+        cache. The result is pushed to translation_queue in the same 5-tuple format as
+        do_translate_or_fix() (furigana off for freeform).
+
+        Args:
+            raw_prompt: The exact prompt text to send to the model.
+            target_language: Target language (used only for trial info / display context).
+        """
+        logging.info("Freeform custom-prompt request...")
+
+        try:
+            if not self._configure_api():
+                error_msg = FailureText(
+                    "Error: No API key configured.\n\nPlease add your AI API key in Settings.\n\n"
+                    "Go to Settings > Guide tab for instructions on getting a free API key."
+                )
+                logging.warning(error_msg)
+                self.translation_queue.put(("", error_msg, target_language, None))
+                return
+
+            if not raw_prompt or not raw_prompt.strip():
+                error_msg = FailureText("No prompt provided.", kind='notice')
+                logging.warning(error_msg)
+                self.translation_queue.put(("", error_msg, target_language, None))
+                return
+
+            # Raw path: send the prompt verbatim, bypassing the translate wrapper.
+            result = self._call_model(raw_prompt)
+
+            result = mark_translation(self._strip_thinking_tags(result))
+
+            logging.info("Freeform custom-prompt complete!")
+
+            # Intentionally NOT saved to history (one-off ask, not a reusable translation).
+            trial_info = self.get_trial_info()
+            self.translation_queue.put((raw_prompt, result, target_language, trial_info, None))
+        except Exception as e:
+            error_msg = FailureText(f"Error: {str(e)}")
+            logging.error(error_msg)
+            self.translation_queue.put(("", error_msg, target_language, None))

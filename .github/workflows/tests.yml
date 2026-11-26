@@ -1,0 +1,98 @@
+# CrossTrans test suite.
+#
+# windows-latest because the app is Windows-only: it registers global hotkeys,
+# talks to the registry, reads the clipboard through pywin32 and draws Tk widgets.
+# There is nothing meaningful to run on Linux.
+#
+# The count guard at the end is not ceremony. `tests/conftest.py`'s `tk_root`
+# fixture *skips* when there is no usable display, and a large share of the suite
+# needs one (312 of 630 tests on 2026-09-08, before it grew past 5,700) - so a
+# runner without a desktop session would skip all of those and still hand back a
+# green tick. See tools/check_test_counts.py.
+name: tests
+
+on:
+  push:
+    # Dependabot's branches run once, as the pull request it opens, not twice (TODO Task 18).
+    branches-ignore: ['dependabot/**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  # A newer push to the same branch makes the older run pointless.
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    runs-on: windows-latest
+    # The first run on main (5,787 tests with coverage) took 18.7 minutes; keep a wide margin.
+    timeout-minutes: 35
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          # Matches the version the project is developed on.
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+            constraints.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
+
+      - name: Use a 1920x1080 display
+        # windows-latest starts at 1024x768, which clamps every window a test opens larger than that and fails
+        # twenty display-dependent tests (DEFERRED D30, Decision 83). Not fatal itself: if the switch ever
+        # fails, those tests say so.
+        continue-on-error: true
+        run: python tools/ci_set_display.py
+
+      - name: Report whether Tk is usable
+        # Informational only - the guard below is what actually fails the build.
+        # Printed so a mass-skip failure can be diagnosed without guessing.
+        continue-on-error: true
+        run: |
+          python -c "import tkinter; r = tkinter.Tk(); r.destroy(); print('Tk: usable')"
+
+      - name: Lint with ruff
+        run: python -m ruff check src tools tests main.py config.py
+
+      - name: Run tests
+        run: |
+          python -m pytest tests/ -q --junitxml=junit.xml --cov=src --cov-report=term-missing
+
+      - name: Check the run actually ran
+        if: always()
+        # --min-total sits a little under the suite's size (5,787 entries on 2026-11-11, measured on a fresh
+        # install of requirements.txt), so a test file that quietly stops being collected fails the build.
+        # Raise it as the suite grows; never lower it to make a run pass.
+        # Skips expected here, twenty-four in all: nine tests need fugashi + UniDic, which requirements.txt leaves
+        # out; one inspects a built EXE, which CI does not build; thirteen native resize tests (eight in
+        # tests/test_outline_resize.py, one in tests/test_native_resize_trace.py, four in
+        # tests/test_quick_live_layout.py) need the C helper that tools/tk_resize/build_native_trace.py compiles
+        # into the untracked logs/ folder; and one, tests/test_key_patterns.py::test_the_workers_table_matches_the_apps,
+        # compares the Worker's key table with the app's and needs the untracked cloudflare_worker.js. (A local
+        # Tcl 8.6 run without CI=true also skips the clipboard round-trip and one Tcl 9 test.) A new test that
+        # needs more must raise --max-skipped here, naming itself.
+        run: |
+          python tools/check_test_counts.py junit.xml --min-total 5700 --max-skipped 24
+
+      - name: Retain full JUnit evidence in logs
+        if: always()
+        run: python tools/ci_test_report.py junit.xml
+
+      - name: Keep an optional artifact copy
+        continue-on-error: true
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: junit-${{ github.run_id }}
+          path: junit.xml
+          if-no-files-found: warn

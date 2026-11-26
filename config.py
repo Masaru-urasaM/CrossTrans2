@@ -1,0 +1,1014 @@
+"""
+Configuration management for CrossTrans.
+Handles API key, hotkeys, auto-start settings, and other preferences.
+"""
+import copy
+import os
+import sys
+import json
+import shutil
+import logging
+import winreg
+from typing import Optional, Dict, Any, List, Tuple
+
+from src.core.crypto import SecureStorage
+from src.product import APP_ID
+from src.ui.theme.tokens import MODES
+from src.core.key_identity import normalize as normalize_key_rows
+
+
+class Config:
+    """Manages application configuration stored in %APPDATA%/CrossTrans2/config.json"""
+
+    APP_NAME = APP_ID
+    CONFIG_DIR = os.path.join(os.environ.get('APPDATA', '.'), APP_NAME)
+    CONFIG_FILE = os.path.join(CONFIG_DIR, 'config.json')
+
+    DEFAULT_HOTKEYS = {
+        "English": "win+alt+e",
+        "Japanese": "win+alt+j",
+        "Chinese Simplified": "win+alt+c",
+        "Vietnamese": "win+alt+v"
+    }
+
+    # Screenshot hotkey (for vision/OCR translation)
+    SCREENSHOT_HOTKEY_DEFAULT = "win+alt+s"
+    SCREENSHOT_TARGET_LANGUAGE_DEFAULT = "Auto"  # "Auto" = use current selected_language
+    AUDIO_HOTKEY_DEFAULT = "win+alt+a"
+
+    # Fix Grammar hotkey (corrects grammar of selected text without translating)
+    # NOTE: Win+Alt+G is also Xbox Game Bar's "Record that" default. Registration fails
+    # gracefully (error 1409) if Game Bar has it; the hotkey is rebindable and the
+    # main-window "Fix Grammar" button always works as a fallback.
+    FIX_GRAMMAR_HOTKEY_DEFAULT = "win+alt+g"
+
+    # Languages that can be added as custom hotkeys
+    DEFAULT_LANGUAGES = ["English", "Japanese", "Chinese Simplified", "Vietnamese"]
+
+    # What "Restore defaults" in Settings puts back: shortcuts and preferences, never API keys,
+    # history or the installed language packs.
+    RESTORABLE = ("hotkeys", "custom_hotkeys", "shortcuts_enabled", "screenshot_hotkey", "screenshot_target_language",
+                  "fix_grammar_hotkey", "fix_grammar_enabled", "fix_grammar_hotkey_enabled",
+                  "auto_check_updates", "quick_replace", "furigana_enabled", "linked_reading_enabled", "show_linked_reading",
+"theme", "theme_mode", "default_target_language", "text_scale", "ui_language",
+                  "audio_enabled", "audio_hotkey", "audio_target_language", "audio_source",
+                  "audio_microphone", "audio_playback", "audio_denoise", "audio_save_policy", "audio_model", "audio_mode")
+    MAX_CUSTOM_HOTKEYS = 4  # Max 4 additional custom hotkeys
+
+    DEFAULT_CONFIG = {
+        "api_keys": [],  # List of {model_name, api_key, provider, vision_capable, file_capable} dicts
+        "hotkeys": DEFAULT_HOTKEYS.copy(),
+        "shortcuts_enabled": True,
+        "custom_hotkeys": {},  # Custom language hotkeys (max 4)
+        "screenshot_hotkey": SCREENSHOT_HOTKEY_DEFAULT,  # Screenshot OCR hotkey
+        "screenshot_target_language": SCREENSHOT_TARGET_LANGUAGE_DEFAULT,  # Target language for screenshot OCR
+        "audio_enabled": True,
+        "audio_hotkey": AUDIO_HOTKEY_DEFAULT,
+        "audio_target_language": "Auto",
+        "audio_source": "pc",
+        "audio_microphone": None,
+        "audio_playback": None,
+        "audio_denoise": True,
+        "audio_save_policy": "ask",
+        "audio_model": "whisper-large-v3",
+        "audio_mode": "two_step",
+        "audio_keys": [],
+        "fix_grammar_hotkey": FIX_GRAMMAR_HOTKEY_DEFAULT,  # Hotkey to fix grammar of selected text
+        "fix_grammar_enabled": True,  # Enable Fix Grammar main-window button
+        "fix_grammar_hotkey_enabled": False,  # Register global Win+Alt+G hotkey (off by default - collides with Xbox Game Bar; the button + language hotkeys always work)
+        "autostart": False,
+        "check_updates": False,  # Default to False
+        "auto_check_updates": True,
+        "update_reminders": {},
+        "theme": "darkly",
+        "history": [],
+        "history_enabled": True,
+        # Note: vision_enabled and file_processing_enabled are now auto-managed
+        # based on API capabilities detected during testing
+        "vision_enabled": False,
+        "file_processing_enabled": False,
+        # Provider health tracking for smart fallback
+        "provider_health": {},
+        # NLP language packs for Dictionary mode
+        "nlp_installed": [],  # List of installed language names (e.g., ["Vietnamese", "English"])
+        "nlp_basic_mode": [],  # Languages using basic (whitespace) tokenization as fallback
+        # Version tracking for cache clearing
+        "last_run_version": None,  # Track version to detect upgrades
+        # Replace mode setting
+        "quick_replace": False,  # False = Manual Replace (preview), True = Quick Replace (immediate)
+        "model_rotation": False,  # Try other models before switching keys on failure
+        "furigana_enabled": True,  # Show furigana (reading guides) for Japanese source text
+        "furigana_reading_pane": True,  # Reading pane under the main-window input box
+        "linked_reading_enabled": True,
+        "show_linked_reading": True,
+        "quick_popup_width": None,   # quick-translate popup size the user dragged it to;
+        "quick_popup_height": None,  # None = automatic (Decision 34)
+        "main_window_width": None,   # Translator window size the user left it at;
+        "main_window_height": None,  # None = from the work area (TODO.md U7)
+        "settings_window_width": None,   # the Settings window's size, the same way (TODO.md U8)
+        "settings_window_height": None,
+        "welcome_seen": False,
+        "text_scale": 1.0,
+        "ui_language": "en",
+        "first_translation_done": False,
+        "recent_languages": [],      # the picker's Recent section, most recent first
+        "default_target_language": "Vietnamese",   # the language the Translator starts with (TODO.md U8)
+        "theme_mode": "system",      # A palette ID from MODES, or "system" to follow Windows.
+        "debug_logging": False,      # Verbose startup and runtime diagnostics
+    }
+
+    def __init__(self):
+        self._config: Dict[str, Any] = {}
+        self.api_status_cache: Dict[str, bool] = {}
+        self.runtime_capabilities: Dict[str, bool] = {'vision': False, 'file': False}
+        self._ensure_config_dir()
+        self.load()
+
+    def _ensure_config_dir(self):
+        """Create config directory if it doesn't exist."""
+        if not os.path.exists(self.CONFIG_DIR):
+            os.makedirs(self.CONFIG_DIR)
+
+    def load(self) -> Dict[str, Any]:
+        """Load configuration from file."""
+        if os.path.exists(self.CONFIG_FILE):
+            try:
+                with open(self.CONFIG_FILE, 'r', encoding='utf-8') as f:
+                    self._config = json.load(f)
+            except (json.JSONDecodeError, IOError):
+                self._config = copy.deepcopy(self.DEFAULT_CONFIG)
+        else:
+            self._config = copy.deepcopy(self.DEFAULT_CONFIG)
+
+        # Merge with defaults for any missing keys. Deep copies: a shared list or dict would be
+        # changed in place by a setter and take the shipped default with it.
+        for key, value in self.DEFAULT_CONFIG.items():
+            if key not in self._config:
+                self._config[key] = copy.deepcopy(value)
+
+        # Migration: Encrypt plaintext API keys if DPAPI is available
+        self._migrate_plaintext_keys()
+
+        normalized = normalize_key_rows(self._config.get('api_keys', []))
+        if normalized != self._config.get('api_keys', []):
+            self._config['api_keys'] = normalized
+            self.save()
+        from src.core.multimodal import MultimodalProcessor
+        if any(row.get('api_key', '').strip() and MultimodalProcessor.has_legacy_groq_vision_result(row)
+               for row in self.get_api_keys()):
+            self._config['vision_enabled'] = True
+        self._migrate_audio_keys()
+        return self._config
+
+    def _migrate_plaintext_keys(self) -> None:
+        """Migrate plaintext API keys to encrypted format."""
+        if not SecureStorage.is_available():
+            return
+
+        # Check if already migrated
+        if self._config.get('encryption_version', 0) >= 1:
+            return
+
+        api_keys = self._config.get('api_keys', [])
+        needs_migration = False
+
+        for key_config in api_keys:
+            # Check for plaintext api_key that needs encryption
+            if 'api_key' in key_config and 'api_key_encrypted' not in key_config:
+                needs_migration = True
+                break
+
+        if needs_migration:
+            logging.info("Migrating plaintext API keys to encrypted storage...")
+
+            # Backup config before migration
+            backup_file = self.CONFIG_FILE + '.backup'
+            try:
+                shutil.copy2(self.CONFIG_FILE, backup_file)
+                logging.info(f"Config backup saved to: {backup_file}")
+            except Exception as e:
+                logging.warning(f"Failed to create backup: {e}")
+
+            # Re-save with encryption (get_api_keys decrypts, set_api_keys encrypts)
+            current_keys = self.get_api_keys()
+            self.set_api_keys(current_keys)
+
+    def save(self, secure: bool = False):
+        """Save configuration to file."""
+        self._ensure_config_dir()
+        
+        # Secure overwrite: write zeros to the file before truncating if secure delete is requested
+        if secure and os.path.exists(self.CONFIG_FILE):
+            try:
+                file_size = os.path.getsize(self.CONFIG_FILE)
+                with open(self.CONFIG_FILE, "rb+") as f:
+                    f.write(b"\0" * file_size)
+                    f.flush()
+                    os.fsync(f.fileno())
+            except Exception:
+                pass
+
+        with open(self.CONFIG_FILE, 'w', encoding='utf-8') as f:
+            json.dump(self._config, f, indent=2, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno()) # Force write to disk immediately
+
+    def get_github_update_token(self) -> str:
+        """Explicit per-user update credential; never read CLI/environment credentials."""
+        encrypted = self._config.get('github_update_token_encrypted', '')
+        return SecureStorage.decrypt(encrypted) or '' if encrypted else ''
+
+    def set_github_update_token(self, token: str) -> None:
+        """Fail closed if DPAPI is unavailable; never save a plaintext fallback."""
+        from src.utils.github_updates import validate_token
+        token = validate_token(token)
+        previous = self._config.get('github_update_token_encrypted')
+        if token:
+            encrypted = SecureStorage.encrypt(token)
+            if not encrypted:
+                raise ValueError('Windows could not encrypt the update token. The previous token was kept.')
+            self._config['github_update_token_encrypted'] = encrypted
+        else:
+            self._config.pop('github_update_token_encrypted', None)
+        try:
+            self.save()
+        except OSError:
+            if previous is None:
+                self._config.pop('github_update_token_encrypted', None)
+            else:
+                self._config['github_update_token_encrypted'] = previous
+            raise
+
+    # API Key management
+    def get_api_keys(self) -> List[Dict[str, Any]]:
+        """Get all API keys with their models (decrypted).
+        Returns list of dicts: [{model_name, api_key, provider, vision_capable, file_capable}, ...]
+        """
+        # If 'api_keys' is explicitly set (even empty), process it
+        if 'api_keys' in self._config:
+            api_keys = []
+            for key_config in self._config['api_keys']:
+                decrypted_config = key_config.copy()
+
+                # Check for encrypted key
+                if 'api_key_encrypted' in key_config:
+                    decrypted = SecureStorage.decrypt(key_config['api_key_encrypted'])
+                    if decrypted:
+                        decrypted_config['api_key'] = decrypted
+                    else:
+                        # Decryption failed - maybe different user/machine
+                        decrypted_config['api_key'] = ''
+                        logging.warning("Failed to decrypt API key - may need to re-enter")
+                    # Remove encrypted key from returned dict
+                    decrypted_config.pop('api_key_encrypted', None)
+
+                from src.core.multimodal import MultimodalProcessor
+                if MultimodalProcessor.has_legacy_groq_vision_result(decrypted_config):
+                    decrypted_config['vision_capable'] = True
+                api_keys.append(decrypted_config)
+            return api_keys
+
+        # Migration: Check for old singular keys if list is missing
+        api_keys = []
+        primary = self._config.get('api_key')
+        if primary:
+            api_keys.append({'model_name': '', 'api_key': primary})
+        backup = self._config.get('backup_api_key')
+        if backup:
+            api_keys.append({'model_name': '', 'api_key': backup})
+
+        return api_keys
+
+    def set_api_keys(self, api_keys: List[Dict[str, Any]], secure: bool = False) -> None:
+        """Set all API keys with their models (encrypted with DPAPI).
+        api_keys: list of dicts [{model_name, api_key, provider}, ...]
+        """
+        api_keys = normalize_key_rows(api_keys, self.get_api_keys())
+        encrypted_keys = []
+        for key_config in api_keys:
+            encrypted_config = key_config.copy()
+
+            # Encrypt the API key if DPAPI is available
+            if 'api_key' in key_config and key_config['api_key']:
+                encrypted = SecureStorage.encrypt(key_config['api_key'])
+                if encrypted:
+                    encrypted_config['api_key_encrypted'] = encrypted
+                    encrypted_config.pop('api_key', None)  # Remove plaintext
+                # If encryption fails, keep plaintext as fallback
+
+            encrypted_keys.append(encrypted_config)
+
+        self._config['api_keys'] = encrypted_keys
+        self._config['encryption_version'] = 1  # Track encryption format
+        self.save(secure=secure)
+
+    def get_api_key(self) -> str:
+        """Get first API key (for backward compatibility)."""
+        api_keys = self.get_api_keys()
+        if api_keys:
+            return api_keys[0]['api_key']
+        
+        # Fallback to environment variable (system level only)
+        api_key = os.environ.get('GEMINI_API_KEY')
+        if api_key:
+            return api_key
+        return ""
+
+    def set_api_key(self, api_key: str, model_name: str = "gemini-2.0-flash-lite"):
+        """Set first API key with model."""
+        api_keys = self.get_api_keys()
+        if api_keys:
+            api_keys[0] = {'model_name': model_name, 'api_key': api_key}
+        else:
+            api_keys = [{'model_name': model_name, 'api_key': api_key}]
+        self.set_api_keys(api_keys)
+    def get_audio_keys(self) -> List[Dict[str, Any]]:
+        """Get all Audio keys with decrypted secrets.
+        Returns list of dicts: [{id, model_name, api_key, provider, audio_capable, from_key_id}, ...]
+        """
+        raw_keys = self._config.get('audio_keys')
+        if raw_keys is None:
+            raw_keys = []
+
+        text_keys_by_id = {k.get('id'): k for k in self.get_api_keys() if k.get('id')}
+        audio_keys = []
+        for key_config in raw_keys:
+            decrypted_config = key_config.copy()
+            from_id = decrypted_config.get('from_key_id')
+            if from_id and from_id in text_keys_by_id:
+                ref = text_keys_by_id[from_id]
+                if not decrypted_config.get('api_key') and not decrypted_config.get('api_key_encrypted'):
+                    decrypted_config['api_key'] = ref.get('api_key', '')
+                if not decrypted_config.get('provider') or decrypted_config.get('provider') == 'Auto':
+                    decrypted_config['provider'] = ref.get('provider', 'Auto')
+
+            if 'api_key_encrypted' in key_config:
+                decrypted = SecureStorage.decrypt(key_config['api_key_encrypted'])
+                if decrypted:
+                    decrypted_config['api_key'] = decrypted
+                else:
+                    decrypted_config['api_key'] = ''
+                decrypted_config.pop('api_key_encrypted', None)
+            decrypted_config['is_audio_key'] = True
+            audio_keys.append(decrypted_config)
+        return audio_keys
+
+    def set_audio_keys(self, audio_keys: List[Dict[str, Any]], secure: bool = False) -> None:
+        """Set all Audio keys (encrypted with DPAPI)."""
+        audio_keys = normalize_key_rows(audio_keys, self.get_audio_keys())
+        encrypted_keys = []
+        for key_config in audio_keys:
+            encrypted_config = key_config.copy()
+            if 'api_key' in key_config and key_config['api_key']:
+                encrypted = SecureStorage.encrypt(key_config['api_key'])
+                if encrypted:
+                    encrypted_config['api_key_encrypted'] = encrypted
+                    encrypted_config.pop('api_key', None)
+            encrypted_keys.append(encrypted_config)
+        self._config['audio_keys'] = encrypted_keys
+        self.save(secure=secure)
+
+    def _migrate_audio_keys(self) -> None:
+        """One-time migration: migrate legacy whisper/audio-tested text cards to audio_keys and clean whisper text models."""
+        if 'audio_keys' not in self._config:
+            self._config['audio_keys'] = []
+
+        api_keys = self.get_api_keys()
+        text_keys_changed = False
+        default_model = self.get('audio_model', 'whisper-large-v3')
+
+        if not self._config.get('audio_keys_migrated') and not self._config['audio_keys']:
+            for card in api_keys:
+                model = card.get('model_name', '')
+                provider = card.get('provider', 'Auto')
+                is_whisper = model.startswith('whisper-')
+                is_groq = (provider == 'Groq' or card.get('api_key', '').startswith('gsk_'))
+                has_audio = card.get('audio_capable') is True or is_whisper
+
+                # Migrate only genuine legacy audio cards (whisper-* or legacy audio-tested rows).
+                # Plain main API keys stay in Auto mode unless the user sets a manual audio key.
+                if has_audio:
+                    self.set_audio_keys([{
+                        'id': card.get('id'),
+                        'from_key_id': card.get('id'),
+                        'provider': 'Groq' if is_groq else provider,
+                        'model_name': model if is_whisper else default_model,
+                        'api_key': card.get('api_key', ''),
+                        'audio_capable': True if has_audio else None
+                    }])
+                    break
+            self._config['audio_keys_migrated'] = True
+
+        for card in api_keys:
+            if card.get('model_name', '').startswith('whisper-'):
+                card['model_name'] = ''
+                text_keys_changed = True
+
+        if text_keys_changed:
+            self.set_api_keys(api_keys)
+
+    def _get_app_dir(self) -> str:
+        """Get the directory where the exe/script is located."""
+        if getattr(sys, 'frozen', False):
+            return os.path.dirname(sys.executable)
+        return os.path.dirname(os.path.abspath(__file__))
+
+    # Hotkeys management
+    def get_shortcuts_enabled(self) -> bool:
+        return self._config.get('shortcuts_enabled', True) is True
+
+    def set_shortcuts_enabled(self, enabled: bool):
+        self._config['shortcuts_enabled'] = bool(enabled)
+        self.save()
+
+    def get_hotkeys(self) -> Dict[str, str]:
+        """Get hotkey configuration."""
+        return self._config.get('hotkeys', self.DEFAULT_HOTKEYS.copy())
+
+    def set_hotkeys(self, hotkeys: Dict[str, str]):
+        """Set hotkey configuration."""
+        self._config['hotkeys'] = hotkeys
+        self.save()
+
+    def set_language_hotkeys(self, hotkeys: Dict[str, str]):
+        """Set every language's hotkey at once, the shipped languages and the added ones together
+        (what the Settings window edits). The older `custom_hotkeys` store is merged into it and
+        emptied, so the combinations the manager registers are exactly the ones shown."""
+        self._config['hotkeys'] = dict(hotkeys)
+        self._config['custom_hotkeys'] = {}
+        self.save()
+
+    def set_hotkey(self, language: str, hotkey: str):
+        """Set hotkey for a specific language."""
+        if 'hotkeys' not in self._config:
+            self._config['hotkeys'] = self.DEFAULT_HOTKEYS.copy()
+        self._config['hotkeys'][language] = hotkey
+        self.save()
+
+    def remove_hotkey(self, language: str):
+        """Remove hotkey for a specific language."""
+        if 'hotkeys' in self._config and language in self._config['hotkeys']:
+            del self._config['hotkeys'][language]
+            self.save()
+
+    # Custom hotkeys management
+    def get_custom_hotkeys(self) -> Dict[str, str]:
+        """Get custom hotkey configuration."""
+        return self._config.get('custom_hotkeys', {})
+
+    def set_custom_hotkey(self, language: str, hotkey: str):
+        """Set a custom hotkey for a language."""
+        if 'custom_hotkeys' not in self._config:
+            self._config['custom_hotkeys'] = {}
+        if len(self._config['custom_hotkeys']) < self.MAX_CUSTOM_HOTKEYS or language in self._config['custom_hotkeys']:
+            self._config['custom_hotkeys'][language] = hotkey
+            self.save()
+
+    def remove_custom_hotkey(self, language: str):
+        """Remove a custom hotkey."""
+        if 'custom_hotkeys' in self._config and language in self._config['custom_hotkeys']:
+            del self._config['custom_hotkeys'][language]
+            self.save()
+
+    def get_all_hotkeys(self) -> Dict[str, str]:
+        """Get all hotkeys (default + custom)."""
+        all_hotkeys = self.get_hotkeys().copy()
+        all_hotkeys.update(self.get_custom_hotkeys())
+        return all_hotkeys
+
+    # Screenshot hotkey management
+    def get_screenshot_hotkey(self) -> str:
+        """Get screenshot hotkey combination for vision/OCR translation."""
+        return self._config.get('screenshot_hotkey', self.SCREENSHOT_HOTKEY_DEFAULT)
+
+    def set_screenshot_hotkey(self, hotkey: str):
+        """Set screenshot hotkey combination."""
+        self._config['screenshot_hotkey'] = hotkey
+        self.save()
+
+    def get_screenshot_target_language(self) -> str:
+        """Get target language for screenshot translation.
+
+        Returns:
+            Language name or "Auto" to use current selected language
+        """
+        return self._config.get('screenshot_target_language', self.SCREENSHOT_TARGET_LANGUAGE_DEFAULT)
+
+    def set_screenshot_target_language(self, language: str):
+        """Set target language for screenshot translation."""
+        self._config['screenshot_target_language'] = language
+        self.save()
+
+    # Replace mode setting
+    def get_quick_replace(self) -> bool:
+        """Get whether Quick Replace mode is enabled."""
+        return self._config.get('quick_replace', False)
+
+    def set_quick_replace(self, enabled: bool):
+        """Set Quick Replace mode."""
+        self._config['quick_replace'] = enabled
+        self.save()
+
+    # Model rotation setting
+    def get_model_rotation(self) -> bool:
+        """Get whether model rotation on quota failure is enabled."""
+        return self._config.get('model_rotation', False)
+
+    def set_model_rotation(self, enabled: bool):
+        """Set model rotation on quota failure."""
+        self._config['model_rotation'] = enabled
+        self.save()
+
+    # Furigana setting
+    def get_furigana_enabled(self) -> bool:
+        """Get whether furigana (reading guides) is enabled for Japanese text.
+
+        Defaults to True to match DEFAULT_CONFIG: the fallback only applies to a
+        config file written before this key existed, and those users should get
+        the documented default rather than the feature silently switched off.
+        """
+        return self._config.get('furigana_enabled', True)
+
+    def get_theme_mode(self) -> str:
+        """The saved palette ID, or "system" (follow Windows, the default).
+
+        Anything else in the file - a hand edit, a future value - reads as "system".
+        """
+        mode = self._config.get('theme_mode', self.DEFAULT_CONFIG['theme_mode'])
+        return mode if mode in MODES else 'system'
+
+    def set_theme_mode(self, mode: str):
+        if mode not in MODES:
+            raise ValueError(f"unknown theme mode {mode!r}")
+        self._config['theme_mode'] = mode
+        self.save()
+
+    def get_linked_reading_enabled(self) -> bool:
+        """Whether single-request sentence linking is enabled."""
+        return self._config.get('linked_reading_enabled', self.DEFAULT_CONFIG['linked_reading_enabled'])
+
+    def set_linked_reading_enabled(self, enabled: bool):
+        self._config['linked_reading_enabled'] = bool(enabled)
+        self.save()
+
+    def get_show_linked_reading(self) -> bool:
+        return self._config.get('show_linked_reading', True) is True
+
+    def set_show_linked_reading(self, enabled: bool):
+        self._config['show_linked_reading'] = bool(enabled)
+        self.save()
+
+    def set_furigana_enabled(self, enabled: bool):
+        """Set furigana mode for Japanese text."""
+        self._config['furigana_enabled'] = enabled
+        self.save()
+
+    def get_furigana_reading_pane(self) -> bool:
+        """Get whether the main window's Reading pane is expanded.
+
+        Only the user's collapse choice, not a feature switch: the pane exists
+        whenever furigana is enabled. Defaults to True (expanded) so the
+        readings are visible without anyone having to find the toggle.
+        """
+        return self._config.get('furigana_reading_pane', True)
+
+    def set_furigana_reading_pane(self, expanded: bool):
+        """Remember whether the Reading pane is expanded."""
+        self._config['furigana_reading_pane'] = expanded
+        self.save()
+
+    def get_quick_popup_size(self) -> Tuple[Optional[int], Optional[int]]:
+        """The size the user last dragged the quick-translate popup to, or (None, None)
+        for automatic sizing (Decision 34). The width becomes the popup's reading width
+        and the height its height cap - a short result still gets a small popup."""
+        width = self._config.get('quick_popup_width')
+        height = self._config.get('quick_popup_height')
+        return (int(width) if width else None, int(height) if height else None)
+
+    def set_quick_popup_size(self, width: Optional[int], height: Optional[int]):
+        """Remember the quick-translate popup's size; (None, None) returns it to
+        automatic sizing."""
+        self._config['quick_popup_width'] = int(width) if width else None
+        self._config['quick_popup_height'] = int(height) if height else None
+        self.save()
+
+    def get_main_window_size(self) -> Tuple[Optional[int], Optional[int]]:
+        """The size the user last left the Translator window at, or (None, None) for the
+        default from the work area (`translator_layout.window_size`)."""
+        width = self._config.get('main_window_width')
+        height = self._config.get('main_window_height')
+        return (int(width) if width else None, int(height) if height else None)
+
+    def set_main_window_size(self, width: Optional[int], height: Optional[int]):
+        """Remember the Translator window's size; (None, None) returns it to the default."""
+        self._config['main_window_width'] = int(width) if width else None
+        self._config['main_window_height'] = int(height) if height else None
+        self.save()
+
+    def get_settings_window_size(self) -> Tuple[Optional[int], Optional[int]]:
+        """The size the user last left the Settings window at, or (None, None) for the default.
+        A value that is not a positive number (a hand edit) reads as unset."""
+        def read(key):
+            try:
+                value = int(self._config.get(key))
+            except (TypeError, ValueError):
+                return None
+            return value if value > 0 else None
+        return read('settings_window_width'), read('settings_window_height')
+
+    def set_settings_window_size(self, width: Optional[int], height: Optional[int]):
+        """Remember the Settings window's size; (None, None) returns it to the default."""
+        self._config['settings_window_width'] = int(width) if width else None
+        self._config['settings_window_height'] = int(height) if height else None
+        self.save()
+
+    def get_default_target_language(self) -> str:
+        """The language the Translator starts with. A name that is not a language reads as the
+        shipped default (a hand edit, a language the list no longer has)."""
+        from src.constants import LANGUAGES
+        name = self._config.get('default_target_language')
+        known = {entry[0] for entry in LANGUAGES}
+        return name if isinstance(name, str) and name in known else self.DEFAULT_CONFIG['default_target_language']
+
+    def set_default_target_language(self, language: str):
+        if not isinstance(language, str) or not language:
+            raise ValueError("a language name is needed")
+        self._config['default_target_language'] = language
+        self.save()
+
+    def restore_defaults(self):
+        """Put every `RESTORABLE` setting back as shipped. API keys, the history and the installed
+        language packs stay (the old version of this method reset those too, and its "preserve
+        history" step read the history after resetting it). Start-with-Windows is the registry's
+        as much as the config's, so the caller turns it off with `set_autostart(False)`."""
+        for key in self.RESTORABLE:
+            self._config[key] = copy.deepcopy(self.DEFAULT_CONFIG[key])
+        self.save()
+
+    def get_recent_languages(self) -> List[str]:
+        """The languages last chosen as the Translator's target, most recent first."""
+        recent = self._config.get('recent_languages')
+        return [name for name in recent if isinstance(name, str) and name] if isinstance(recent, list) else []
+
+    def push_recent_language(self, language: str):
+        """Make `language` the most recent target (kept once, bounded)."""
+        from src.core.language_prefs import push_recent    # lazy: src.core imports this module
+        recent = push_recent(self.get_recent_languages(), language)
+        if recent != self.get_recent_languages():
+            self._config['recent_languages'] = recent
+            self.save()
+
+    # Fix Grammar settings
+    def get_fix_grammar_hotkey(self) -> str:
+        """Get the Fix Grammar hotkey combination."""
+        return self._config.get('fix_grammar_hotkey', self.FIX_GRAMMAR_HOTKEY_DEFAULT)
+
+    def set_fix_grammar_hotkey(self, hotkey: str):
+        """Set the Fix Grammar hotkey combination."""
+        self._config['fix_grammar_hotkey'] = hotkey
+        self.save()
+
+    def get_fix_grammar_enabled(self) -> bool:
+        """Get whether the Fix Grammar main-window button is shown."""
+        return self._config.get('fix_grammar_enabled', True)
+
+    def set_fix_grammar_enabled(self, enabled: bool):
+        """Set whether the Fix Grammar main-window button is shown."""
+        self._config['fix_grammar_enabled'] = enabled
+        self.save()
+
+    def get_fix_grammar_hotkey_enabled(self) -> bool:
+        """Get whether the global Win+Alt+G Fix Grammar hotkey is registered.
+
+        Separate from get_fix_grammar_enabled() (the main-window button). Off by default
+        because Win+Alt+G collides with Xbox Game Bar; the button and the language
+        hotkeys' merged translate-or-fix always work regardless.
+        """
+        return self._config.get('fix_grammar_hotkey_enabled', False)
+
+    def set_fix_grammar_hotkey_enabled(self, enabled: bool):
+        """Set whether the global Win+Alt+G Fix Grammar hotkey is registered."""
+        self._config['fix_grammar_hotkey_enabled'] = enabled
+        self.save()
+
+    # Auto-start management
+    def get_autostart(self) -> bool:
+        """Get auto-start setting."""
+        return self._config.get('autostart', False)
+
+    def set_autostart(self, enable: bool):
+        """Set auto-start with Windows."""
+        self._config['autostart'] = enable
+        self._update_registry_autostart(enable)
+        self.save()
+
+    def _update_registry_autostart(self, enable: bool):
+        """Update Windows registry for auto-start."""
+        key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0,
+                               winreg.KEY_SET_VALUE | winreg.KEY_READ) as key:
+                if enable:
+                    exe_path = self._get_exe_path()
+                    winreg.SetValueEx(key, self.APP_NAME, 0, winreg.REG_SZ, exe_path)
+                else:
+                    try:
+                        winreg.DeleteValue(key, self.APP_NAME)
+                    except FileNotFoundError:
+                        pass
+        except WindowsError as e:
+            print(f"Failed to update registry: {e}")
+
+    def _get_exe_path(self) -> str:
+        """Get the path to use for auto-start."""
+        if getattr(sys, 'frozen', False):
+            return f'"{sys.executable}"'
+        
+        # Use absolute path to pythonw.exe to ensure reliability
+        python_dir = os.path.dirname(sys.executable)
+        pythonw = os.path.join(python_dir, 'pythonw.exe')
+        if not os.path.exists(pythonw):
+            pythonw = sys.executable
+            
+        script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'main.py'))
+        return f'"{pythonw}" "{script_path}"'
+
+    def is_autostart_enabled(self) -> bool:
+        """Check if auto-start is currently enabled in registry."""
+        key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0,
+                               winreg.KEY_READ) as key:
+                winreg.QueryValueEx(key, self.APP_NAME)
+                return True
+        except (FileNotFoundError, WindowsError):
+            return False
+
+    # Update settings
+    def get_check_updates(self) -> bool:
+        """Get check for updates setting."""
+        return self._config.get('check_updates', True)
+
+    def set_check_updates(self, enable: bool):
+        """Set check for updates setting."""
+        self._config['check_updates'] = enable
+        self.save()
+
+    def get_auto_check_updates(self) -> bool:
+        """Check automatically unless the user explicitly disabled it."""
+        return self._config.get('auto_check_updates', True)
+
+    def set_auto_check_updates(self, enabled: bool):
+        """Set auto-check updates on startup."""
+        self._config['auto_check_updates'] = enabled
+        self.save()
+
+    def get_update_reminders(self) -> dict:
+        """Return an isolated copy of local reminder preferences."""
+        value = self._config.get('update_reminders', {})
+        return dict(value) if isinstance(value, dict) else {}
+
+    def set_update_reminders(self, **changes):
+        preferences = self.get_update_reminders()
+        preferences.update(changes)
+        self._config['update_reminders'] = preferences
+        self.save()
+
+    # Theme settings
+    def get_theme(self) -> str:
+        """Get UI theme."""
+        return self._config.get('theme', 'darkly')
+
+    def set_theme(self, theme: str):
+        """Set UI theme."""
+        self._config['theme'] = theme
+        self.save()
+
+    # API Capability Management
+    def update_api_capabilities(self, api_key: str, model_name: str, vision_capable: bool | None,
+file_capable: bool | None, provider: str | None = None,
+                                audio_capable=None, audio_model=None, audio_error=''):
+        """Update capability flags for a specific API configuration.
+
+        This is called when an API is tested successfully.
+        The flags persist until the API is re-tested and fails, or deleted.
+        """
+        api_keys = self.get_api_keys()
+        updated = False
+        for api_config in api_keys:
+            if (api_config.get('api_key') == api_key and api_config.get('model_name') == model_name
+                    and (provider is None or api_config.get('provider', 'Auto') == provider)):
+                if vision_capable is not None:
+                    api_config['vision_capable'] = vision_capable
+                    from src.core.multimodal import MultimodalProcessor
+                    api_config['vision_probe_version'] = MultimodalProcessor.VISION_PROBE_VERSION
+                if file_capable is not None:
+                    api_config['file_capable'] = file_capable
+                if audio_model is not None:
+                    from src.core.audio_service import PROBE_VERSION
+                    api_config.update(audio_capable=audio_capable, audio_model=audio_model,
+                                      audio_error=audio_error, audio_probe_version=PROBE_VERSION)
+                updated = True
+                break
+
+        if updated:
+            # Use set_api_keys to properly encrypt and save
+            self.set_api_keys(api_keys)
+            self._auto_update_toggles()
+            self.save()
+
+    def _auto_update_toggles(self):
+        """Auto-enable toggles based on API capabilities."""
+        api_keys = self.get_api_keys()
+        has_vision = any(api.get('vision_capable', False) for api in api_keys)
+        has_file = any(api.get('file_capable', False) for api in api_keys)
+
+        self._config['vision_enabled'] = has_vision
+        self._config['file_processing_enabled'] = has_file
+
+    def has_manual_audio_keys(self) -> bool:
+        """True only when user manually entered or picked at least one audio key."""
+        for row in self.get_audio_keys():
+            if (row.get('api_key') or '').strip() or row.get('from_key_id'):
+                return True
+        return False
+
+    def has_usable_audio_keys(self) -> bool:
+        """True when either manual audio_keys or Auto main api_keys provide an eligible audio key."""
+        from src.core.audio_service import eligible_keys, resolve_audio_source_rows
+        _mode, rows = resolve_audio_source_rows(self)
+        return bool(eligible_keys(rows, self.get('audio_model', 'whisper-large-v3')))
+
+    def has_any_audio_capable(self) -> bool:
+        if self.has_manual_audio_keys():
+            return any(k.get('api_key', '').strip() and k.get('audio_capable') is not False
+                       for k in self.get_audio_keys())
+        return any(row.get('audio_capable') is True and row.get('audio_model') == self.get(
+            'audio_model', 'whisper-large-v3') for row in self.get_api_keys())
+
+    def get_vision_capable_apis(self) -> list:
+        """Get list of API configs that support vision/image processing."""
+        return [api for api in self.get_api_keys() if api.get('vision_capable', False)]
+
+    def get_file_capable_apis(self) -> list:
+        """Get list of API configs that support file processing."""
+        return [api for api in self.get_api_keys() if api.get('file_capable', False)]
+
+    def has_any_vision_capable(self) -> bool:
+        """Check if any API supports vision."""
+        return len(self.get_vision_capable_apis()) > 0
+
+    def has_any_file_capable(self) -> bool:
+        """Check if any API supports file processing."""
+        return len(self.get_file_capable_apis()) > 0
+
+    # NLP Language Pack Management
+    def get_nlp_installed(self) -> List[str]:
+        """Get list of installed NLP language pack names."""
+        return self._config.get('nlp_installed', [])
+
+    def set_nlp_installed(self, languages: List[str]):
+        """Set list of installed NLP language packs."""
+        self._config['nlp_installed'] = languages
+        self.save()
+
+    def add_nlp_installed(self, language: str):
+        """Add a language to installed NLP packs."""
+        installed = self.get_nlp_installed()
+        if language not in installed:
+            installed.append(language)
+            self.set_nlp_installed(installed)
+
+    def remove_nlp_installed(self, language: str):
+        """Remove a language from installed NLP packs."""
+        installed = self.get_nlp_installed()
+        if language in installed:
+            installed.remove(language)
+            self.set_nlp_installed(installed)
+
+    def is_nlp_installed(self, language: str) -> bool:
+        """Check if a language NLP pack is installed."""
+        return language in self.get_nlp_installed()
+
+    def has_any_nlp_installed(self) -> bool:
+        """Check if any NLP language pack is installed."""
+        return len(self.get_nlp_installed()) > 0
+
+    def get_nlp_basic_mode(self) -> List[str]:
+        """Get languages installed in basic tokenization mode."""
+        return self._config.get('nlp_basic_mode', [])
+
+    def add_nlp_basic_mode(self, language: str):
+        """Mark a language as using basic tokenization mode."""
+        basic = self.get_nlp_basic_mode()
+        if language not in basic:
+            basic.append(language)
+            self._config['nlp_basic_mode'] = basic
+            self.save()
+
+    def remove_nlp_basic_mode(self, language: str):
+        """Remove a language from basic tokenization mode."""
+        basic = self.get_nlp_basic_mode()
+        if language in basic:
+            basic.remove(language)
+            self._config['nlp_basic_mode'] = basic
+            self.save()
+
+    def is_nlp_basic_mode(self, language: str) -> bool:
+        """Check if a language is in basic tokenization mode."""
+        return language in self.get_nlp_basic_mode()
+
+    def get_nlp_working_python(self) -> Optional[str]:
+        """Get the cached working Python path for NLP packages."""
+        return self._config.get('nlp_working_python', None)
+
+    def set_nlp_working_python(self, path: str):
+        """Cache a verified working Python path for NLP packages."""
+        self._config['nlp_working_python'] = path
+        self.save()
+
+    # Update check telemetry (local only)
+    def record_update_check(self, success: bool, error_type: Optional[str] = None) -> None:
+        """Record update check attempt for diagnostics (local only - no data sent externally).
+
+        Args:
+            success: Whether the update check succeeded
+            error_type: Type of error if failed (must be from VALID_ERROR_TYPES:
+                        'network', 'rate_limit', 'ssl', 'parse_error', 'timeout', 'other')
+
+        Note:
+            All data is stored locally in config.json. Nothing is sent externally.
+            This helps diagnose update issues and track reliability.
+        """
+        try:
+            from datetime import datetime
+
+            # Validate error_type if provided
+            if error_type is not None:
+                # Import valid types - avoid circular import by importing here
+                from src.utils.updates import VALID_ERROR_TYPES
+                if error_type not in VALID_ERROR_TYPES:
+                    logging.warning(
+                        f"Invalid error_type '{error_type}'. Must be one of {VALID_ERROR_TYPES}. "
+                        f"Using 'other' instead."
+                    )
+                    error_type = 'other'
+
+            if 'update_stats' not in self._config:
+                self._config['update_stats'] = {
+                    'total': 0,
+                    'success': 0,
+                    'failed': 0,
+                    'last_check': None,
+                    'last_success': None
+                }
+
+            stats = self._config['update_stats']
+            stats['total'] += 1
+            stats['last_check'] = datetime.now().isoformat()
+
+            if success:
+                stats['success'] += 1
+                stats['last_success'] = datetime.now().isoformat()
+            else:
+                stats['failed'] += 1
+                if error_type:
+                    if 'error_types' not in stats:
+                        stats['error_types'] = {}
+                    stats['error_types'][error_type] = stats['error_types'].get(error_type, 0) + 1
+
+            self.save()
+            logging.debug(f"Update check recorded: success={success}, total={stats['total']}")
+
+        except Exception as e:
+            # Don't let telemetry errors break the app
+            logging.warning(f"Failed to record update check telemetry: {e}")
+
+    # Version tracking for cache clearing on upgrade
+    def get_last_run_version(self) -> Optional[str]:
+        """Get the version from last app run."""
+        return self._config.get('last_run_version')
+
+    def set_last_run_version(self, version: str):
+        """Set the last run version."""
+        self._config['last_run_version'] = version
+        self.save()
+
+    def get_debug_logging(self) -> bool:
+        """Return whether verbose debug logging is enabled."""
+        return bool(self._config.get('debug_logging', False))
+
+    def set_debug_logging(self, enable: bool) -> None:
+        """Persist verbose debug logging preference."""
+        self._config['debug_logging'] = bool(enable)
+        self.save()
+
+    # Generic getter/setter
+    def get(self, key: str, default: Any = None) -> Any:
+        """Get a config value."""
+        return self._config.get(key, default)
+
+    def set(self, key: str, value: Any):
+        """Set a config value."""
+        self._config[key] = value
+        self.save()

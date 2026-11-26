@@ -1,0 +1,23 @@
+"""Published image lifetime and native GDI cleanup must be enforced by observable regressions."""
+MUTATIONS = [
+    ('theme-images-not-retained', 'src/ui/components/styles.py',
+     "        anchors[(str(self.st.theme_use()), element_name)] = tuple(\n            photos[str(image)] for image in referenced if str(image) in photos)",
+     "        anchors[(str(self.st.theme_use()), element_name)] = ()",
+     ['tests/test_style_image_lifetime.py']),
+    ('switch-images-bypass-owner', 'src/ui/components/styles.py',
+     "        self._image_element(element, default=image(False, ''), states={",
+     "        from ttkbootstrap.style.layout import image_element\n        image_element(self.st, element, default=image(False, ''), states={",
+     ['tests/test_style_image_lifetime.py', '-k', 'switch_state_images']),
+    ('style-images-not-shared', 'src/ui/components/render.py',
+     "    photo = cache.get(key)",
+     "    photo = None",
+     ['tests/test_style_image_lifetime.py', '-k', 'shared_between_contexts']),
+    ('removed-callback-keeps-context', 'src/ui/components/styles.py',
+     "            ctx._on_change = None",
+     "            pass",
+     ['tests/test_style_image_lifetime.py', '-k', 'standalone_context']),
+    ('bitmap-left-selected', 'tools/ui_gallery.py',
+     "        gdi32.SelectObject(memory_dc, previous)\n        previous = None",
+     "        previous = None",
+     ['tests/test_ui_gallery_tool.py', '-k', 'native_captures_release_gdi']),
+]

@@ -1,0 +1,7 @@
+# Development, test and build tools. Install after the runtime requirements:
+#     python -m pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-mock>=3.0.0
+pyinstaller>=6.0.0  # frozen EXE (CrossTrans.spec, tools/build_release.ps1)
+ruff>=0.15.0  # lint gate (E9, F; pyproject.toml)

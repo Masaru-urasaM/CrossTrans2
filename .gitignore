@@ -1,0 +1,128 @@
+# Environment variables (contains API keys - NEVER commit!)
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+nul
+
+# Logs
+logs/
+*.log
+
+# Backup files
+*.bak
+*.backup
+*_backup*
+backup/
+
+# Executables
+*.exe
+
+# Claude Code settings
+.claude/
+.CLAUDE.md
+CLAUDE.md
+# A local copy of CLAUDE.md for other AI agents (K13) - not part of the project
+AGENTS.md
+
+# Cloudflare (contains proxy logic, provider config, account data - private)
+cloudflare_worker.js
+wrangler.toml
+.wrangler/
+
+# Ops documentation (contains secrets, endpoints, internal architecture)
+OPS_GUIDE.md
+
+# Local development scripts (not needed for users)
+BYPASS.bat
+restart.bat
+run_silent.vbs
+push_to_github.bat
+install.bat
+memo.txt
+run_with_restart.py
+
+# Deprecated/old files
+AI_CONTEXT_PROMPT.md
+
+# Test outputs
+tests/__pycache__/
+.pytest_cache/
+htmlcov/
+.coverage
+junit.xml
+
+# Config backups (may contain API keys)
+*_backup.json
+config_backup_*.json
+
+# User config (created at runtime, may contain API keys)
+config.json
+translator_config.json
+
+# Separate candidate build products
+build-release/
+dist-release/
+
+# Versioned local review outputs
+/build-v*/
+/dist-v*/
+
+# Internal development docs and tracking (kept locally, not published)
+TODO.md
+ROADMAP.md
+ROADMAP_DONE.md
+DESIGN_DECISIONS.md
+DEFERRED.md
+.github/copilot-instructions.md
+docs/archive/
+docs/*_execution.md
+docs/*_validation.md
+docs/*_audit.md
+docs/*_audit.json
+docs/*_review.md
+docs/*_contract.md
+docs/*_inventory.md
+docs/*_protocol.md
+docs/linked_reading_evaluation.md
+docs/native_auth_acceptance.md
+docs/models_config_template.json
+

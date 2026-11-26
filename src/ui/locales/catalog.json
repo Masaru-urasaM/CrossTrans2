@@ -1,0 +1,3664 @@
+{
+  "Copy": {
+    "ja": "コピー"
+  },
+  "Copied": {
+    "ja": "コピーしました"
+  },
+  "Copied to clipboard!": {
+    "ja": "クリップボードにコピーしました"
+  },
+  "Cancel": {
+    "ja": "キャンセル"
+  },
+  "Done": {
+    "ja": "完了"
+  },
+  "Close": {
+    "ja": "閉じる"
+  },
+  "Continue": {
+    "ja": "続ける"
+  },
+  "Back": {
+    "ja": "戻る"
+  },
+  "Next": {
+    "ja": "次へ"
+  },
+  "Show": {
+    "ja": "表示"
+  },
+  "Details": {
+    "ja": "詳細"
+  },
+  "Send": {
+    "ja": "送信"
+  },
+  "Agree": {
+    "ja": "置き換える"
+  },
+  "Clear": {
+    "ja": "選択を解除"
+  },
+  "Clear all": {
+    "ja": "すべて削除"
+  },
+  "Try again": {
+    "ja": "再試行"
+  },
+  "Not now": {
+    "ja": "後で"
+  },
+  "Try the sample?": {
+    "ja": "サンプルを試しますか？"
+  },
+  "This replaces the current text in the Translator with the sample.": {
+    "ja": "翻訳画面の現在のテキストをサンプルに置き換えます。"
+  },
+  "Try the sample": {
+    "ja": "サンプルを試す"
+  },
+  "Try a sample": {
+    "ja": "サンプルを試す"
+  },
+  "Nothing to re-translate": {
+    "ja": "再翻訳するテキストがありません"
+  },
+  "Empty prompt": {
+    "ja": "指示を入力してください"
+  },
+  "No translation to replace": {
+    "ja": "置き換える翻訳がありません"
+  },
+  "No content to translate": {
+    "ja": "翻訳する内容がありません"
+  },
+  "No text to fix": {
+    "ja": "校正するテキストがありません"
+  },
+  "No translation to copy": {
+    "ja": "コピーする翻訳がありません"
+  },
+  "Replaced!": {
+    "ja": "置き換えました"
+  },
+  "Replace failed. Text copied to clipboard.": {
+    "ja": "置き換えられませんでした。クリップボードにコピーしました。"
+  },
+  "Verify your identity": {
+    "ja": "本人確認"
+  },
+  "Enter your Windows account password to view protected API keys.": {
+    "ja": "保存されたAPIキーを表示するには、Windowsアカウントのパスワードを入力してください。"
+  },
+  "Verify": {
+    "ja": "確認"
+  },
+  "Attempts remaining: {0}/{1}": {
+    "ja": "残りの試行回数：{0}/{1}回"
+  },
+  "Verifying...": {
+    "ja": "確認中…"
+  },
+  "Password for {0}": {
+    "ja": "{0}のパスワード"
+  },
+  "Too many attempts": {
+    "ja": "試行回数の上限に達しました"
+  },
+  "The password could not be verified. Close this notice and try again later.": {
+    "ja": "パスワードを確認できませんでした。この画面を閉じて、しばらくしてからお試しください。"
+  },
+  "That password was not accepted. Try again.": {
+    "ja": "パスワードが一致しません。もう一度入力してください。"
+  },
+  "Use your PIN, fingerprint or face.": {
+    "ja": "PIN、指紋、または顔認証で確認してください。"
+  },
+  "Upload Disabled": {
+    "ja": "ファイルを添付できません"
+  },
+  "Drag to select · Esc to cancel": {
+    "ja": "ドラッグして範囲を選択 · Escでキャンセル"
+  },
+  "{0} × {1} px": {
+    "ja": "{0} × {1} px"
+  },
+  "General": {
+    "ja": "全般"
+  },
+  "Appearance": {
+    "ja": "外観"
+  },
+  "Translation": {
+    "ja": "翻訳"
+  },
+  "Shortcuts": {
+    "ja": "ショートカット"
+  },
+  "AI providers": {
+    "ja": "AIプロバイダー"
+  },
+  "Dictionary": {
+    "ja": "辞書"
+  },
+  "Help": {
+    "ja": "ヘルプ"
+  },
+  "About": {
+    "ja": "このアプリについて"
+  },
+  "Settings": {
+    "ja": "設定"
+  },
+  "History": {
+    "ja": "履歴"
+  },
+  "Start with Windows": {
+    "ja": "Windowsへのサインイン時に起動"
+  },
+  "Open CrossTrans in the tray when you sign in.": {
+    "ja": "サインインすると、CrossTransがタスクトレイで起動します。"
+  },
+  "Check for updates automatically": {
+    "ja": "更新を自動で確認"
+  },
+  "Looks when CrossTrans starts and once a day. You choose whether to install.": {
+    "ja": "起動時と1日1回、更新を確認します。インストールするかどうかは選べます。"
+  },
+  "Restore defaults": {
+    "ja": "初期設定に戻す"
+  },
+  "Put the shortcuts and these settings back as they were. Your API keys stay.": {
+    "ja": "ショートカットと設定を初期状態に戻します。APIキーは残ります。"
+  },
+  "Theme": {
+    "ja": "テーマ"
+  },
+  "Follow Windows, or always use light or dark.": {
+    "ja": "Windowsの設定に合わせるか、ライトまたはダークを選べます。"
+  },
+  "Text size": {
+    "ja": "文字サイズ"
+  },
+  "Application text size": {
+    "ja": "アプリの文字サイズ"
+  },
+  "Make text larger throughout CrossTrans.": {
+    "ja": "CrossTrans全体の文字を大きくします。"
+  },
+  "Interface language": {
+    "ja": "表示言語"
+  },
+  "Choose the language used for buttons, settings and help.": {
+    "ja": "ボタン、設定、ヘルプの表示言語を選びます。"
+  },
+  "Same as Windows": {
+    "ja": "Windowsに合わせる"
+  },
+  "Light": {
+    "ja": "ライト"
+  },
+  "Dark": {
+    "ja": "ダーク"
+  },
+  "Contrast, motion and notification duration follow Windows accessibility settings.": {
+    "ja": "コントラスト、アニメーション、通知の表示時間はWindowsのアクセシビリティ設定に従います。"
+  },
+  "Translate into": {
+    "ja": "翻訳先の言語"
+  },
+  "Translate to": {
+    "ja": "翻訳先"
+  },
+  "The language the Translator starts with.": {
+    "ja": "翻訳画面を開いたときの翻訳先です。"
+  },
+  "Furigana": {
+    "ja": "ふりがな"
+  },
+  "Show the reading above kanji.": {
+    "ja": "漢字の上に読み方を表示します。"
+  },
+  "Highlight the matching sentence in the original and the translation. Uses a few more tokens.": {
+    "ja": "原文と訳文で対応する文を強調表示します。使用するトークン数が少し増えます。"
+  },
+  "Replace button": {
+    "ja": "置換ボタン"
+  },
+  "What happens when you press Replace in the popup.": {
+    "ja": "ポップアップで「置換」を押したときの動作です。"
+  },
+  "Preview first": {
+    "ja": "置換前にプレビュー"
+  },
+  "Replace immediately": {
+    "ja": "すぐに置換"
+  },
+  "Fix grammar button": {
+    "ja": "文法校正ボタン"
+  },
+  "Show it in the Translator.": {
+    "ja": "翻訳画面に表示します。"
+  },
+  "Screenshot translation": {
+    "ja": "スクリーンショット翻訳"
+  },
+  "The language a screenshot is translated into. Auto uses the Translator's.": {
+    "ja": "スクリーンショットの翻訳先です。「自動」は翻訳画面の言語を使います。"
+  },
+  "Translate shortcuts": {
+    "ja": "翻訳ショートカット"
+  },
+  "One per language: select text, press it, read the translation.": {
+    "ja": "言語ごとに設定できます。テキストを選び、キーを押すと翻訳が表示されます。"
+  },
+  "Screenshot shortcut": {
+    "ja": "スクリーンショットのショートカット"
+  },
+  "Drag over the screen to translate what is in it.": {
+    "ja": "画面上をドラッグして、その範囲を翻訳します。"
+  },
+  "Fix grammar shortcut": {
+    "ja": "文法校正のショートカット"
+  },
+  "Off until you turn it on: Win + Alt + G is also the Xbox Game Bar.": {
+    "ja": "初期状態ではオフです。Win + Alt + GはXbox Game Barでも使われます。"
+  },
+  "API keys": {
+    "ja": "APIキー"
+  },
+  "API key": {
+    "ja": "APIキー"
+  },
+  "Add your own key for the best speed and quota. Backups are tried in order.": {
+    "ja": "自分のAPIキーを追加すると、より快適に利用できます。予備のキーは上から順に試します。"
+  },
+  "Try other models when one fails": {
+    "ja": "失敗したら別のモデルを試す"
+  },
+  "Uses the same key with another model before moving to the next key.": {
+    "ja": "次のキーに切り替える前に、同じキーで別のモデルを試します。"
+  },
+  "A shared model with a daily limit, used when no key of yours works.": {
+    "ja": "自分のキーを使えないときに利用する共有モデルです。1日の回数制限があります。"
+  },
+  "What your keys can do": {
+    "ja": "キーで利用できる機能"
+  },
+  "Images and files, found out when you test a key.": {
+    "ja": "キーをテストすると、画像やファイルに対応しているかを確認できます。"
+  },
+  "Language packs": {
+    "ja": "言語パック"
+  },
+  "Install a pack so the Dictionary can split a language into words.": {
+    "ja": "言語パックを追加すると、辞書で単語をより正確に選べます。"
+  },
+  "Furigana reader": {
+    "ja": "ふりがなの生成方法"
+  },
+  "Which reader gives the readings above kanji.": {
+    "ja": "漢字の読み方を生成するエンジンです。"
+  },
+  "Version and updates": {
+    "ja": "バージョンと更新"
+  },
+  "Which version you have, and whether a newer one is out.": {
+    "ja": "現在のバージョンと、利用できる更新を確認できます。"
+  },
+  "How to use CrossTrans": {
+    "ja": "CrossTransの使い方"
+  },
+  "Step-by-step help for every feature.": {
+    "ja": "各機能の使い方を順に説明します。"
+  },
+  "Welcome": {
+    "ja": "はじめに"
+  },
+  "See the introduction and try a first translation.": {
+    "ja": "アプリの紹介を見て、翻訳を試せます。"
+  },
+  "Send feedback": {
+    "ja": "フィードバックを送る"
+  },
+  "Report a bug or suggest something.": {
+    "ja": "不具合の報告や改善の提案を送れます。"
+  },
+  "CrossTrans on GitHub": {
+    "ja": "GitHubでCrossTransを見る"
+  },
+  "The source code and every release.": {
+    "ja": "ソースコードとリリースを確認できます。"
+  },
+  "Image": {
+    "ja": "画像"
+  },
+  "Images": {
+    "ja": "画像"
+  },
+  "File": {
+    "ja": "ファイル"
+  },
+  "Documents": {
+    "ja": "ドキュメント"
+  },
+  "Drop files here": {
+    "ja": "ここにファイルをドロップ"
+  },
+  "Attach": {
+    "ja": "添付"
+  },
+  "Show or hide attached files": {
+    "ja": "添付ファイルの表示を切り替え"
+  },
+  "Remove {0}": {
+    "ja": "{0}を削除"
+  },
+  "No upload features are on yet": {
+    "ja": "ファイルを添付できるキーがありません"
+  },
+  "Open Settings": {
+    "ja": "設定を開く"
+  },
+  "{0}\nDouble-click to open": {
+    "ja": "{0}\nダブルクリックで開く"
+  },
+  "Images...": {
+    "ja": "画像…"
+  },
+  "Documents (.txt, .docx, .srt, .pdf)...": {
+    "ja": "ドキュメント（.txt、.docx、.srt、.pdf）…"
+  },
+  "Search languages": {
+    "ja": "言語を検索"
+  },
+  "Search or type a model": {
+    "ja": "モデルを検索または入力"
+  },
+  "Not set": {
+    "ja": "未設定"
+  },
+  "Press the keys...": {
+    "ja": "キーを押してください…"
+  },
+  "Change": {
+    "ja": "変更"
+  },
+  "Restore the default": {
+    "ja": "初期設定に戻す"
+  },
+  "Add a phrase box": {
+    "ja": "フレーズ欄を追加"
+  },
+  "Type here, or right-drag words into a box. Enter makes a tag.": {
+    "ja": "ここに入力するか、右ドラッグで単語を追加します。Enterでタグになります。"
+  },
+  "Remove this phrase box": {
+    "ja": "このフレーズ欄を削除"
+  },
+  "Build a phrase": {
+    "ja": "フレーズを作る"
+  },
+  "Let's connect a translation service": {
+    "ja": "翻訳サービスを設定しましょう"
+  },
+  "That's today's free translations": {
+    "ja": "本日の無料翻訳を使い切りました"
+  },
+  "You've used today's {0} free translations. They come back at midnight. You can also add your own API key to use its quota.": {
+    "ja": "本日の無料翻訳{0}回を使い切りました。午前0時にリセットされます。自分のAPIキーを追加すると、そのキーの利用枠で翻訳できます。"
+  },
+  "Use your own key for this feature": {
+    "ja": "この機能にはAPIキーが必要です"
+  },
+  "The update couldn't be installed": {
+    "ja": "更新をインストールできませんでした"
+  },
+  "Choose another way to update, or try again later from Settings.": {
+    "ja": "別の更新方法を選ぶか、後で設定からもう一度お試しください。"
+  },
+  "Install when Windows restarts": {
+    "ja": "Windowsの再起動時にインストール"
+  },
+  "Add a key": {
+    "ja": "キーを追加"
+  },
+  "Details are saved in %TEMP%\\crosstrans_update.log.": {
+    "ja": "詳細は%TEMP%\\crosstrans_update.logに保存されています。"
+  },
+  "How to get a key": {
+    "ja": "キーの取得方法"
+  },
+  "Open AI providers": {
+    "ja": "AIプロバイダーを開く"
+  },
+  "Look up": {
+    "ja": "調べる"
+  },
+  "Expand or restore Dictionary": {
+    "ja": "辞書の最大化を切り替え"
+  },
+  "0 selected": {
+    "ja": "選択：0語"
+  },
+  "{0} selected": {
+    "ja": "選択：{0}語"
+  },
+  "Looking up...": {
+    "ja": "検索中..."
+  },
+  "No Language Pack Installed": {
+    "ja": "言語パックがありません"
+  },
+  "Add a language pack to pick words and build phrases in Dictionary.": {
+    "ja": "辞書で単語を選んだりフレーズを作ったりするには、言語パックを追加してください。"
+  },
+  "Select Source Language": {
+    "ja": "原文の言語を選択"
+  },
+  "Source language for Dictionary": {
+    "ja": "辞書で使う原文の言語"
+  },
+  "Install {0} pack": {
+    "ja": "{0}のパックを追加",
+    "translate": [
+      "0"
+    ]
+  },
+  "Add languages": {
+    "ja": "言語を追加"
+  },
+  "Dictionary ({0} → {1})": {
+    "ja": "辞書（{0} → {1}）",
+    "translate": [
+      "0",
+      "1"
+    ]
+  },
+  "Open Dictionary Settings": {
+    "ja": "辞書の設定を開く"
+  },
+  "The {0} language pack is missing. Add it in Settings, or choose an installed language below.": {
+    "ja": "{0}の言語パックがありません。設定で追加するか、下の一覧からインストール済みの言語を選んでください。",
+    "translate": [
+      "0"
+    ]
+  },
+  "Looking up {0} word(s): {1}": {
+    "ja": "{0}語を検索中：{1}"
+  },
+  "No text to analyze": {
+    "ja": "解析するテキストがありません"
+  },
+  "Kanji-only text: Japanese or Chinese? The meaning can differ.": {
+    "ja": "漢字のみのテキストです。日本語と中国語では意味が異なる場合があります。"
+  },
+  "Cannot detect language. Choose the source language for these words.": {
+    "ja": "言語を判定できませんでした。原文の言語を選んでください。"
+  },
+  "No valid words to look up (only punctuation/symbols)": {
+    "ja": "調べる単語がありません（句読点・記号のみです）"
+  },
+  "Source language": {
+    "ja": "原文の言語"
+  },
+  "Only installed language packs are shown.": {
+    "ja": "インストール済みの言語パックのみ表示します。"
+  },
+  "Pick words to look up": {
+    "ja": "調べる単語を選んでください"
+  },
+  "Click words to select them. Shift-click selects a range.": {
+    "ja": "単語をクリックして選択します。Shiftを押しながらクリックすると範囲選択できます。"
+  },
+  "Please select a word or enter a custom phrase": {
+    "ja": "単語を選ぶか、フレーズを入力してください"
+  },
+  "Dictionary - {0}": {
+    "ja": "辞書 - {0}"
+  },
+  "No dictionary entry": {
+    "ja": "辞書の結果がありません"
+  },
+  "Choose another word and try again.": {
+    "ja": "別の単語を選んでお試しください。"
+  },
+  "Full screen (F11)": {
+    "ja": "全画面表示（F11）"
+  },
+  "Exit full screen (F11)": {
+    "ja": "全画面表示を終了（F11）"
+  },
+  "Translation - {0}": {
+    "ja": "翻訳 - {0}",
+    "translate": [
+      "0"
+    ]
+  },
+  "Translation to {0}": {
+    "ja": "{0}への翻訳",
+    "translate": [
+      "0"
+    ]
+  },
+  "F11 Full screen {0} Esc Close {1} Ctrl+C Copy": {
+    "ja": "F11 全画面 {0} Esc 閉じる {1} Ctrl+C コピー"
+  },
+  "No translation to expand": {
+    "ja": "拡大する翻訳がありません"
+  },
+  "History options": {
+    "ja": "履歴の操作"
+  },
+  "Search history...": {
+    "ja": "履歴を検索…"
+  },
+  "Clear search": {
+    "ja": "検索をクリア"
+  },
+  "Clear all history?": {
+    "ja": "履歴をすべて削除しますか？"
+  },
+  "This removes every saved translation. This cannot be undone.": {
+    "ja": "保存された翻訳をすべて削除します。この操作は取り消せません。"
+  },
+  "Translation history": {
+    "ja": "翻訳履歴"
+  },
+  "More languages": {
+    "ja": "その他の言語"
+  },
+  "Clear all history...": {
+    "ja": "履歴をすべて削除…"
+  },
+  "No results": {
+    "ja": "一致する履歴がありません"
+  },
+  "No history yet": {
+    "ja": "履歴はまだありません"
+  },
+  "Try another search or language pair.": {
+    "ja": "検索語や言語の組み合わせを変えてお試しください。"
+  },
+  "Your translations will appear here.": {
+    "ja": "翻訳すると、ここに履歴が表示されます。"
+  },
+  "Clear filters": {
+    "ja": "絞り込みを解除"
+  },
+  "Open the Translator": {
+    "ja": "翻訳画面を開く"
+  },
+  "Linked reading": {
+    "ja": "原文と訳文の対応表示"
+  },
+  "Linked reading: On. Point at a sentence to see its counterpart.": {
+    "ja": "対応表示：オン。文にポインターを合わせると、対応する文を確認できます。"
+  },
+  "Linked reading: Off. Click to turn it on.": {
+    "ja": "対応表示：オフ。クリックすると有効になります。"
+  },
+  "Linked reading: Off. Click to enable saved or local links.": {
+    "ja": "対応表示：オフ。クリックすると保存済みの対応やローカルで推定した対応を表示します。"
+  },
+  "No reliable links": {
+    "ja": "確かな対応を見つけられませんでした"
+  },
+  "Approximate links": {
+    "ja": "推定した対応"
+  },
+  "Hover to link sentences": {
+    "ja": "ポインターを合わせると対応を表示"
+  },
+  "Something went wrong, so there is no translation yet. Try again, or open the Translator for more options.": {
+    "ja": "翻訳できませんでした。もう一度試すか、翻訳画面で設定を確認してください。"
+  },
+  "No text was selected. Select some text, then try again.": {
+    "ja": "テキストが選択されていません。テキストを選んで、もう一度お試しください。"
+  },
+  "Today's free translations are used up. They come back at midnight, or you can add your own API key.": {
+    "ja": "本日の無料翻訳を使い切りました。午前0時にリセットされます。自分のAPIキーを追加することもできます。"
+  },
+  "Your API key was rejected or has no quota left. Check it in the settings, or try another key.": {
+    "ja": "APIキーが拒否されたか、利用枠を使い切りました。設定で確認するか、別のキーをお試しください。"
+  },
+  "The AI service took too long to answer. Try again in a moment.": {
+    "ja": "AIサービスの応答が時間内に届きませんでした。少し待って再実行してください。"
+  },
+  "CrossTrans could not reach the AI service. Check your internet connection, then try again.": {
+    "ja": "AIサービスに接続できませんでした。インターネット接続を確認して再実行してください。"
+  },
+  "The AI service is having a problem right now. Try again in a moment, or open the Translator to pick another model.": {
+    "ja": "AIサービスで問題が発生しています。少し待って再実行するか、翻訳画面で別のモデルを選択してください。"
+  },
+  "There is no text to translate again.": {
+    "ja": "再翻訳するテキストがありません。"
+  },
+  "Kanji-only text - read as {0}.": {
+    "ja": "漢字のみのテキスト：{0}として解釈しました。",
+    "translate": [
+      "0"
+    ]
+  },
+  "Read as {0}": {
+    "ja": "{0}として解釈",
+    "translate": [
+      "0"
+    ]
+  },
+  "Kanji-only text - read it as:": {
+    "ja": "漢字のみのテキスト：言語を選択"
+  },
+  "Translating to {0}": {
+    "ja": "{0}に翻訳中",
+    "translate": [
+      "0"
+    ]
+  },
+  "Replace": {
+    "ja": "置換"
+  },
+  "Replace settings": {
+    "ja": "置換の設定"
+  },
+  "Open Translator": {
+    "ja": "翻訳画面を開く"
+  },
+  "Original ({0})": {
+    "ja": "原文（{0}）",
+    "translate": [
+      "0"
+    ]
+  },
+  "Original": {
+    "ja": "原文"
+  },
+  "Show all": {
+    "ja": "すべて表示"
+  },
+  "Fixed": {
+    "ja": "校正済み"
+  },
+  "Translated": {
+    "ja": "翻訳済み"
+  },
+  "{0} with {1}": {
+    "ja": "{0}：{1}",
+    "translate": [
+      "0"
+    ]
+  },
+  "Custom Prompt": {
+    "ja": "追加の指示"
+  },
+  "Hotkey Settings": {
+    "ja": "ショートカットの設定"
+  },
+  "Get Free API Key": {
+    "ja": "無料のAPIキーを取得"
+  },
+  "Search settings": {
+    "ja": "設定を検索"
+  },
+  "Saved": {
+    "ja": "保存しました"
+  },
+  "Settings - CrossTrans": {
+    "ja": "設定 - CrossTrans"
+  },
+  "{0} setting found": {
+    "ja": "{0}件の設定が見つかりました"
+  },
+  "{0} settings found": {
+    "ja": "{0}件の設定が見つかりました"
+  },
+  "Search results": {
+    "ja": "検索結果"
+  },
+  "Nothing matches \"{0}\"": {
+    "ja": "「{0}」に一致する設定がありません"
+  },
+  "Try a shorter word, like \"shortcut\" or \"dark\".": {
+    "ja": "「ショートカット」や「ダーク」など、短い言葉でお試しください。"
+  },
+  "This page could not be shown: {0}": {
+    "ja": "このページを表示できませんでした：{0}"
+  },
+  "Showing the first {0}. Type more to narrow it down.": {
+    "ja": "最初の{0}件を表示しています。検索語を追加すると絞り込めます。"
+  },
+  "Check for updates": {
+    "ja": "更新を確認"
+  },
+  "View update": {
+    "ja": "更新を見る"
+  },
+  "Help and feedback": {
+    "ja": "ヘルプとフィードバック"
+  },
+  "Open Help": {
+    "ja": "ヘルプを開く"
+  },
+  "Open GitHub": {
+    "ja": "GitHubを開く"
+  },
+  "Show welcome again": {
+    "ja": "はじめにを再表示"
+  },
+  "Checking which packs are installed...": {
+    "ja": "インストール済みのパックを確認中…"
+  },
+  "Could not check which packs are installed.": {
+    "ja": "インストール済みのパックを確認できませんでした。"
+  },
+  "Language packs are not available. Look in the log for details.": {
+    "ja": "言語パックを利用できません。詳細はログを確認してください。"
+  },
+  "Something went wrong. Look in the log for details.": {
+    "ja": "問題が発生しました。詳細はログを確認してください。"
+  },
+  "Language packs download from PyPI, so an internet connection is needed.": {
+    "ja": "言語パックはPyPIからダウンロードします。インターネット接続が必要です。"
+  },
+  "More actions": {
+    "ja": "その他の操作"
+  },
+  "Install": {
+    "ja": "インストール"
+  },
+  "Installed": {
+    "ja": "インストール済み"
+  },
+  "Available": {
+    "ja": "利用可能"
+  },
+  "Install all packs...": {
+    "ja": "すべてのパックをインストール…"
+  },
+  "Remove all packs...": {
+    "ja": "すべてのパックを削除…"
+  },
+  "Show all {0} languages": {
+    "ja": "全{0}言語を表示"
+  },
+  "No language matches {0}{1}{2}.": {
+    "ja": "{0}{1}{2}に一致する言語がありません。"
+  },
+  "Auto": {
+    "ja": "自動"
+  },
+  "Show key": {
+    "ja": "キーを表示"
+  },
+  "Hide key": {
+    "ja": "キーを隠す"
+  },
+  "Test": {
+    "ja": "テスト"
+  },
+  "Stop": {
+    "ja": "停止"
+  },
+  "Delete all API keys?": {
+    "ja": "APIキーをすべて削除しますか？"
+  },
+  "Could not check your keys.": {
+    "ja": "キーを確認できませんでした。"
+  },
+  "Paste a key first.": {
+    "ja": "先にキーを貼り付けてください。"
+  },
+  "There is no model to try for this provider. Pick a model.": {
+    "ja": "このプロバイダーで試すモデルがありません。モデルを選んでください。"
+  },
+  "The test could not run.": {
+    "ja": "テストを実行できませんでした。"
+  },
+  "Reads images": {
+    "ja": "画像に対応"
+  },
+  "No image reading yet": {
+    "ja": "画像への対応は未確認"
+  },
+  "Reads files": {
+    "ja": "ファイルに対応"
+  },
+  "No file reading yet": {
+    "ja": "ファイルへの対応は未確認"
+  },
+  "Remove this key": {
+    "ja": "このキーを削除"
+  },
+  "Provider": {
+    "ja": "プロバイダー"
+  },
+  "Model": {
+    "ja": "モデル"
+  },
+  "Add backup key": {
+    "ja": "予備のキーを追加"
+  },
+  "If a key fails": {
+    "ja": "キーを使えないとき"
+  },
+  "Works with {0}. Need a key? Help says where to get one.": {
+    "ja": "{0}に対応しています。キーの取得先はヘルプで確認できます。"
+  },
+  "Delete all keys...": {
+    "ja": "キーをすべて削除…"
+  },
+  "Delete all keys": {
+    "ja": "すべてのキーを削除"
+  },
+  "Screenshot": {
+    "ja": "スクリーンショット"
+  },
+  "Fix grammar": {
+    "ja": "文法を校正"
+  },
+  "Add a language": {
+    "ja": "言語を追加"
+  },
+  "You can add up to {0} languages of your own.": {
+    "ja": "言語は最大{0}個まで追加できます。"
+  },
+  "Another app is already using this shortcut, so it does nothing yet. Choose another.": {
+    "ja": "このショートカットは別のアプリで使われています。別の組み合わせを選んでください。"
+  },
+  "CrossTrans cannot use this shortcut. Choose another.": {
+    "ja": "このショートカットは利用できません。別の組み合わせを選んでください。"
+  },
+  "Windows would not give CrossTrans this shortcut. Choose another.": {
+    "ja": "Windowsがこのショートカットを許可しませんでした。別の組み合わせを選んでください。"
+  },
+  "Restore defaults?": {
+    "ja": "初期設定に戻しますか？"
+  },
+  "The shortcuts and the settings in this window go back to how CrossTrans came. Your API keys, history and language packs stay.": {
+    "ja": "ショートカットとこの画面の設定を初期状態に戻します。APIキー、履歴、言語パックは残ります。"
+  },
+  "Same as the Translator": {
+    "ja": "翻訳画面と同じ"
+  },
+  "Languages": {
+    "ja": "言語"
+  },
+  "Translate screenshots into": {
+    "ja": "スクリーンショットの翻訳先"
+  },
+  "Reading aids": {
+    "ja": "読み方の補助"
+  },
+  "Buttons": {
+    "ja": "ボタン"
+  },
+  "New version v{0} available!\nCurrent: v{1}": {
+    "ja": "新しいバージョンv{0}を利用できます\n現在：v{1}"
+  },
+  "Update available": {
+    "ja": "更新があります"
+  },
+  "v{0} available": {
+    "ja": "v{0}を利用できます"
+  },
+  "Downloading update": {
+    "ja": "更新をダウンロード中"
+  },
+  "Getting CrossTrans v{0}. You can keep using the app.": {
+    "ja": "CrossTrans v{0}をダウンロードしています。アプリは引き続き使えます。"
+  },
+  "Starting download...": {
+    "ja": "ダウンロードを開始しています…"
+  },
+  "Cancel download": {
+    "ja": "ダウンロードを中止"
+  },
+  "v{0} downloaded. Restart when you are ready.": {
+    "ja": "v{0}をダウンロードしました。都合のよいときに再起動してください。"
+  },
+  "Restart to update": {
+    "ja": "再起動して更新"
+  },
+  "Checking for updates...": {
+    "ja": "更新を確認中…"
+  },
+  "Update available: v{0}": {
+    "ja": "更新があります：v{0}"
+  },
+  "Cancelling...": {
+    "ja": "中止しています…"
+  },
+  "Downloading... {0}%": {
+    "ja": "ダウンロード中… {0}%"
+  },
+  "Translate": {
+    "ja": "翻訳"
+  },
+  "Custom instruction, for example: keep the names as they are": {
+    "ja": "追加の指示（例：固有名詞はそのままにする）"
+  },
+  "Swap languages": {
+    "ja": "言語を入れ替え"
+  },
+  "Ready when you are": {
+    "ja": "いつでも翻訳できます"
+  },
+  "Paste text here or try a sample.": {
+    "ja": "テキストを貼り付けるか、サンプルを試してください。"
+  },
+  "Paste or type text here": {
+    "ja": "ここにテキストを入力・貼り付け"
+  },
+  "Your translation will appear here": {
+    "ja": "ここに翻訳が表示されます"
+  },
+  "Choose a language, then translate.": {
+    "ja": "言語を選んで「翻訳」を押してください。"
+  },
+  "Expand": {
+    "ja": "拡大表示"
+  },
+  "More options": {
+    "ja": "その他のオプション"
+  },
+  "CrossTrans update": {
+    "ja": "CrossTransの更新"
+  },
+  "CrossTrans v{0} is ready to download.": {
+    "ja": "CrossTrans v{0}をダウンロードできます。"
+  },
+  "Your work stays open until you choose to restart.": {
+    "ja": "再起動を選ぶまで、作業を続けられます。"
+  },
+  "Skip for now": {
+    "ja": "今はスキップ"
+  },
+  "Welcome to CrossTrans": {
+    "ja": "CrossTransへようこそ"
+  },
+  "{0} of {1}": {
+    "ja": "{0} / {1}"
+  },
+  "CrossTrans will use your configured AI provider.": {
+    "ja": "設定済みのAIプロバイダーを使います。"
+  },
+  "Your first translation is ready. You can copy it or replace the original.": {
+    "ja": "最初の翻訳ができました。コピーするか、原文を置き換えられます。"
+  },
+  "Translate right where you are": {
+    "ja": "今いる画面で、そのまま翻訳"
+  },
+  "Select text in any app, press a shortcut, then read, copy or replace it.": {
+    "ja": "アプリでテキストを選び、ショートカットを押すだけ。翻訳を読んだり、コピー・置換したりできます。"
+  },
+  "A sentence to try": {
+    "ja": "試してみるテキスト"
+  },
+  "Choose your translation language": {
+    "ja": "翻訳先の言語を選んでください"
+  },
+  "You can change this any time in the Translator.": {
+    "ja": "翻訳画面でいつでも変更できます。"
+  },
+  "Your shortcuts": {
+    "ja": "ショートカット"
+  },
+  "Ready for your first translation": {
+    "ja": "翻訳を始めましょう"
+  },
+  "Trying the sample sends it to your translation service.": {
+    "ja": "サンプルを試すと、そのテキストが翻訳サービスに送信されます。"
+  },
+  "CrossTrans stays in the system tray. Open its icon for the Translator or Settings.": {
+    "ja": "CrossTransはタスクトレイに常駐します。アイコンから翻訳画面や設定を開けます。"
+  },
+  "Use my own API key": {
+    "ja": "自分のAPIキーを使う"
+  },
+  "Source Language": {
+    "ja": "原文の言語"
+  },
+  "Definition": {
+    "ja": "意味"
+  },
+  "Word Type": {
+    "ja": "品詞"
+  },
+  "Pronunciation": {
+    "ja": "発音"
+  },
+  "Synonyms": {
+    "ja": "類義語"
+  },
+  "Antonyms": {
+    "ja": "対義語"
+  },
+  "Examples": {
+    "ja": "例文"
+  },
+  "Formal": {
+    "ja": "丁寧"
+  },
+  "Casual": {
+    "ja": "カジュアル"
+  },
+  "Concise": {
+    "ja": "簡潔"
+  },
+  "Natural": {
+    "ja": "自然"
+  },
+  "Literal": {
+    "ja": "直訳"
+  },
+  "Unknown": {
+    "ja": "不明"
+  },
+  "English": {
+    "ja": "英語"
+  },
+  "Japanese": {
+    "ja": "日本語"
+  },
+  "Vietnamese": {
+    "ja": "ベトナム語"
+  },
+  "Chinese": {
+    "ja": "中国語"
+  },
+  "Chinese (Simplified)": {
+    "ja": "中国語（簡体字）"
+  },
+  "Chinese (Traditional)": {
+    "ja": "中国語（繁体字）"
+  },
+  "Korean": {
+    "ja": "韓国語"
+  },
+  "Thai": {
+    "ja": "タイ語"
+  },
+  "French": {
+    "ja": "フランス語"
+  },
+  "German": {
+    "ja": "ドイツ語"
+  },
+  "Spanish": {
+    "ja": "スペイン語"
+  },
+  "Portuguese": {
+    "ja": "ポルトガル語"
+  },
+  "Italian": {
+    "ja": "イタリア語"
+  },
+  "Getting started": {
+    "ja": "使い始める"
+  },
+  "Select text, press a shortcut, read the translation.": {
+    "ja": "テキストを選び、ショートカットを押すと翻訳が表示されます。"
+  },
+  "Using shortcuts": {
+    "ja": "ショートカットを使う"
+  },
+  "Every translate, screenshot and grammar shortcut can be changed.": {
+    "ja": "翻訳、スクリーンショット、文法校正のショートカットはすべて変更できます。"
+  },
+  "The translation popup": {
+    "ja": "翻訳ポップアップ"
+  },
+  "What the buttons under a translation do.": {
+    "ja": "翻訳の下にあるボタンの使い方です。"
+  },
+  "Replacing text": {
+    "ja": "テキストを置き換える"
+  },
+  "Put the translation back into the app you were writing in.": {
+    "ja": "入力していたアプリのテキストを翻訳に置き換えます。"
+  },
+  "Translate a screenshot": {
+    "ja": "スクリーンショットを翻訳する"
+  },
+  "Drag over any part of the screen and read it in your language.": {
+    "ja": "画面上の範囲をドラッグして、好きな言語に翻訳できます。"
+  },
+  "Looking up words": {
+    "ja": "単語を調べる"
+  },
+  "Click words in a translation to see what they mean.": {
+    "ja": "翻訳の単語をクリックして、意味を調べられます。"
+  },
+  "Files and images": {
+    "ja": "ファイルと画像"
+  },
+  "Translate a whole document or a picture from the Translator.": {
+    "ja": "翻訳画面からドキュメント全体や画像を翻訳できます。"
+  },
+  "Keys and providers": {
+    "ja": "キーとプロバイダー"
+  },
+  "Your own key gives the best speed and quota.": {
+    "ja": "自分のキーを使うと、そのサービスの速度と利用枠で翻訳できます。"
+  },
+  "The Translator window": {
+    "ja": "翻訳画面"
+  },
+  "More room, more options, and every past translation.": {
+    "ja": "広い画面で翻訳し、オプションや過去の翻訳を確認できます。"
+  },
+  "If something does not work": {
+    "ja": "うまく動かないとき"
+  },
+  "The usual causes, and what to try.": {
+    "ja": "よくある原因と対処方法を紹介します。"
+  },
+  "Select text in any app: a browser, Word, a PDF.": {
+    "ja": "ブラウザー、Word、PDFなどのアプリでテキストを選択します。"
+  },
+  "Press a translate shortcut, for example Win + Alt + V for Vietnamese.": {
+    "ja": "翻訳ショートカットを押します。たとえばWin + Alt + Vでベトナム語に翻訳できます。"
+  },
+  "The translation appears in a popup beside your cursor.": {
+    "ja": "カーソルの近くに翻訳ポップアップが表示されます。"
+  },
+  "Use the popup's buttons: Copy, Replace, Dictionary or Open Translator.": {
+    "ja": "ポップアップからコピー、置換、辞書、翻訳画面を開く操作ができます。"
+  },
+  "{languages} languages are supported.": {
+    "ja": "{languages}言語に対応しています。"
+  },
+  "For more, add your own key.": {
+    "ja": "さらに使うには、自分のAPIキーを追加してください。"
+  },
+  "Open Shortcuts and press Change next to the shortcut.": {
+    "ja": "「ショートカット」を開き、変更したい項目の「変更」を押します。"
+  },
+  "Press the keys you want. CrossTrans tells you if another shortcut or app already has them.": {
+    "ja": "使いたいキーを押します。ほかのショートカットやアプリと重なる場合は、お知らせします。"
+  },
+  "Win + Alt + V, E, J and C translate into Vietnamese, English, Japanese and Chinese.": {
+    "ja": "Win + Alt + V・E・J・Cで、それぞれベトナム語・英語・日本語・中国語に翻訳します。"
+  },
+  "Win + Alt + S captures part of the screen and translates it.": {
+    "ja": "Win + Alt + Sで画面の一部を選んで翻訳します。"
+  },
+  "Fix grammar has a shortcut too. It is off until you turn it on: Win + Alt + G is also the Xbox Game Bar's.": {
+    "ja": "文法校正にもショートカットがあります。Win + Alt + GはXbox Game Barでも使われるため、初期状態ではオフです。"
+  },
+  "Add up to four more languages, each with its own shortcut.": {
+    "ja": "最大4つの言語を追加し、それぞれにショートカットを設定できます。"
+  },
+  "Open Shortcuts": {
+    "ja": "ショートカットを開く"
+  },
+  "Copy puts the translation on the clipboard.": {
+    "ja": "「コピー」で翻訳をクリップボードにコピーします。"
+  },
+  "Replace pastes it over the text you selected in the other app.": {
+    "ja": "「置換」で、ほかのアプリで選択したテキストを翻訳に置き換えます。"
+  },
+  "The icons beside them: the Replace settings, translate again, Dictionary, your own instruction, linked reading, and Open Translator at the far right.": {
+    "ja": "隣のアイコンから、置換設定、再翻訳、辞書、追加の指示、原文と訳文の対応表示を使えます。一番右で翻訳画面を開きます。"
+  },
+  "Press Esc to close the popup.": {
+    "ja": "Escでポップアップを閉じます。"
+  },
+  "Press Replace in the popup.": {
+    "ja": "ポップアップで「置換」を押します。"
+  },
+  "Look at the preview: your text crossed out, then the translation.": {
+    "ja": "取り消し線付きの原文と翻訳がプレビューに表示されます。"
+  },
+  "Press Agree to replace it, or Cancel to keep your text.": {
+    "ja": "「置き換える」で実行します。原文を残すには「キャンセル」を押します。"
+  },
+  "To paste at once without the preview, choose Replace immediately in the Translation settings.": {
+    "ja": "プレビューなしですぐに置き換えるには、翻訳設定で「すぐに置換」を選びます。"
+  },
+  "CrossTrans copies the translation and presses Ctrl + V for you. If the app refuses the paste, the translation is still on the clipboard.": {
+    "ja": "CrossTransが翻訳をコピーし、Ctrl + Vで貼り付けます。アプリが貼り付けを拒否した場合も、翻訳はクリップボードに残ります。"
+  },
+  "Open Translation settings": {
+    "ja": "翻訳の設定を開く"
+  },
+  "Press Win + Alt + S.": {
+    "ja": "Win + Alt + Sを押します。"
+  },
+  "The screen dims. Drag over the part you want.": {
+    "ja": "画面が暗くなったら、翻訳したい範囲をドラッグします。"
+  },
+  "Let go: the text is read and translated.": {
+    "ja": "マウスを離すと、文字を読み取って翻訳します。"
+  },
+  "It works across several monitors.": {
+    "ja": "複数のモニターにまたがる範囲も選べます。"
+  },
+  "It needs a model that can read images. Test your key in AI providers to find out.": {
+    "ja": "画像に対応したモデルが必要です。「AIプロバイダー」でキーをテストすると確認できます。"
+  },
+  "Open Translator keeps the picture as an attachment.": {
+    "ja": "「翻訳画面を開く」を押すと、画像が添付ファイルとして残ります。"
+  },
+  "Translate something, then press the Dictionary button.": {
+    "ja": "翻訳した後に、辞書ボタンを押します。"
+  },
+  "Words appear as buttons. Click the ones you want.": {
+    "ja": "単語がボタンとして表示されます。調べたい単語をクリックします。"
+  },
+  "Press Dictionary Lookup.": {
+    "ja": "「調べる」を押します。"
+  },
+  "Drag across words to select a range, or type your own phrase in the boxes below.": {
+    "ja": "ドラッグで複数の単語を選んだり、下の欄にフレーズを入力したりできます。"
+  },
+  "An answer has the translation, definition, word type, pronunciation, synonyms, antonyms and examples.": {
+    "ja": "翻訳、意味、品詞、発音、類義語、対義語、例文を確認できます。"
+  },
+  "A language pack splits Japanese, Chinese, Korean and many other languages into words much better. Install one in Dictionary settings.": {
+    "ja": "言語パックを使うと、日本語・中国語・韓国語などをより正確に単語に分けられます。辞書の設定から追加してください。"
+  },
+  "Open Dictionary settings": {
+    "ja": "辞書の設定を開く"
+  },
+  "Open the Translator from the tray icon.": {
+    "ja": "タスクトレイのアイコンから翻訳画面を開きます。"
+  },
+  "Drop files on the box, or use Attach.": {
+    "ja": "ファイルを添付欄にドロップするか、「添付」を使います。"
+  },
+  "Choose the language and press Translate.": {
+    "ja": "言語を選んで「翻訳」を押します。"
+  },
+  "Text files, Word documents, subtitle files (the timings are kept) and PDFs, scanned ones too.": {
+    "ja": "テキスト、Word、字幕（タイミングを保持）、PDFに対応しています。スキャンしたPDFも使えます。"
+  },
+  "Pictures are read with the same model that reads screenshots.": {
+    "ja": "画像はスクリーンショットと同じ画像対応モデルで読み取ります。"
+  },
+  "Documents and images need a key that can read them. AI providers shows which of yours can.": {
+    "ja": "ドキュメントや画像には、対応したキーが必要です。「AIプロバイダー」で確認できます。"
+  },
+  "Sign up with a provider and create an API key. Many have a free tier.": {
+    "ja": "プロバイダーに登録してAPIキーを作成します。無料枠を提供するサービスもあります。"
+  },
+  "Open AI providers and paste the key.": {
+    "ja": "「AIプロバイダー」を開き、キーを貼り付けます。"
+  },
+  "Press Test to check it.": {
+    "ja": "「テスト」で利用できるか確認します。"
+  },
+  "{providers} providers are supported, with more than 180 models.": {
+    "ja": "{providers}のプロバイダー、180以上のモデルに対応しています。"
+  },
+  "Leave Provider and Model on Auto: CrossTrans finds one that works and remembers it.": {
+    "ja": "プロバイダーとモデルを「自動」にすると、利用できる組み合わせを探して記憶します。"
+  },
+  "Add backup keys. They are tried in order when one fails.": {
+    "ja": "予備のキーも追加できます。キーを使えない場合は、上から順に試します。"
+  },
+  "Keys are stored encrypted by Windows. Showing a saved key asks Windows to confirm it is you.": {
+    "ja": "キーはWindowsで暗号化して保存します。保存済みのキーを表示する際は、Windowsで本人確認します。"
+  },
+  "Open it from the popup or the tray icon.": {
+    "ja": "ポップアップかタスクトレイのアイコンから開けます。"
+  },
+  "The language you translate into is a list with your recent and shortcut languages first.": {
+    "ja": "翻訳先の一覧には、最近使った言語とショートカットに登録した言語が先に表示されます。"
+  },
+  "More options adds an instruction: formal, casual, concise, natural, or your own words.": {
+    "ja": "「その他のオプション」で、丁寧・カジュアル・簡潔・自然などの指示や、自分の指示を追加できます。"
+  },
+  "Furigana puts the reading above Japanese kanji. Turn it off in Translation settings.": {
+    "ja": "ふりがなは日本語の漢字の上に読み方を表示します。翻訳設定でオフにできます。"
+  },
+  "History keeps your last 200 translations and can be searched.": {
+    "ja": "履歴には最近の翻訳200件が保存され、検索できます。"
+  },
+  "A shortcut does nothing: another app may hold it. Shortcuts says so under the row; pick another combination.": {
+    "ja": "ショートカットが動かない場合、別のアプリが使っている可能性があります。設定の行の下に理由が表示されるので、別の組み合わせを選んでください。"
+  },
+  "No translation appears: select the text first, or copy it with Ctrl + C and try again. A few apps block clipboard access.": {
+    "ja": "翻訳が表示されない場合、先にテキストを選択するか、Ctrl + Cでコピーしてから再度お試しください。クリップボードへのアクセスを制限するアプリもあります。"
+  },
+  "Errors or no connection: check the key and your internet connection, then press Test in AI providers.": {
+    "ja": "エラーや接続の問題がある場合、キーとインターネット接続を確認し、「AIプロバイダー」で「テスト」を押してください。"
+  },
+  "Replace does not paste: keep the text selected in the other app. Some apps block a pasted Ctrl + V; the translation is on the clipboard.": {
+    "ja": "置換できない場合、元のアプリでテキストを選択したままにしてください。Ctrl + Vを制限するアプリもありますが、翻訳はクリップボードに残ります。"
+  },
+  "CrossTrans will not start: only one copy can run. Look in the tray, or end it in Task Manager.": {
+    "ja": "起動しない場合、すでに実行されている可能性があります。タスクトレイを確認するか、タスクマネージャーで終了してください。"
+  },
+  "Pinned": {
+    "ja": "ショートカットの言語"
+  },
+  "Recent": {
+    "ja": "最近使った言語"
+  },
+  "All languages": {
+    "ja": "すべての言語"
+  },
+  "Results": {
+    "ja": "検索結果"
+  },
+  "Show less": {
+    "ja": "折りたたむ"
+  },
+  "{0} attached": {
+    "ja": "添付：{0}件"
+  },
+  "Use {0}": {
+    "ja": "{0}を使う"
+  },
+  "Send Feedback": {
+    "ja": "フィードバックを送る"
+  },
+  "Quit": {
+    "ja": "終了"
+  },
+  "Readings": {
+    "ja": "読み方"
+  },
+  "Readings appear here when the text above contains Japanese.": {
+    "ja": "上のテキストに日本語が含まれていると、ここに読み方が表示されます。"
+  },
+  "Fixing grammar": {
+    "ja": "文法を校正中"
+  },
+  "Grammar": {
+    "ja": "文法校正"
+  },
+  "Chinese Simplified": {
+    "ja": "中国語（簡体字）"
+  },
+  "Chinese Traditional": {
+    "ja": "中国語（繁体字）"
+  },
+  "Russian": {
+    "ja": "ロシア語"
+  },
+  "Indonesian": {
+    "ja": "インドネシア語"
+  },
+  "Malay": {
+    "ja": "マレー語"
+  },
+  "Hindi": {
+    "ja": "ヒンディー語"
+  },
+  "Arabic": {
+    "ja": "アラビア語"
+  },
+  "Dutch": {
+    "ja": "オランダ語"
+  },
+  "Polish": {
+    "ja": "ポーランド語"
+  },
+  "Turkish": {
+    "ja": "トルコ語"
+  },
+  "Swedish": {
+    "ja": "スウェーデン語"
+  },
+  "Danish": {
+    "ja": "デンマーク語"
+  },
+  "Norwegian": {
+    "ja": "ノルウェー語"
+  },
+  "Finnish": {
+    "ja": "フィンランド語"
+  },
+  "Greek": {
+    "ja": "ギリシャ語"
+  },
+  "Czech": {
+    "ja": "チェコ語"
+  },
+  "Romanian": {
+    "ja": "ルーマニア語"
+  },
+  "Hungarian": {
+    "ja": "ハンガリー語"
+  },
+  "Ukrainian": {
+    "ja": "ウクライナ語"
+  },
+  "Afrikaans": {
+    "ja": "アフリカーンス語"
+  },
+  "Albanian": {
+    "ja": "アルバニア語"
+  },
+  "Amharic": {
+    "ja": "アムハラ語"
+  },
+  "Armenian": {
+    "ja": "アルメニア語"
+  },
+  "Azerbaijani": {
+    "ja": "アゼルバイジャン語"
+  },
+  "Basque": {
+    "ja": "バスク語"
+  },
+  "Belarusian": {
+    "ja": "ベラルーシ語"
+  },
+  "Bengali": {
+    "ja": "ベンガル語"
+  },
+  "Bosnian": {
+    "ja": "ボスニア語"
+  },
+  "Bulgarian": {
+    "ja": "ブルガリア語"
+  },
+  "Catalan": {
+    "ja": "カタルーニャ語"
+  },
+  "Cebuano": {
+    "ja": "セブアノ語"
+  },
+  "Chichewa": {
+    "ja": "チェワ語"
+  },
+  "Corsican": {
+    "ja": "コルシカ語"
+  },
+  "Croatian": {
+    "ja": "クロアチア語"
+  },
+  "Esperanto": {
+    "ja": "エスペラント語"
+  },
+  "Estonian": {
+    "ja": "エストニア語"
+  },
+  "Filipino": {
+    "ja": "フィリピノ語"
+  },
+  "Frisian": {
+    "ja": "フリジア語"
+  },
+  "Galician": {
+    "ja": "ガリシア語"
+  },
+  "Georgian": {
+    "ja": "ジョージア語"
+  },
+  "Gujarati": {
+    "ja": "グジャラート語"
+  },
+  "Haitian Creole": {
+    "ja": "ハイチ・クレオール語"
+  },
+  "Hausa": {
+    "ja": "ハウサ語"
+  },
+  "Hawaiian": {
+    "ja": "ハワイ語"
+  },
+  "Hebrew": {
+    "ja": "ヘブライ語"
+  },
+  "Hmong": {
+    "ja": "モン語"
+  },
+  "Icelandic": {
+    "ja": "アイスランド語"
+  },
+  "Igbo": {
+    "ja": "イボ語"
+  },
+  "Irish": {
+    "ja": "アイルランド語"
+  },
+  "Javanese": {
+    "ja": "ジャワ語"
+  },
+  "Kannada": {
+    "ja": "カンナダ語"
+  },
+  "Kazakh": {
+    "ja": "カザフ語"
+  },
+  "Khmer": {
+    "ja": "クメール語"
+  },
+  "Kurdish (Kurmanji)": {
+    "ja": "クルド語（クルマンジー）"
+  },
+  "Kyrgyz": {
+    "ja": "キルギス語"
+  },
+  "Lao": {
+    "ja": "ラオ語"
+  },
+  "Latin": {
+    "ja": "ラテン語"
+  },
+  "Latvian": {
+    "ja": "ラトビア語"
+  },
+  "Lithuanian": {
+    "ja": "リトアニア語"
+  },
+  "Luxembourgish": {
+    "ja": "ルクセンブルク語"
+  },
+  "Macedonian": {
+    "ja": "マケドニア語"
+  },
+  "Malagasy": {
+    "ja": "マダガスカル語"
+  },
+  "Malayalam": {
+    "ja": "マラヤーラム語"
+  },
+  "Maltese": {
+    "ja": "マルタ語"
+  },
+  "Maori": {
+    "ja": "マオリ語"
+  },
+  "Marathi": {
+    "ja": "マラーティー語"
+  },
+  "Mongolian": {
+    "ja": "モンゴル語"
+  },
+  "Myanmar (Burmese)": {
+    "ja": "ミャンマー語"
+  },
+  "Nepali": {
+    "ja": "ネパール語"
+  },
+  "Pashto": {
+    "ja": "パシュトー語"
+  },
+  "Persian": {
+    "ja": "ペルシア語"
+  },
+  "Punjabi": {
+    "ja": "パンジャーブ語"
+  },
+  "Samoan": {
+    "ja": "サモア語"
+  },
+  "Scots Gaelic": {
+    "ja": "スコットランド・ゲール語"
+  },
+  "Serbian": {
+    "ja": "セルビア語"
+  },
+  "Sesotho": {
+    "ja": "ソト語"
+  },
+  "Shona": {
+    "ja": "ショナ語"
+  },
+  "Sindhi": {
+    "ja": "シンド語"
+  },
+  "Sinhala": {
+    "ja": "シンハラ語"
+  },
+  "Slovak": {
+    "ja": "スロバキア語"
+  },
+  "Slovenian": {
+    "ja": "スロベニア語"
+  },
+  "Somali": {
+    "ja": "ソマリ語"
+  },
+  "Sundanese": {
+    "ja": "スンダ語"
+  },
+  "Swahili": {
+    "ja": "スワヒリ語"
+  },
+  "Tajik": {
+    "ja": "タジク語"
+  },
+  "Tamil": {
+    "ja": "タミル語"
+  },
+  "Telugu": {
+    "ja": "テルグ語"
+  },
+  "Urdu": {
+    "ja": "ウルドゥー語"
+  },
+  "Uzbek": {
+    "ja": "ウズベク語"
+  },
+  "Welsh": {
+    "ja": "ウェールズ語"
+  },
+  "Xhosa": {
+    "ja": "コサ語"
+  },
+  "Yiddish": {
+    "ja": "イディッシュ語"
+  },
+  "Yoruba": {
+    "ja": "ヨルバ語"
+  },
+  "Zulu": {
+    "ja": "ズールー語"
+  },
+  "Remove": {
+    "ja": "削除"
+  },
+  "Remove all": {
+    "ja": "すべて削除"
+  },
+  "Install all": {
+    "ja": "すべてインストール"
+  },
+  "Primary key": {
+    "ja": "メインのキー"
+  },
+  "Backup key {0}": {
+    "ja": "予備のキー {0}"
+  },
+  "On. Up to {0} translations a day.": {
+    "ja": "オン。1日{0}回まで翻訳できます。"
+  },
+  "Checking key {0} of {1}...": {
+    "ja": "キーを確認中… {0} / {1}"
+  },
+  "Checking your key...": {
+    "ja": "キーを確認中…"
+  },
+  "The provider did not accept the key. Check that it was copied whole and is for this provider.": {
+    "ja": "キーが拒否されました。全文をコピーしたか、このプロバイダーのキーかを確認してください。"
+  },
+  "The provider says this key is out of quota or over its rate limit for now.": {
+    "ja": "このキーは利用枠か一時的なリクエスト上限に達しています。"
+  },
+  "The provider took too long to answer. Try again in a moment.": {
+    "ja": "プロバイダーから応答がありません。少し待ってからお試しください。"
+  },
+  "CrossTrans could not reach the provider. Check your internet connection.": {
+    "ja": "プロバイダーに接続できませんでした。インターネット接続を確認してください。"
+  },
+  "The provider does not know this model. Pick another, or choose Auto.": {
+    "ja": "このモデルを利用できません。別のモデルか「自動」を選んでください。"
+  },
+  "Stopped.": {
+    "ja": "停止しました。"
+  },
+  "Works with {0}.": {
+    "ja": "{0}で利用できます。"
+  },
+  "Auto: works with {0}.": {
+    "ja": "自動：{0}で利用できます。"
+  },
+  "Auto: works with {0}. It can read images and files.": {
+    "ja": "自動：{0}で利用できます。 画像とファイルに対応しています。"
+  },
+  "Auto: works with {0}. It can read images.": {
+    "ja": "自動：{0}で利用できます。 画像に対応しています。"
+  },
+  "Auto: works with {0}. It can read files.": {
+    "ja": "自動：{0}で利用できます。 ファイルに対応しています。"
+  },
+  "Auto: works with {0}. It can read images and files and audio.": {
+    "ja": "自動：{0}で動作します。画像・ファイル・音声を読み取れます。"
+  },
+  "Auto: works with {0}. It can read files and audio.": {
+    "ja": "自動：{0}で動作します。ファイル・音声を読み取れます。"
+  },
+  "Works with {0}.{1}": {
+    "ja": "{0}で利用できます。{1}",
+    "translate": [
+      "1"
+    ],
+    "runtime_match": false
+  },
+  "It can read images and files.": {
+    "ja": "画像とファイルに対応しています。"
+  },
+  "It can read files.": {
+    "ja": "ファイルに対応しています。"
+  },
+  "It can read images.": {
+    "ja": "画像に対応しています。"
+  },
+  "None of the {0} models answered.": {
+    "ja": "{0}個のモデルを試しましたが、応答がありませんでした。"
+  },
+  "It did not answer.": {
+    "ja": "応答がありませんでした。"
+  },
+  "It did not answer the last time CrossTrans checked.": {
+    "ja": "前回の確認では応答がありませんでした。"
+  },
+  "It answered the last time CrossTrans checked.": {
+    "ja": "前回の確認では応答がありました。"
+  },
+  "The last test did not pass.": {
+    "ja": "前回のテストでは接続できませんでした。"
+  },
+  "Tested. It can read {0}.": {
+    "ja": "テスト済み。{0}に対応しています。",
+    "translate": [
+      "0"
+    ]
+  },
+  "images and files": {
+    "ja": "画像とファイル"
+  },
+  "files": {
+    "ja": "ファイル"
+  },
+  "images": {
+    "ja": "画像"
+  },
+  "Connected. Checking images...": {
+    "ja": "接続しました。画像への対応を確認中…"
+  },
+  "Trying {0} of {1}...": {
+    "ja": "接続を試しています… {0} / {1}"
+  },
+  "Testing...": {
+    "ja": "テスト中…"
+  },
+  "Furigana: accurate readings (UniDic, from the Japanese pack).": {
+    "ja": "ふりがな：日本語パックのUniDicで読み方を生成します。"
+  },
+  "Furigana: basic readings - the Japanese pack is installed, but its reader could not be loaded here (see the log).": {
+    "ja": "ふりがな：基本の読み方を使います。日本語パックはありますが、エンジンを読み込めませんでした。詳細はログを確認してください。"
+  },
+  "Furigana: basic readings. Install the Japanese pack below (~250 MB) for accurate ones - they apply at once, no restart.": {
+    "ja": "ふりがな：基本の読み方を使います。下の日本語パック（約250 MB）を追加すると、より正確になります。再起動は不要です。"
+  },
+  "{0}, about {1} MB": {
+    "ja": "{0}・約{1} MB",
+    "translate": [
+      "0"
+    ]
+  },
+  "about {0} MB": {
+    "ja": "約{0} MB"
+  },
+  "Asian": {
+    "ja": "アジア"
+  },
+  "European": {
+    "ja": "ヨーロッパ"
+  },
+  "African": {
+    "ja": "アフリカ"
+  },
+  "Middle Eastern": {
+    "ja": "中東"
+  },
+  "Indian": {
+    "ja": "インド"
+  },
+  "Other": {
+    "ja": "その他"
+  },
+  "No language packs installed yet.": {
+    "ja": "言語パックはまだありません。"
+  },
+  "{0} installed, about {1} MB.": {
+    "ja": "{0}言語をインストール済み（約{1} MB）。"
+  },
+  "{0} {1}{2}...": {
+    "ja": "{1}を{0}中{2}…",
+    "translate": [
+      "0",
+      "1",
+      "2"
+    ]
+  },
+  "Installing": {
+    "ja": "インストール"
+  },
+  "Removing": {
+    "ja": "削除"
+  },
+  " ({0} of {1})": {
+    "ja": "（{0} / {1}）"
+  },
+  "Install {0} language packs?": {
+    "ja": "{0}個の言語パックをインストールしますか？"
+  },
+  "They are about {0} MB in all and download from PyPI, so an internet connection is needed. This can take several minutes.": {
+    "ja": "合計約{0} MBをPyPIからダウンロードします。インターネット接続が必要です。数分かかる場合があります。"
+  },
+  "Remove the {0} pack?": {
+    "ja": "{0}のパックを削除しますか？",
+    "translate": [
+      "0"
+    ]
+  },
+  "Remove all {0} language packs?": {
+    "ja": "{0}個の言語パックをすべて削除しますか？"
+  },
+  "Its packages are uninstalled from this computer. You can install it again later.": {
+    "ja": "このパソコンからパッケージを削除します。後で再インストールできます。"
+  },
+  "Their packages are uninstalled from this computer. You can install them again later.": {
+    "ja": "このパソコンからパッケージを削除します。後で再インストールできます。"
+  },
+  "Furigana goes back to basic readings.": {
+    "ja": "ふりがなは基本の読み方に戻ります。"
+  },
+  "Python was not found. Install Python and add it to PATH, then try again.": {
+    "ja": "Pythonが見つかりません。PythonをインストールしてPATHに追加し、もう一度お試しください。"
+  },
+  "Windows would not let CrossTrans change the files. Close any program that may be using them, then try again.": {
+    "ja": "Windowsがファイルの変更を許可しませんでした。使用中のアプリを閉じて、もう一度お試しください。"
+  },
+  "There is not enough free disk space.": {
+    "ja": "ディスクの空き容量が足りません。"
+  },
+  "CrossTrans could not download the packages. Check your internet connection, then try again.": {
+    "ja": "パッケージをダウンロードできませんでした。インターネット接続を確認して、もう一度お試しください。"
+  },
+  "Try again, or look in the log for details.": {
+    "ja": "もう一度試すか、ログで詳細を確認してください。"
+  },
+  "{0} is installed, with basic word splitting.": {
+    "ja": "{0}をインストールしました。基本的な単語分割を使います。",
+    "translate": [
+      "0"
+    ]
+  },
+  "{0} is installed.": {
+    "ja": "{0}をインストールしました。",
+    "translate": [
+      "0"
+    ]
+  },
+  "{0} was removed.": {
+    "ja": "{0}を削除しました。",
+    "translate": [
+      "0"
+    ]
+  },
+  "Could not {0} {1}. {2}": {
+    "ja": "{1}を{0}できませんでした。{2}",
+    "translate": [
+      "0",
+      "1",
+      "2"
+    ]
+  },
+  "install": {
+    "ja": "インストール"
+  },
+  "remove": {
+    "ja": "削除"
+  },
+  "Installed {0} language packs.": {
+    "ja": "{0}個の言語パックをインストールしました。"
+  },
+  "Removed {0} language packs.": {
+    "ja": "{0}個の言語パックを削除しました。"
+  },
+  "Could not {0} any of the {1} language packs. {2}": {
+    "ja": "{1}個の言語パックを{0}できませんでした。{2}",
+    "translate": [
+      "0",
+      "2"
+    ]
+  },
+  "{0} {1} of {2}.": {
+    "ja": "{2}個中{1}個を{0}しました。",
+    "translate": [
+      "0"
+    ]
+  },
+  "{0} {1} of {2}. Could not {3}: {4}.": {
+    "ja": "{2}個中{1}個を{0}しました。{3}できなかった言語：{4}。",
+    "translate": [
+      "0",
+      "3"
+    ]
+  },
+  "Removed": {
+    "ja": "削除"
+  },
+  "Nothing was done.": {
+    "ja": "変更はありません。"
+  },
+  "Press the keys you want to use.": {
+    "ja": "使いたいキーを押してください。"
+  },
+  "Add a letter, a number or a function key after the modifiers.": {
+    "ja": "修飾キーに加えて、文字・数字・ファンクションキーを押してください。"
+  },
+  "A shortcut has one key besides Win, Ctrl, Alt and Shift.": {
+    "ja": "Win・Ctrl・Alt・Shift以外のキーは1つだけ指定できます。"
+  },
+  "Start with Ctrl, Alt, Shift or Win, or it would type into the app you are in.": {
+    "ja": "Ctrl・Alt・Shift・Winのいずれかを含めてください。文字の入力と重ならないようにします。"
+  },
+  "CrossTrans cannot use {0} in a shortcut. Use a letter, a number, F1 to F12, or a key such as Space or Enter.": {
+    "ja": "{0}はショートカットに使えません。文字・数字・F1～F12、SpaceやEnterなどを使ってください。"
+  },
+  "{0} belongs to Windows. Choose another.": {
+    "ja": "{0}はWindowsが使います。別の組み合わせを選んでください。"
+  },
+  "Windows keeps Win + key shortcuts for itself. Add Alt, Ctrl or Shift to {0}.": {
+    "ja": "Winとキーだけの組み合わせはWindowsが使います。{0}にAlt・Ctrl・Shiftを追加してください。"
+  },
+  "{0} is already used for {1}.": {
+    "ja": "{0}は{1}で使われています。",
+    "translate": [
+      "1"
+    ]
+  },
+  "The Xbox Game Bar can also use {0} to {1}. If it does not work, turn that shortcut off in Windows Settings > Gaming > Xbox Game Bar, or choose another.": {
+    "ja": "Xbox Game Barも{1}に{0}を使います。動かない場合は、Windowsの「設定」→「ゲーム」→「Xbox Game Bar」でそのショートカットをオフにするか、別の組み合わせを選んでください。",
+    "translate": [
+      "1"
+    ]
+  },
+  "record the last moments": {
+    "ja": "直前の録画を保存する操作"
+  },
+  "start or stop recording": {
+    "ja": "録画の開始・停止"
+  },
+  "turn HDR on or off": {
+    "ja": "HDRの切り替え"
+  },
+  "turn the microphone on or off": {
+    "ja": "マイクの切り替え"
+  },
+  "show or hide the recording timer": {
+    "ja": "録画タイマーの表示切り替え"
+  },
+  "Keyboard shortcuts": {
+    "ja": "キーボードショートカット"
+  },
+  "See every translation, screenshot and grammar shortcut.": {
+    "ja": "翻訳・スクリーンショット・文法校正のショートカットを確認できます。"
+  },
+  "CrossTrans has been updated to v{0}": {
+    "ja": "CrossTransをv{0}に更新しました"
+  },
+  "Update will be applied when you restart Windows.": {
+    "ja": "Windowsを再起動すると更新が適用されます。"
+  },
+  "Could not schedule update": {
+    "ja": "更新を予約できませんでした"
+  },
+  "CrossTrans is already running": {
+    "ja": "CrossTransはすでに起動しています"
+  },
+  "No key yet. Screenshot translation needs a key that can read images. Add one in AI providers.": {
+    "ja": "スクリーンショットの翻訳には、画像に対応したキーが必要です。「AIプロバイダー」で追加してください。"
+  },
+  "None of your keys can read images yet. Test an image-capable model in AI providers, then try again.": {
+    "ja": "画像に対応したキーがありません。「AIプロバイダー」で画像対応モデルをテストし、もう一度お試しください。"
+  },
+  "Screenshot translation failed: {0}": {
+    "ja": "スクリーンショットを翻訳できませんでした：{0}"
+  },
+  "API Key Restored": {
+    "ja": "APIキーを利用できます"
+  },
+  "Your API key is working again. CrossTrans will use it for translations.": {
+    "ja": "APIキーを再び利用できるようになりました。今後の翻訳に使います。"
+  },
+  "Reading": {
+    "ja": "読み方"
+  },
+  "Installing {0}...": {
+    "ja": "{0}をインストール中…",
+    "translate": [
+      "0"
+    ]
+  },
+  "Removing {0}...": {
+    "ja": "{0}を削除中…",
+    "translate": [
+      "0"
+    ]
+  },
+  "Installing {0} ({1} of {2})...": {
+    "ja": "{0}をインストール中（{1} / {2}）…",
+    "translate": [
+      "0"
+    ]
+  },
+  "Removing {0} ({1} of {2})...": {
+    "ja": "{0}を削除中（{1} / {2}）…",
+    "translate": [
+      "0"
+    ]
+  },
+  "Installed {0} of {1}.": {
+    "ja": "{1}個中{0}個をインストールしました。"
+  },
+  "Removed {0} of {1}.": {
+    "ja": "{1}個中{0}個を削除しました。"
+  },
+  "Sentence links": {
+    "ja": "文の対応"
+  },
+  "Grammar fix": {
+    "ja": "文法校正"
+  },
+  "Auto-detect": {
+    "ja": "自動判定"
+  },
+  "Hide all keys": {
+    "ja": "すべてのキーを隠す"
+  },
+  "Show all keys": {
+    "ja": "すべてのキーを表示"
+  },
+  "Download update": {
+    "ja": "更新をダウンロード"
+  },
+  "Open download page": {
+    "ja": "ダウンロードページを開く"
+  },
+  "Try again later": {
+    "ja": "後で再試行"
+  },
+  "Try a translation": {
+    "ja": "翻訳を試す"
+  },
+  "Download manually from GitHub": {
+    "ja": "GitHubから手動でダウンロード"
+  },
+  "Retry Update Check": {
+    "ja": "更新を再確認"
+  },
+  "{0} characters": {
+    "ja": "{0}文字"
+  },
+  "This feature": {
+    "ja": "この機能"
+  },
+  "File/Image translation": {
+    "ja": "ファイル・画像の翻訳"
+  },
+  "Works with {0}. It can read images and files.": {
+    "ja": "{0}で利用できます。 画像とファイルに対応しています。"
+  },
+  "Works with {0}. It can read images.": {
+    "ja": "{0}で利用できます。 画像に対応しています。"
+  },
+  "Works with {0}. It can read files.": {
+    "ja": "{0}で利用できます。 ファイルに対応しています。"
+  },
+  "Waiting for Windows Hello...": {
+    "ja": "Windows Helloでの確認を待っています…"
+  },
+  "Installed {0} of {1}. Could not install: {2}.": {
+    "ja": "{1}個中{0}個をインストールしました。処理できなかった言語：{2}。",
+    "translate": [
+      "2"
+    ]
+  },
+  "Removed {0} of {1}. Could not remove: {2}.": {
+    "ja": "{1}個中{0}個を削除しました。処理できなかった言語：{2}。",
+    "translate": [
+      "2"
+    ]
+  },
+  "CrossTrans - Verify your identity to view API keys": {
+    "ja": "CrossTrans - APIキーを表示するには本人確認を行ってください"
+  },
+  "CrossTrans could not use the configured AI service. Check your key in AI providers, then try again.": {
+    "ja": "設定されたAIサービスを利用できませんでした。「AIプロバイダー」でキーを確認して、もう一度お試しください。"
+  },
+  "No working API key found.": {
+    "ja": "利用できるAPIキーがありません。"
+  },
+  "Save translation history": {
+    "ja": "翻訳履歴を保存"
+  },
+  "Keep translations on this device. Turning this off keeps existing history.": {
+    "ja": "この端末に翻訳を保存します。オフにしても保存済みの履歴は残ります。"
+  },
+  "Reset shortcuts and preferences. Your API keys, history and history-saving choice stay.": {
+    "ja": "ショートカットと設定を初期状態に戻します。APIキー、履歴、履歴の保存設定は維持されます。"
+  },
+  "The shortcuts and the settings in this window go back to how CrossTrans came. Your API keys, history, history-saving choice and language packs stay.": {
+    "ja": "ショートカットとこの画面の設定を初期状態に戻します。APIキー、履歴、履歴の保存設定、言語パックは維持されます。"
+  },
+  "API Settings": {
+    "ja": "API設定"
+  },
+  "Follow Windows": {
+    "ja": "Windows の設定に合わせる"
+  },
+  "Pink + White": {
+    "ja": "ピンクと白"
+  },
+  "Ocean Blue + White": {
+    "ja": "オーシャンブルーと白"
+  },
+  "Pale Yellow + White": {
+    "ja": "淡い黄色と白"
+  },
+  "Pale Green + White": {
+    "ja": "淡い緑と白"
+  },
+  "White": {
+    "ja": "ホワイト"
+  },
+  "Black": {
+    "ja": "ブラック"
+  },
+  "Translation requires your own API key. You can add one now or later in Settings.": {
+    "ja": "翻訳にはご自身の API キーが必要です。今すぐ追加するか、後で設定から追加できます。"
+  },
+  "Translation requires your own API key. Add a key in AI providers, or check the configured key and try again.": {
+    "ja": "翻訳にはご自身の API キーが必要です。「AI プロバイダー」でキーを追加するか、設定済みのキーを確認して再試行してください。"
+  },
+  "Set up CrossTrans 2": {
+    "ja": "CrossTrans 2 の初期設定"
+  },
+  "Home": {
+    "ja": "ホーム"
+  },
+  "Open Language packs": {
+    "ja": "言語パックを開く"
+  },
+  "Appearance and language": {
+    "ja": "外観と言語"
+  },
+  "Connect your AI provider": {
+    "ja": "AI プロバイダーの設定"
+  },
+  "Dictionary language packs": {
+    "ja": "辞書の言語パック"
+  },
+  "General preferences": {
+    "ja": "基本設定"
+  },
+  "Your setup is ready": {
+    "ja": "設定が完了しました"
+  },
+  "{step} of {total}": {
+    "ja": "{total} ステップ中 {step}"
+  },
+  "Open Home": {
+    "ja": "ホームを開く"
+  },
+  "Follow Windows (selected)": {
+    "ja": "Windows に合わせる（選択中）"
+  },
+  "Skipping without a theme choice follows Windows: Pink + White or Black.": {
+    "ja": "テーマを選ばずにスキップすると、Windows の設定に合わせてピンク＋ホワイトまたはブラックになります。"
+  },
+  "Translation requires your own API key. Add one here, or explicitly continue without a key.": {
+    "ja": "翻訳にはご自身の API キーが必要です。ここで追加するか、キーなしで続行することを選んでください。"
+  },
+  "Packs are optional. Install only the languages you need; you can do this later.": {
+    "ja": "言語パックの導入は任意です。必要な言語だけをインストールしてください。後から追加することもできます。"
+  },
+  "Your choices are saved. Open Home to start translating.": {
+    "ja": "設定を保存しました。ホームを開いて翻訳を始めてください。"
+  },
+  "An API key is required to translate": {
+    "ja": "翻訳には API キーが必要です"
+  },
+  "You can open Home without a key, but translation will not work until you add your own key in Settings.": {
+    "ja": "キーなしでもホームは開けますが、設定でご自身の API キーを追加するまで翻訳は使えません。"
+  },
+  "Continue without a key": {
+    "ja": "キーなしで続行"
+  },
+  "Wait for the language-pack operation to finish before closing setup.": {
+    "ja": "言語パックの処理が終わってから初期設定を閉じてください。"
+  },
+  "Explain in": {
+    "ja": "説明に使う言語"
+  },
+  "Look up phrase": {
+    "ja": "語句を調べる"
+  },
+  "Select words from passage": {
+    "ja": "文章から単語を選ぶ"
+  },
+  "Replace the lookup text?": {
+    "ja": "調べるテキストを置き換えますか？"
+  },
+  "The Dictionary already contains text. Replace it with the selected text?": {
+    "ja": "辞書には既にテキストが入力されています。選択したテキストで置き換えますか？"
+  },
+  "Use selected text": {
+    "ja": "選択したテキストを使う"
+  },
+  "Enter a word, phrase or passage first.": {
+    "ja": "単語、語句、または文章を入力してください。"
+  },
+  "The text changed. Select words again.": {
+    "ja": "テキストが変更されました。単語を選び直してください。"
+  },
+  "Select a word or enter a phrase first.": {
+    "ja": "単語を選ぶか、語句を入力してください。"
+  },
+  "Add your own API key to look up words.": {
+    "ja": "単語を調べるには、ご自身の API キーを追加してください。"
+  },
+  "Back to history": {
+    "ja": "履歴に戻る"
+  },
+  "Back to lookup": {
+    "ja": "入力に戻る"
+  },
+  "Open in Translate": {
+    "ja": "翻訳で開く"
+  },
+  "Replace the current translation?": {
+    "ja": "現在の翻訳を置き換えますか？"
+  },
+  "This replaces the current text and clears attached files. Cancel keeps your work.": {
+    "ja": "現在のテキストを置き換え、添付ファイルを解除します。キャンセルすると作業内容を保持します。"
+  },
+  "API Capabilities": {
+    "ja": "API の対応機能"
+  },
+  "Across your configured keys. Test a key to verify what it can read.": {
+    "ja": "設定済みのキー全体の対応状況です。各キーをテストして対応機能を確認してください。"
+  },
+  "Images: not tested": {
+    "ja": "画像：未テスト"
+  },
+  "Files: not tested": {
+    "ja": "ファイル：未テスト"
+  },
+  "Move key up": {
+    "ja": "キーの優先順位を上げる"
+  },
+  "Move key down": {
+    "ja": "キーの優先順位を下げる"
+  },
+  "Last used": {
+    "ja": "最後に使用"
+  },
+  "Translated at {time}": {
+    "ja": "翻訳成功：{time}"
+  },
+  "Usage limit reached at {time}": {
+    "ja": "使用上限に到達：{time}"
+  },
+  "Request failed at {time}": {
+    "ja": "リクエスト失敗：{time}"
+  },
+  "Average translation: {seconds:.1f} s": {
+    "ja": "翻訳の平均時間：{seconds:.1f} 秒"
+  },
+  "CrossTrans has no API key to use yet. Add your own key in Settings.": {
+    "ja": "使用できるAPIキーがありません。設定でご自身のキーを追加してください。"
+  },
+  "Use Home to switch between Translate, Dictionary and History.": {
+    "ja": "ホームで翻訳、辞書、履歴を切り替えられます。"
+  },
+  "A language pack splits Japanese, Chinese, Korean and many other languages into words much better. Install one in Language packs.": {
+    "ja": "言語パックを使うと、日本語、中国語、韓国語などの単語分割がより正確になります。「言語パック」からインストールしてください。"
+  },
+  "Waiting for administrator approval. Cancelling keeps the app open.": {
+    "ja": "管理者の承認を待っています。キャンセルしてもアプリは開いたままです。"
+  },
+  "Installer was not started. The app is still open; you can retry.": {
+    "ja": "インストーラーは開始されませんでした。アプリは開いたままです。再試行できます。"
+  },
+  "CrossTrans 2": {
+    "ja": "CrossTrans 2"
+  },
+  "Across configured keys. Test a key to confirm image and file support.": {
+    "ja": "設定済みのキー全体の対応状況です。画像とファイルの対応状況は、キーをテストして確認してください。"
+  },
+  "Every key is removed from this computer. Translation needs a key before it can run again. Your models, history and other settings stay.": {
+    "ja": "このコンピューターからすべてのキーを削除します。再び翻訳するにはキーが必要です。モデル、履歴、その他の設定は保持されます。"
+  },
+  "Auto-detect · {language}": {
+    "ja": "自動判定・{language}",
+    "translate": [
+      "language"
+    ]
+  },
+  "All": {
+    "ja": "すべて"
+  },
+  "Pink": {
+    "ja": "ピンク"
+  },
+  "Blue": {
+    "ja": "ブルー"
+  },
+  "Yellow": {
+    "ja": "イエロー"
+  },
+  "Green": {
+    "ja": "グリーン"
+  },
+  "Use theme": {
+    "ja": "このテーマを使う"
+  },
+  "Translation succeeded at {time}": {
+    "ja": "翻訳成功：{time}"
+  },
+  "Connection test succeeded at {time}": {
+    "ja": "接続テスト成功：{time}"
+  },
+  "Connection test failed at {time}": {
+    "ja": "接続テスト失敗：{time}"
+  },
+  "Update restart cancelled because a translation started. Retry when finished.": {
+    "ja": "翻訳が開始されたため、更新の再起動を中止しました。翻訳が終わってからやり直してください。"
+  },
+  "GitHub update token (optional)": {
+    "ja": "GitHub 更新トークン（任意）"
+  },
+  "Public updates work without a token. Add one only for higher rate limits or private forks.": {
+    "ja": "公開版の更新確認にトークンは不要です。API 制限の緩和や非公開フォークを使う場合のみ設定してください。"
+  },
+  "Optional. Public updates work automatically without a token. Add a fine-grained GitHub token (Contents: read) only if you hit GitHub rate limits or use a private fork. Windows encrypts it for this user; it is separate from AI keys and GitHub CLI login.": {
+    "ja": "任意設定です。公開版の更新はトークンなしで自動確認されます。GitHub のレート制限を回避したい場合や非公開フォークを使う場合のみ、Contents を読み取り専用にした fine-grained トークンを追加してください。Windows がユーザーごとに暗号化します。AI キーや GitHub CLI のログインとは別です。"
+  },
+  "Save update token": {
+    "ja": "更新トークンを保存"
+  },
+  "Remove token": {
+    "ja": "トークンを削除"
+  },
+  "Token setup guide": {
+    "ja": "トークン設定ガイド"
+  },
+  "Update token saved. Enter a new token to replace it.": {
+    "ja": "更新トークンを保存済みです。変更する場合は新しいトークンを入力してください。"
+  },
+  "No update token saved. Public update checks work automatically.": {
+    "ja": "更新トークンは未設定です。公開版の更新は自動的に確認されます。"
+  },
+  "Could not save the token. Check its format and Windows encryption.": {
+    "ja": "トークンを保存できません。形式と Windows の暗号化機能を確認してください。"
+  },
+  "Could not remove the token. Check file permissions and try again.": {
+    "ja": "トークンを削除できません。ファイルのアクセス許可を確認して再試行してください。"
+  },
+  "Private updates need a GitHub token. Add one in Settings > About > GitHub update token (optional).": {
+    "ja": "非公開版の更新には GitHub トークンが必要です。設定 > バージョン情報 > GitHub 更新トークン（任意）で追加してください。"
+  },
+  "GitHub denied update access. Check token expiry and Contents: read permission for CrossTrans2.": {
+    "ja": "GitHub が更新へのアクセスを拒否しました。トークンの有効期限と CrossTrans2 の Contents 読み取り権限を確認してください。"
+  },
+  "No published release is available, or the token cannot access this repository.": {
+    "ja": "公開済みリリースがないか、このトークンではリポジトリにアクセスできません。"
+  },
+  "Error: {error}": {
+    "ja": "エラー: {error}",
+    "translate": [
+      "error"
+    ]
+  },
+  "Step {0} of {1}": {
+    "ja": "ステップ {0} / {1}"
+  },
+  "Open API keys": {
+    "ja": "APIキーを開く"
+  },
+  "More translate options": {
+    "ja": "翻訳の詳細オプション"
+  },
+  "It needs a model that can read images. Test your key in API keys to find out.": {
+    "ja": "画像に対応したモデルが必要です。「APIキー」でキーをテストすると確認できます。"
+  },
+  "Documents and images need a key that can read them. API keys shows which of yours can.": {
+    "ja": "ドキュメントや画像には、対応したキーが必要です。「APIキー」で確認できます。"
+  },
+  "Open API keys and paste the key.": {
+    "ja": "「APIキー」を開き、キーを貼り付けます。"
+  },
+  "More translate options adds an instruction: formal, casual, concise, natural, or your own words.": {
+    "ja": "「その他のオプション」で、丁寧・カジュアル・簡潔・自然などの指示や、自分の指示を追加できます。"
+  },
+  "Errors or no connection: check the key and your internet connection, then press Test in API keys.": {
+    "ja": "エラーや接続の問題がある場合、キーとインターネット接続を確認し、「APIキー」で「テスト」を押してください。"
+  },
+  "No key yet. Screenshot translation needs a key that can read images. Add one in API keys.": {
+    "ja": "スクリーンショットの翻訳には、画像に対応したキーが必要です。「APIキー」で追加してください。"
+  },
+  "None of your keys can read images yet. Test an image-capable model in API keys, then try again.": {
+    "ja": "画像に対応したキーがありません。「APIキー」で画像対応モデルをテストし、もう一度お試しください。"
+  },
+  "CrossTrans could not use the configured AI service. Check your key in API keys, then try again.": {
+    "ja": "設定されたAIサービスを利用できませんでした。「APIキー」でキーを確認して、もう一度お試しください。"
+  },
+  "Translation requires your own API key. Add a key in API keys, or check the configured key and try again.": {
+    "ja": "翻訳にはご自身の API キーが必要です。「APIキー」でキーを追加するか、設定済みのキーを確認して再試行してください。"
+  },
+  "Show Furigana": {
+    "ja": "ふりがなを表示"
+  },
+  "Show Fix grammar button": {
+    "ja": "文法修正ボタンを表示"
+  },
+  "Add a new shortcut": {
+    "ja": "新しいショートカットを追加"
+  },
+  "Rotate keys": {
+    "ja": "キーのローテーション"
+  },
+  "Drag to reorder keys": {
+    "ja": "ドラッグしてキーの優先順位を変更"
+  },
+  "Drop here": {
+    "ja": "ここにドロップ"
+  },
+  "Priority / Provider / Model / API key / Actions": {
+    "ja": "優先順位 / プロバイダー / モデル / APIキー / 操作"
+  },
+  "Install all packs": {
+    "ja": "すべてのパックをインストール"
+  },
+  "Remove all packs": {
+    "ja": "すべてのパックを削除"
+  },
+  "Clear all history": {
+    "ja": "すべての履歴を削除"
+  },
+  "Supported": {
+    "ja": "対応"
+  },
+  "Unsupported": {
+    "ja": "非対応"
+  },
+  "Not tested": {
+    "ja": "未確認"
+  },
+  "Word selection is not available for this language. Use Look up phrase.": {
+    "ja": "この言語では単語選択を利用できません。「フレーズを調べる」を使用してください。"
+  },
+  "Install this language pack to select words. Phrase lookup remains available.": {
+    "ja": "単語を選択するには、この言語パックをインストールしてください。フレーズ検索はそのまま利用できます。"
+  },
+  "0 packs, about 0 MB.": {
+    "ja": "0パック、約0 MB"
+  },
+  "Limit {time}": {
+    "ja": "上限 {time}"
+  },
+  "Failed {time}": {
+    "ja": "失敗 {time}"
+  },
+  "OK {time}": {
+    "ja": "成功 {time}"
+  },
+  "Test OK {time}": {
+    "ja": "テスト成功 {time}"
+  },
+  "Test failed {time}": {
+    "ja": "テスト失敗 {time}"
+  },
+  "Avg {seconds:.1f} s": {
+    "ja": "平均 {seconds:.1f} 秒"
+  },
+  "Set up attachments": {
+    "ja": "添付ファイルの設定"
+  },
+  "Images are off": {
+    "ja": "画像を添付できません"
+  },
+  "Files are off": {
+    "ja": "ファイルを添付できません"
+  },
+  "To attach images or files:\n\n1. Open Settings > API keys.\n2. Add a key and choose a compatible model.\n3. Test the key, then try attaching again.": {
+    "ja": "画像やファイルを添付するには：\n\n1. 設定 > APIキーを開きます。\n2. キーを追加し、対応するモデルを選びます。\n3. キーをテストしてから、もう一度添付してください。"
+  },
+  "Image attachments need a key that can read images.\n\nTest a compatible key in Settings > API keys, then try again.": {
+    "ja": "画像の添付には、画像を読み取れるAPIキーが必要です。\n\n設定 > APIキーで対応するキーをテストしてから、もう一度お試しください。"
+  },
+  "File attachments need a working key.\n\nTest a key in Settings > API keys, then try again.": {
+    "ja": "ファイルの添付には、有効なAPIキーが必要です。\n\n設定 > APIキーでキーをテストしてから、もう一度お試しください。"
+  },
+  "To Vietnamese": {
+    "ja": "ベトナム語へ"
+  },
+  "To English": {
+    "ja": "英語へ"
+  },
+  "To Japanese": {
+    "ja": "日本語へ"
+  },
+  "To Chinese Simplified": {
+    "ja": "中国語（簡体字）へ"
+  },
+  "To Chinese Traditional": {
+    "ja": "中国語（繁体字）へ"
+  },
+  "To Korean": {
+    "ja": "韓国語へ"
+  },
+  "To French": {
+    "ja": "フランス語へ"
+  },
+  "To German": {
+    "ja": "ドイツ語へ"
+  },
+  "To Spanish": {
+    "ja": "スペイン語へ"
+  },
+  "To Italian": {
+    "ja": "イタリア語へ"
+  },
+  "To Portuguese": {
+    "ja": "ポルトガル語へ"
+  },
+  "To Russian": {
+    "ja": "ロシア語へ"
+  },
+  "To Thai": {
+    "ja": "タイ語へ"
+  },
+  "To Indonesian": {
+    "ja": "インドネシア語へ"
+  },
+  "To Malay": {
+    "ja": "マレー語へ"
+  },
+  "To Hindi": {
+    "ja": "ヒンディー語へ"
+  },
+  "To Arabic": {
+    "ja": "アラビア語へ"
+  },
+  "To Dutch": {
+    "ja": "オランダ語へ"
+  },
+  "To Polish": {
+    "ja": "ポーランド語へ"
+  },
+  "To Turkish": {
+    "ja": "トルコ語へ"
+  },
+  "To Swedish": {
+    "ja": "スウェーデン語へ"
+  },
+  "To Danish": {
+    "ja": "デンマーク語へ"
+  },
+  "To Norwegian": {
+    "ja": "ノルウェー語へ"
+  },
+  "To Finnish": {
+    "ja": "フィンランド語へ"
+  },
+  "To Greek": {
+    "ja": "ギリシャ語へ"
+  },
+  "To Czech": {
+    "ja": "チェコ語へ"
+  },
+  "To Romanian": {
+    "ja": "ルーマニア語へ"
+  },
+  "To Hungarian": {
+    "ja": "ハンガリー語へ"
+  },
+  "To Ukrainian": {
+    "ja": "ウクライナ語へ"
+  },
+  "To Afrikaans": {
+    "ja": "アフリカーンス語へ"
+  },
+  "To Albanian": {
+    "ja": "アルバニア語へ"
+  },
+  "To Amharic": {
+    "ja": "アムハラ語へ"
+  },
+  "To Armenian": {
+    "ja": "アルメニア語へ"
+  },
+  "To Azerbaijani": {
+    "ja": "アゼルバイジャン語へ"
+  },
+  "To Basque": {
+    "ja": "バスク語へ"
+  },
+  "To Belarusian": {
+    "ja": "ベラルーシ語へ"
+  },
+  "To Bengali": {
+    "ja": "ベンガル語へ"
+  },
+  "To Bosnian": {
+    "ja": "ボスニア語へ"
+  },
+  "To Bulgarian": {
+    "ja": "ブルガリア語へ"
+  },
+  "To Catalan": {
+    "ja": "カタルーニャ語へ"
+  },
+  "To Cebuano": {
+    "ja": "セブアノ語へ"
+  },
+  "To Chichewa": {
+    "ja": "チェワ語へ"
+  },
+  "To Corsican": {
+    "ja": "コルシカ語へ"
+  },
+  "To Croatian": {
+    "ja": "クロアチア語へ"
+  },
+  "To Esperanto": {
+    "ja": "エスペラント語へ"
+  },
+  "To Estonian": {
+    "ja": "エストニア語へ"
+  },
+  "To Filipino": {
+    "ja": "フィリピノ語へ"
+  },
+  "To Frisian": {
+    "ja": "フリジア語へ"
+  },
+  "To Galician": {
+    "ja": "ガリシア語へ"
+  },
+  "To Georgian": {
+    "ja": "ジョージア語へ"
+  },
+  "To Gujarati": {
+    "ja": "グジャラート語へ"
+  },
+  "To Haitian Creole": {
+    "ja": "ハイチ・クレオール語へ"
+  },
+  "To Hausa": {
+    "ja": "ハウサ語へ"
+  },
+  "To Hawaiian": {
+    "ja": "ハワイ語へ"
+  },
+  "To Hebrew": {
+    "ja": "ヘブライ語へ"
+  },
+  "To Hmong": {
+    "ja": "モン語へ"
+  },
+  "To Icelandic": {
+    "ja": "アイスランド語へ"
+  },
+  "To Igbo": {
+    "ja": "イボ語へ"
+  },
+  "To Irish": {
+    "ja": "アイルランド語へ"
+  },
+  "To Javanese": {
+    "ja": "ジャワ語へ"
+  },
+  "To Kannada": {
+    "ja": "カンナダ語へ"
+  },
+  "To Kazakh": {
+    "ja": "カザフ語へ"
+  },
+  "To Khmer": {
+    "ja": "クメール語へ"
+  },
+  "To Kurdish (Kurmanji)": {
+    "ja": "クルド語（クルマンジー）へ"
+  },
+  "To Kyrgyz": {
+    "ja": "キルギス語へ"
+  },
+  "To Lao": {
+    "ja": "ラオ語へ"
+  },
+  "To Latin": {
+    "ja": "ラテン語へ"
+  },
+  "To Latvian": {
+    "ja": "ラトビア語へ"
+  },
+  "To Lithuanian": {
+    "ja": "リトアニア語へ"
+  },
+  "To Luxembourgish": {
+    "ja": "ルクセンブルク語へ"
+  },
+  "To Macedonian": {
+    "ja": "マケドニア語へ"
+  },
+  "To Malagasy": {
+    "ja": "マダガスカル語へ"
+  },
+  "To Malayalam": {
+    "ja": "マラヤーラム語へ"
+  },
+  "To Maltese": {
+    "ja": "マルタ語へ"
+  },
+  "To Maori": {
+    "ja": "マオリ語へ"
+  },
+  "To Marathi": {
+    "ja": "マラーティー語へ"
+  },
+  "To Mongolian": {
+    "ja": "モンゴル語へ"
+  },
+  "To Myanmar (Burmese)": {
+    "ja": "ミャンマー語へ"
+  },
+  "To Nepali": {
+    "ja": "ネパール語へ"
+  },
+  "To Pashto": {
+    "ja": "パシュトー語へ"
+  },
+  "To Persian": {
+    "ja": "ペルシア語へ"
+  },
+  "To Punjabi": {
+    "ja": "パンジャーブ語へ"
+  },
+  "To Samoan": {
+    "ja": "サモア語へ"
+  },
+  "To Scots Gaelic": {
+    "ja": "スコットランド・ゲール語へ"
+  },
+  "To Serbian": {
+    "ja": "セルビア語へ"
+  },
+  "To Sesotho": {
+    "ja": "ソト語へ"
+  },
+  "To Shona": {
+    "ja": "ショナ語へ"
+  },
+  "To Sindhi": {
+    "ja": "シンド語へ"
+  },
+  "To Sinhala": {
+    "ja": "シンハラ語へ"
+  },
+  "To Slovak": {
+    "ja": "スロバキア語へ"
+  },
+  "To Slovenian": {
+    "ja": "スロベニア語へ"
+  },
+  "To Somali": {
+    "ja": "ソマリ語へ"
+  },
+  "To Sundanese": {
+    "ja": "スンダ語へ"
+  },
+  "To Swahili": {
+    "ja": "スワヒリ語へ"
+  },
+  "To Tajik": {
+    "ja": "タジク語へ"
+  },
+  "To Tamil": {
+    "ja": "タミル語へ"
+  },
+  "To Telugu": {
+    "ja": "テルグ語へ"
+  },
+  "To Urdu": {
+    "ja": "ウルドゥー語へ"
+  },
+  "To Uzbek": {
+    "ja": "ウズベク語へ"
+  },
+  "To Welsh": {
+    "ja": "ウェールズ語へ"
+  },
+  "To Xhosa": {
+    "ja": "コサ語へ"
+  },
+  "To Yiddish": {
+    "ja": "イディッシュ語へ"
+  },
+  "To Yoruba": {
+    "ja": "ヨルバ語へ"
+  },
+  "To Zulu": {
+    "ja": "ズールー語へ"
+  },
+  "Attach file": {
+    "ja": "ファイルを添付"
+  },
+  "Delete all packs": {
+    "ja": "すべてのパックを削除"
+  },
+  "Clear shortcut": {
+    "ja": "ショートカットを解除"
+  },
+  "Enable shortcuts": {
+    "ja": "ショートカットを有効にする"
+  },
+  "Enable global translation, screenshot and grammar shortcuts.": {
+    "ja": "翻訳、スクリーンショット、文法修正のグローバルショートカットを有効にします。"
+  },
+  "Show Linked reading": {
+    "ja": "対訳リンクを表示"
+  },
+  "Generate sentence links while translating. Uses more tokens and may affect translation quality.": {
+    "ja": "翻訳時に文の対応情報を生成します。トークン使用量が増え、翻訳品質に影響する場合があります。"
+  },
+  "Show the Linked reading button in Home and quick translation when the feature is enabled.": {
+    "ja": "機能が有効なとき、ホームとクイック翻訳に対応表示ボタンを表示します。"
+  },
+  "<- Last used": {
+    "ja": "<- 最終使用"
+  },
+  "Provider: Auto": {
+    "ja": "プロバイダー：自動"
+  },
+  "Model: Auto": {
+    "ja": "モデル：自動"
+  },
+  "Image and file support": {
+    "ja": "画像・ファイルの読み取り"
+  },
+  "Enter text to translate": {
+    "ja": "翻訳するテキストを入力"
+  },
+  "Translation appears here": {
+    "ja": "翻訳結果がここに表示されます"
+  },
+  "{characters} characters · {words} words": {
+    "ja": "{characters}文字 · {words}語"
+  },
+  "Show Linked reading button": {
+    "ja": "対訳リンクのボタンを表示"
+  },
+  "← Last used": {
+    "ja": "← 最後に使用"
+  },
+  "Remove this shortcut?": {
+    "ja": "このショートカットを削除しますか？"
+  },
+  "The shortcut will stop working until you assign it again.": {
+    "ja": "再度割り当てるまで、このショートカットは使用できなくなります。"
+  },
+  "Text files and documents...": {
+    "ja": "テキストファイルと文書…"
+  },
+  "Text files and documents": {
+    "ja": "テキストファイルと文書"
+  },
+  "All files": {
+    "ja": "すべてのファイル"
+  },
+  "Could not read file": {
+    "ja": "ファイルを読み取れませんでした"
+  },
+  "This file is binary or its text encoding could not be identified.": {
+    "ja": "バイナリファイル、または文字コードを判別できないファイルです。"
+  },
+  "Text attachments must be 20 MB or smaller.": {
+    "ja": "テキストの添付ファイルは20 MB以下にしてください。"
+  },
+  "Choose a readable file, not a folder.": {
+    "ja": "フォルダーではなく、読み取り可能なファイルを選択してください。"
+  },
+  "Windows account": {
+    "ja": "Windowsアカウント"
+  },
+  "Use DOMAIN\\user or MicrosoftAccount\\email for your signed-in account.": {
+    "ja": "サインイン中のアカウントをDOMAIN\\userまたはMicrosoftAccount\\メールアドレスの形式で指定してください。"
+  },
+  "Use your account password, not your Windows Hello PIN.": {
+    "ja": "Windows HelloのPINではなく、アカウントのパスワードを入力してください。"
+  },
+  "Use Windows Hello to continue, or cancel to use your account password.": {
+    "ja": "Windows Helloで続行するか、キャンセルしてアカウントのパスワードを使用してください。"
+  },
+  "Images could not be verified. Test again.": {
+    "ja": "画像の読み取り機能を確認できませんでした。再テストしてください。"
+  },
+  "File no longer exists.": {
+    "ja": "ファイルが見つかりません。"
+  },
+  "No readable attachments.": {
+    "ja": "読み取り可能な添付ファイルがありません。"
+  },
+  "Some files were left out: {files}": {
+    "ja": "次のファイルは処理されませんでした：{files}"
+  },
+  "{count} character": {
+    "ja": "{count}文字"
+  },
+  "{count} characters": {
+    "ja": "{count}文字"
+  },
+  "{count} word": {
+    "ja": "{count}語"
+  },
+  "{count} words": {
+    "ja": "{count}語"
+  },
+  "Yes": {
+    "ja": "はい"
+  },
+  "No": {
+    "ja": "いいえ"
+  },
+  "Some files were left out": {
+    "ja": "一部のファイルは追加されませんでした"
+  },
+  "Choose a supported source language to swap.": {
+    "ja": "対応する原文の言語を選択すると、翻訳方向を入れ替えられます。"
+  },
+  "Translate text before swapping.": {
+    "ja": "翻訳結果を入れ替えるには、先にテキストを翻訳してください。"
+  },
+  "Choose the original language, then press Swap languages.": {
+    "ja": "原文の言語を選択してから、もう一度入れ替えボタンを押してください。"
+  },
+  "CrossTrans could not copy any text from the active app. Select text, keep that app focused, and try the shortcut again. If text is already selected, the app may block copying; copy it manually and paste it into Translate.": {
+    "ja": "アクティブなアプリからテキストをコピーできませんでした。文字を選択し、そのアプリにフォーカスを置いたままショートカットを再実行してください。選択済みでもコピーが制限される場合があります。手動でコピーして翻訳画面に貼り付けてください。"
+  },
+  "The provider rejected the API key (authentication failed). Check that the entire key is saved under the correct provider in Settings > API keys, then test it.": {
+    "ja": "プロバイダーがAPIキーを拒否しました（認証失敗）。「設定 > APIキー」でキー全体とプロバイダーを確認し、接続テストを実行してください。"
+  },
+  "The provider denied access to this model. The key may work for other models, but this request needs permission. Check the model and account access in Settings > API keys.": {
+    "ja": "プロバイダーがこのモデルへのアクセスを拒否しました。他のモデルで使えるキーでも、このモデルの利用権限が必要です。「設定 > APIキー」でモデルとアカウントの権限を確認してください。"
+  },
+  "The provider reports that the account has no available quota or credit. Check your usage and billing with the provider, or select another saved key.": {
+    "ja": "アカウントの利用枠または残高が不足しています。プロバイダーの利用状況と請求情報を確認するか、別の保存済みキーを選択してください。"
+  },
+  "The provider is limiting requests or tokens for this key (HTTP 429). Wait for its limit to reset, shorten the text, or use another saved key.": {
+    "ja": "このキーのリクエスト数またはトークン数が制限されています（HTTP 429）。制限のリセットを待つか、テキストを短くするか、別の保存済みキーを使用してください。"
+  },
+  "This provider/model configuration is not accepting image input. Select an image-capable model and test it in Settings > API keys. A working text key alone does not verify image access.": {
+    "ja": "このプロバイダーとモデルの設定では画像を受け付けていません。「設定 > APIキー」で画像対応モデルを選び、テストしてください。テキストの接続成功だけでは画像へのアクセスを確認できません。"
+  },
+  "The provider could not find the selected model. Check its exact model ID in Settings > API keys, or choose a model currently offered by that provider.": {
+    "ja": "選択したモデルがプロバイダーに見つかりません。「設定 > APIキー」で正確なモデルIDを確認するか、現在提供されているモデルを選択してください。"
+  },
+  "The request exceeds the model's text or image limit. Shorten the text, reduce the number or size of attachments, then try again.": {
+    "ja": "リクエストがモデルのテキストまたは画像の上限を超えています。テキストを短くするか、添付ファイルの数やサイズを減らして再実行してください。"
+  },
+  "The provider blocked this content under its content policy. Review the provider's reason in Details and adjust the input if appropriate.": {
+    "ja": "プロバイダーのコンテンツポリシーにより処理がブロックされました。詳細の理由を確認し、必要に応じて入力を調整してください。"
+  },
+  "The provider rejected the request format or an attachment. Details below contain its specific reason. Check the model and attachment format before trying again.": {
+    "ja": "プロバイダーがリクエスト形式または添付ファイルを拒否しました。具体的な理由は下の詳細に表示されます。モデルと添付ファイルの形式を確認してください。"
+  },
+  "The model returned an empty or incomplete answer. No complete translation was received. Try again with less text or select another model.": {
+    "ja": "モデルの回答が空か、途中で終了しました。完全な翻訳を受信できていません。テキストを短くするか、別のモデルで再実行してください。"
+  },
+  "Translation failed. The exact error received is shown in Details below; its cause could not be identified automatically. Use that message to check the provider or open Translate to try again.": {
+    "ja": "翻訳に失敗しました。受信したエラーは下の詳細に表示されます。原因を自動判定できなかったため、その内容を基にプロバイダーを確認するか、翻訳画面で再実行してください。"
+  },
+  "Choose a translation": {
+    "ja": "翻訳履歴を選択"
+  },
+  "Drag words with the left mouse button. Shift-drag selects a range. Enter makes a tag.": {
+    "ja": "左ボタンで単語をドラッグします。Shift＋ドラッグで範囲選択、Enterでタグに変換します。"
+  },
+  "Lavender": {
+    "ja": "ラベンダー"
+  },
+  "Teal": {
+    "ja": "ティール"
+  },
+  "Peach": {
+    "ja": "ピーチ"
+  },
+  "Coffee": {
+    "ja": "コーヒー"
+  },
+  "Midnight Blue": {
+    "ja": "ミッドナイトブルー"
+  },
+  "Forest Night": {
+    "ja": "フォレストナイト"
+  },
+  "Plum Night": {
+    "ja": "プラムナイト"
+  },
+  "Graphite": {
+    "ja": "グラファイト"
+  },
+  "History keeps your last {history_limit} translations and can be searched.": {
+    "ja": "履歴には最近の翻訳{history_limit}件が保存され、検索できます。"
+  },
+  "Reads audio": {
+    "ja": "音声の認識"
+  },
+  "No audio reading yet": {
+    "ja": "音声認識は未確認です"
+  },
+  "Connected. Checking audio...": {
+    "ja": "接続済み。音声を確認中..."
+  },
+  "Audio could not be verified: {reason}": {
+    "ja": "音声を確認できませんでした：{reason}"
+  },
+  "Tested. It can read images, files and audio.": {
+    "ja": "テスト済み。画像・ファイル・音声を読み取れます。"
+  },
+  "Tested. It can read files and audio.": {
+    "ja": "テスト済み。ファイル・音声を読み取れます。"
+  },
+  "Works with {0}. It can read images and files and audio.": {
+    "ja": "{0}で動作します。画像・ファイル・音声を読み取れます。"
+  },
+  "Works with {0}. It can read files and audio.": {
+    "ja": "{0}で動作します。ファイル・音声を読み取れます。"
+  },
+  "Audio translation": {
+    "ja": "音声翻訳"
+  },
+  "The language recorded audio is translated into. Auto uses the Translator's.": {
+    "ja": "録音を翻訳する言語です。自動では翻訳画面の言語を使用します。"
+  },
+  "Translate audio into": {
+    "ja": "音声の翻訳先"
+  },
+  "Recording source": {
+    "ja": "録音元"
+  },
+  "Record PC playback, your microphone, or both.": {
+    "ja": "PCの再生音、マイク、または両方を録音します。"
+  },
+  "PC audio": {
+    "ja": "PCの再生音"
+  },
+  "Microphone": {
+    "ja": "マイク"
+  },
+  "PC + Microphone": {
+    "ja": "PCとマイク"
+  },
+  "Speech recognition model": {
+    "ja": "音声認識モデル"
+  },
+  "Uses a Groq key. Speech recognition and text translation have separate quotas.": {
+    "ja": "Groqキーを使用します。音声認識とテキスト翻訳の利用上限は別々です。"
+  },
+  "Whisper large-v3": {
+    "ja": "Whisper large-v3"
+  },
+  "Whisper large-v3 turbo": {
+    "ja": "Whisper large-v3 turbo"
+  },
+  "Reduce microphone noise": {
+    "ja": "マイクのノイズを軽減"
+  },
+  "Apply light noise reduction before speech recognition.": {
+    "ja": "音声認識の前に軽いノイズ低減を行います。"
+  },
+  "Save recordings": {
+    "ja": "録音の保存"
+  },
+  "Ask when closing, discard, or offer a save location for each recording.": {
+    "ja": "閉じる時に確認、破棄、または録音ごとに保存先を指定します。"
+  },
+  "Ask when closing": {
+    "ja": "閉じる時に確認"
+  },
+  "Do not save": {
+    "ja": "保存しない"
+  },
+  "Always offer to save": {
+    "ja": "毎回保存先を指定"
+  },
+  "Audio devices": {
+    "ja": "音声デバイス"
+  },
+  "Choose the microphone and PC playback device. Uploaded files can be up to 30 minutes.": {
+    "ja": "マイクとPCの再生デバイスを選びます。アップロードするファイルは30分までです。"
+  },
+  "System default devices are used until you choose others.": {
+    "ja": "変更するまではシステムの既定のデバイスを使用します。"
+  },
+  "Refresh audio devices": {
+    "ja": "音声デバイスを更新"
+  },
+  "PC playback device": {
+    "ja": "PCの再生デバイス"
+  },
+  "Microphone device": {
+    "ja": "マイクのデバイス"
+  },
+  "System default": {
+    "ja": "システムの既定"
+  },
+  "Device names may change after reconnecting. Use headphones with both sources to reduce echo.": {
+    "ja": "再接続後にデバイス名が変わる場合があります。両方を録音する時は、ヘッドホンで音の回り込みを抑えられます。"
+  },
+  "Record and translate shortcut": {
+    "ja": "録音して翻訳するショートカット"
+  },
+  "Record and translate": {
+    "ja": "録音して翻訳"
+  },
+  "Preparing recording…": {
+    "ja": "録音を準備中…"
+  },
+  "Recognizing speech…": {
+    "ja": "音声を認識中…"
+  },
+  "Recognizing speech": {
+    "ja": "音声を認識中"
+  },
+  "Release all shortcut keys to translate": {
+    "ja": "すべてのショートカットキーを離すと翻訳"
+  },
+  "Recording · {input_name} · {time}": {
+    "ja": "録音中 · {input_name} · {time}"
+  },
+  "Translating audio: {done}/{total}": {
+    "ja": "音声を翻訳中：{done}/{total}"
+  },
+  "Recognizing speech: {done}/{total}": {
+    "ja": "音声を認識中：{done}/{total}"
+  },
+  "You can cancel while processing.": {
+    "ja": "処理中もキャンセルできます。"
+  },
+  "Play recording": {
+    "ja": "録音を再生"
+  },
+  "Save this recording?": {
+    "ja": "この録音を保存しますか？"
+  },
+  "Keep a WAV copy of this recording? No discards the temporary audio. Translation history keeps text only.": {
+    "ja": "この録音をWAV形式で保存しますか？「いいえ」では一時音声を破棄します。翻訳履歴にはテキストのみを残します。"
+  },
+  "Don't ask again": {
+    "ja": "次回から確認しない"
+  },
+  "Save recording": {
+    "ja": "録音を保存"
+  },
+  "WAV audio": {
+    "ja": "WAV音声"
+  },
+  "Audio and video": {
+    "ja": "音声と動画"
+  },
+  "Audio and video...": {
+    "ja": "音声と動画..."
+  },
+  "Audio is not ready": {
+    "ja": "音声の準備ができていません"
+  },
+  "Test a Groq key for audio in Settings > API keys first.": {
+    "ja": "設定 > APIキーで、Groqキーの音声認識を先にテストしてください。"
+  },
+  "Translate one audio or video file at a time.": {
+    "ja": "音声・動画ファイルは1つずつ翻訳してください。"
+  },
+  "Translate audio or video separately from other attachments.": {
+    "ja": "音声・動画は、ほかの添付ファイルと分けて翻訳してください。"
+  },
+  "Audio translation is already running.": {
+    "ja": "音声翻訳はすでに実行中です。"
+  },
+  "Finish or cancel audio translation first.": {
+    "ja": "先に音声翻訳を完了するかキャンセルしてください。"
+  },
+  "Add and test a Groq key in Settings > API keys to translate audio.": {
+    "ja": "音声翻訳には、設定 > APIキーでGroqキーを追加してテストしてください。"
+  },
+  "The 3-minute recording limit was reached. Translating the recording.": {
+    "ja": "録音が上限の3分に達しました。録音した内容を翻訳します。"
+  },
+  "Could not save the recording. Try another location.": {
+    "ja": "録音を保存できませんでした。別の保存先を選んでください。"
+  },
+  "Audio translation was cancelled.": {
+    "ja": "音声翻訳をキャンセルしました。"
+  },
+  "There is no recording to save.": {
+    "ja": "保存する録音がありません。"
+  },
+  "The audio could not be decoded.": {
+    "ja": "音声を読み込めませんでした。"
+  },
+  "Audio support is not installed. Install the application audio dependencies.": {
+    "ja": "音声機能がインストールされていません。アプリの音声用依存パッケージをインストールしてください。"
+  },
+  "This file has no audio track.": {
+    "ja": "このファイルには音声トラックがありません。"
+  },
+  "Audio and video files must be 30 minutes or shorter.": {
+    "ja": "音声・動画ファイルは30分以内にしてください。"
+  },
+  "Choose a PC playback loopback device.": {
+    "ja": "PC再生音のループバックデバイスを選んでください。"
+  },
+  "Choose a microphone input device.": {
+    "ja": "マイクの入力デバイスを選んでください。"
+  },
+  "Choose a recording source in Settings > Translation.": {
+    "ja": "設定 > 翻訳で録音元を選んでください。"
+  },
+  "Recording stopped before the device was ready.": {
+    "ja": "デバイスの準備完了前に録音を停止しました。"
+  },
+  "Audio capture lost samples. Check the device and try again.": {
+    "ja": "録音中に音声の欠落がありました。デバイスを確認して再実行してください。"
+  },
+  "The recording device disconnected or stopped.": {
+    "ja": "録音デバイスが切断されたか停止しました。"
+  },
+  "The recording was too short. Hold the shortcut a little longer.": {
+    "ja": "録音が短すぎます。ショートカットをもう少し長く押してください。"
+  },
+  "Could not open the recording device. Check the device and microphone permissions.": {
+    "ja": "録音デバイスを開けませんでした。デバイスとマイクのアクセス許可を確認してください。"
+  },
+  "The speech provider returned an invalid response.": {
+    "ja": "音声認識サービスから無効な応答が返されました。"
+  },
+  "The speech provider did not accept this API key.": {
+    "ja": "音声認識サービスにAPIキーが拒否されました。"
+  },
+  "This API key does not have permission to use speech recognition.": {
+    "ja": "このAPIキーには音声認識の使用権限がありません。"
+  },
+  "This speech recognition model is not available for this API key.": {
+    "ja": "このAPIキーでは選択した音声認識モデルを利用できません。"
+  },
+  "The audio request is too large.": {
+    "ja": "音声リクエストのサイズが大きすぎます。"
+  },
+  "Groq speech recognition quota or rate limit was reached. Try again later.": {
+    "ja": "Groq音声認識の利用上限に達しました。時間をおいて再実行してください。"
+  },
+  "Speech recognition quota or rate limit was reached. Try again later.": {
+    "ja": "音声認識の利用上限に達しました。時間をおいて再実行してください。"
+  },
+  "Speech recognition quota or rate limit was reached. Try again in {0} seconds.": {
+    "ja": "音声認識の利用上限に達しました。{0}秒後に再実行してください。"
+  },
+  "The speech provider could not process the audio.": {
+    "ja": "音声認識サービスで音声を処理できませんでした。"
+  },
+  "Could not reach the speech provider. Check the connection and try again.": {
+    "ja": "音声認識サービスに接続できません。接続を確認して再実行してください。"
+  },
+  "Audio recognition currently supports Groq keys.": {
+    "ja": "現在、音声認識にはGroqキーを使用できます。"
+  },
+  "Audio recognition could not be verified. Test again.": {
+    "ja": "音声認識を確認できませんでした。もう一度テストしてください。"
+  },
+  "Speech recognition timed out. Try again.": {
+    "ja": "音声認識がタイムアウトしました。再実行してください。"
+  },
+  "Speech recognition failed.": {
+    "ja": "音声認識に失敗しました。"
+  },
+  "No speech was detected. Check the source and try again.": {
+    "ja": "発話が検出されませんでした。録音元を確認して再実行してください。"
+  },
+  "Text translation timed out. The recognized text is still available.": {
+    "ja": "テキスト翻訳がタイムアウトしました。認識済みのテキストは保持されています。"
+  },
+  "Use recognized text": {
+    "ja": "認識済みテキストを使用"
+  },
+  "Audio translation finished. The draft changed; the result is in History.": {
+    "ja": "音声翻訳が完了しました。下書きが変更されたため、結果は履歴で確認できます。"
+  },
+  "Audio recognition works. Text translation could not be verified.": {
+    "ja": "音声認識は利用できます。テキスト翻訳は確認できませんでした。"
+  },
+  "The selected audio device changed. Refresh devices in Settings > Translation.": {
+    "ja": "選択した音声デバイスが変わりました。設定 > 翻訳でデバイスを更新してください。"
+  },
+  "Record and translate audio": {
+    "ja": "録音して音声を翻訳"
+  },
+  "Add a Groq key in API keys and press Test to verify Reads audio.": {
+    "ja": "APIキーでGroqキーを追加し、テストを押して「音声の認識」を確認します。"
+  },
+  "Choose the audio language and recording source in Translation settings.": {
+    "ja": "翻訳設定で、音声の翻訳先言語と録音元を選びます。"
+  },
+  "Hold Ctrl + Shift + F9 to record. Release every shortcut key to translate.": {
+    "ja": "Ctrl + Shift + F9を押し続けて録音し、すべてのキーを離すと翻訳します。"
+  },
+  "Read the quick result, play the recording, then choose whether to save when closing.": {
+    "ja": "クイック翻訳を確認して録音を再生し、閉じる時に保存するか選びます。"
+  },
+  "Quick recordings stop at three minutes. You can change the shortcut in Shortcuts.": {
+    "ja": "クイック録音は3分で停止します。ショートカットは設定で変更できます。"
+  },
+  "Attach one audio or video file in Translate for recordings up to thirty minutes.": {
+    "ja": "翻訳画面では、30分以内の音声・動画ファイルを1つ添付できます。"
+  },
+  "Uploaded originals stay unchanged. Only the first audio track is translated.": {
+    "ja": "元のファイルは変更されません。最初の音声トラックのみ翻訳します。"
+  },
+  "Speech recognition and text translation use separate Groq quotas. A paid plan is not required within the free limits.": {
+    "ja": "音声認識とテキスト翻訳には別々のGroq利用上限があります。無料枠内なら有料プランは不要です。"
+  },
+  "Use headphones when recording both sources to reduce audio leaking into the microphone.": {
+    "ja": "両方を録音する時は、ヘッドホンでマイクへの音の回り込みを抑えられます。"
+  },
+  "History stores text only. Change the recording save question in Translation settings.": {
+    "ja": "履歴にはテキストのみを保存します。録音の保存確認は翻訳設定で変更できます。"
+  },
+  "Audio translation finished. The draft changed; the result is in a quick popup.": {
+    "ja": "音声翻訳が完了しました。下書きが変更されたため、結果はクイック翻訳に表示します。"
+  },
+  "Audio processing mode": {
+    "ja": "音声処理モード"
+  },
+  "Two-step (Transcribe speech → Translate text)": {
+    "ja": "2段階（音声を文字起こし → テキストを翻訳）"
+  },
+  "One-step (Translate speech directly in one pass)": {
+    "ja": "1段階（音声を直接翻訳）"
+  },
+  "Processing mode": {
+    "ja": "処理モード"
+  },
+  "Speech recognition keys": {
+    "ja": "音声認識キー"
+  },
+  "Primary audio key": {
+    "ja": "メイン音声キー"
+  },
+  "Backup audio key {number}": {
+    "ja": "バックアップ音声キー {number}"
+  },
+  "Pick from API keys": {
+    "ja": "APIキーから選択"
+  },
+  "No API keys saved yet": {
+    "ja": "保存されたAPIキーはまだありません"
+  },
+  "Add backup audio key": {
+    "ja": "バックアップ音声キーを追加"
+  },
+  "Remove audio key": {
+    "ja": "音声キーを削除"
+  },
+  "Audio recognition works.": {
+    "ja": "音声認識が機能しています。"
+  },
+  "Audio recognition works. (One-step supported)": {
+    "ja": "音声認識が機能しています（直接翻訳対応）。"
+  },
+  "Audio recognition failed.": {
+    "ja": "音声認識に失敗しました。"
+  },
+  "Change shortcut in Shortcuts ›": {
+    "ja": "ショートカットで変更 ›"
+  },
+  "Change in Shortcuts ›": {
+    "ja": "ショートカットで変更 ›"
+  },
+  "Audio translation is disabled. Enable it in Settings > API keys.": {
+    "ja": "音声翻訳は無効です。設定 > APIキーで有効にしてください。"
+  },
+  "Add and test an Audio key in Settings > API keys first.": {
+    "ja": "まず設定 > APIキーで音声キーを追加してテストしてください。"
+  },
+  "Testing audio recognition...": {
+    "ja": "音声認識をテスト中..."
+  },
+  "Paste or select a key first.": {
+    "ja": "まずキーを貼り付けるか選択してください。"
+  },
+  "Two-step verbatim transcription or one-step direct translation.": {
+    "ja": "2段階の逐語的文字起こし、または1段階の直接翻訳。"
+  },
+  "Uses an Audio key. Speech recognition and text translation have separate quotas.": {
+    "ja": "音声キーを使用します。音声認識とテキスト翻訳は別々のクォータを持ちます。"
+  },
+  "Add and test an Audio key in Settings > API keys to translate audio.": {
+    "ja": "音声を翻訳するには、設定 > API keys で音声キーを追加してテストしてください。"
+  },
+  "Backup audio key {0}": {
+    "ja": "予備音声キー {0}"
+  },
+  "Test cancelled.": {
+    "ja": "テストがキャンセルされました。"
+  },
+  "Open diagnostics": {
+    "ja": "診断とログを開く"
+  },
+  "Diagnostics and bug report": {
+    "ja": "診断とバグ報告"
+  },
+  "Inspect runtime status, copy a bug report, or export logs.": {
+    "ja": "動作状況の確認、バグ報告のコピー、ログの書き出しを行います。"
+  },
+  "Verbose debug logging": {
+    "ja": "詳細デバッグログ"
+  },
+  "Record detailed step-by-step logs for troubleshooting.": {
+    "ja": "問題解決のために詳細なステップごとのログを記録します。"
+  },
+  "Review system details and recent logs. API keys, tokens, and translation history are excluded.": {
+    "ja": "システム情報と最近のログを確認できます。APIキー、トークン、翻訳履歴は除外されます。"
+  },
+  "Report on GitHub": {
+    "ja": "GitHubで報告"
+  },
+  "Open logs folder": {
+    "ja": "ログフォルダーを開く"
+  },
+  "Export bundle": {
+    "ja": "バンドルを書き出す"
+  },
+  "Copy report": {
+    "ja": "レポートをコピー"
+  },
+  "Refresh": {
+    "ja": "更新"
+  },
+  "Crash log detected": {
+    "ja": "クラッシュログあり"
+  },
+  "No crash reports recorded": {
+    "ja": "クラッシュログはありません"
+  },
+  "Copied diagnostic report to clipboard.": {
+    "ja": "診断レポートをクリップボードにコピーしました。"
+  },
+  "Save diagnostic bundle": {
+    "ja": "診断バンドルを保存"
+  },
+  "Zip archive": {
+    "ja": "ZIPアーカイブ"
+  },
+  "Saved bundle: {0}": {
+    "ja": "バンドルを保存しました：{0}"
+  },
+  "Opened folder: {0}": {
+    "ja": "フォルダーを開きました：{0}"
+  },
+  "Could not open logs folder: {0}": {
+    "ja": "ログフォルダーを開けませんでした：{0}"
+  },
+  "Opened GitHub and copied full report to clipboard.": {
+    "ja": "GitHubを開き、完全なレポートをクリップボードにコピーしました。"
+  },
+  "Open Logs": {
+    "ja": "ログを開く"
+  },
+  "Your manual audio key failed or is unsupported. Replace it or switch Audio to Auto in Settings > API keys.": {
+    "ja": "手動設定の音声キーが失敗したか未対応です。別のキーに変更するか、設定 > APIキーで音声をAutoに戻してください。"
+  },
+  "Add a working API key in Settings > API keys to translate audio.": {
+    "ja": "音声を翻訳するには、設定 > APIキーで有効なAPIキーを追加してください。"
+  },
+  "Hold the shortcut while speaking, then release all keys to translate.": {
+    "ja": "話している間ショートカットを押し続け、すべてのキーを離すと翻訳されます。"
+  },
+  "Reset to Auto": {
+    "ja": "Autoにリセット"
+  },
+  "Auto: uses main API keys": {
+    "ja": "Auto: メインAPIキーを自動使用"
+  },
+  "Auto (use main API keys)": {
+    "ja": "Auto（メインAPIキーを使用）"
+  },
+  "No active audio playback or microphone devices were found. Connect speakers, headphones, or a microphone, then refresh.": {
+    "ja": "有効なオーディオ再生またはマイクデバイスが見つかりません。スピーカー・ヘッドホン・マイクを接続して更新してください。"
+  },
+  "(One-step supported)": {
+    "ja": "（直接翻訳対応）"
+  },
+  "One-step needs a Google Gemini audio key. With the current key, audio is recognized first and then translated (two steps).": {
+    "ja": "1段階の処理には Google Gemini の音声キーが必要です。現在のキーでは、音声を認識してから翻訳します（2段階）。"
+  },
+  "Choose a recording source in Settings > API keys.": {
+    "ja": "設定 > APIキーで録音元を選んでください。"
+  },
+  "No active audio playback or microphone device was found. Connect speakers, headphones, or a microphone, or check Audio devices in Settings > API keys.": {
+    "ja": "有効なオーディオ再生またはマイクデバイスが見つかりませんでした。スピーカー・ヘッドホン・マイクを接続するか、設定 > APIキーのオーディオデバイスを確認してください。"
+  },
+  "Choose a speech provider for this key.": {
+    "ja": "このキーの音声認識プロバイダーを選択してください。"
+  },
+  "CrossTrans could not find or open an active audio device. Connect speakers, headphones, or a microphone, check Windows microphone permissions, or check Audio devices in Settings > API keys.": {
+    "ja": "有効なオーディオデバイスが見つからないか開けませんでした。スピーカー・ヘッドホン・マイクを接続し、Windowsのマイク権限または設定 > APIキーのオーディオデバイスを確認してください。"
+  },
+  "Audio components are missing from this installation. Reinstall CrossTrans or repair its audio dependencies.": {
+    "ja": "音声機能がインストールに含まれていません。CrossTransを再インストールするか音声コンポーネントを修復してください。"
+  },
+  "CrossTrans could not read speech from that media file. Check that it contains a supported audio track under 30 minutes.": {
+    "ja": "そのメディアファイルから音声を読み取れませんでした。30分以内の対応音声トラックが含まれているか確認してください。"
+  },
+  "Audio recognition has no working API key configured. Update the manual audio key or switch Audio to Auto in Settings > API keys.": {
+    "ja": "音声認識に有効なAPIキーが設定されていません。設定 > APIキーで手動音声キーを更新するかAutoに切り替えてください。"
+  },
+  "Add a supported API key in API keys; Audio uses your main keys automatically in Auto mode, or set a custom key under Audio translation.": {
+    "ja": "APIキーで対応キーを追加してください。Autoモードではメインキーを自動使用し、音声翻訳欄で個別キーを指定することもできます。"
+  },
+  "Choose the audio language and recording source in API keys.": {
+    "ja": "APIキーで音声の翻訳先言語と録音元を選びます。"
+  },
+  "Speech recognition and text translation can share your main API keys or use a dedicated audio key.": {
+    "ja": "音声認識とテキスト翻訳は、メインAPIキーを共有するか専用の音声キーを使用できます。"
+  },
+  "History stores text only. Change the recording save question in API keys.": {
+    "ja": "履歴にはテキストのみを保存します。録音の保存確認はAPIキーで変更できます。"
+  },
+  "Source": {
+    "ja": "音源"
+  },
+  "Mode": {
+    "ja": "モード"
+  },
+  "Two-step": {
+    "ja": "2段階"
+  },
+  "One-step": {
+    "ja": "1段階"
+  },
+  "Record": {
+    "ja": "録音"
+  },
+  "Recording": {
+    "ja": "録音中"
+  },
+  "Ready": {
+    "ja": "準備完了"
+  },
+  "Record or stop": {
+    "ja": "録音／停止"
+  },
+  "Audio settings": {
+    "ja": "音声の設定"
+  },
+  "Audio panel": {
+    "ja": "音声パネル"
+  },
+  "One-step needs a Google Gemini audio key.": {
+    "ja": "1段階の処理には Google Gemini の音声キーが必要です。"
+  },
+  "When both PC audio and the microphone have sound, the audio is recognized first and then translated.": {
+    "ja": "PCの再生音とマイクの両方に音がある場合は、音声を認識してから翻訳します。"
+  },
+  "Win + Alt + A opens the audio panel. Record PC audio, your microphone or both, then read the translation.": {
+    "ja": "Win + Alt + A で音声パネルを開きます。PCの再生音やマイクの音声を録音して、翻訳を表示します。"
+  },
+  "Opens the audio panel; pressed while it is open, it records or stops. Recordings: up to 3 minutes.": {
+    "ja": "音声パネルを開きます。パネルが開いているときに押すと、録音または停止します。録音は最大3分です。"
+  },
+  "The audio shortcut opens the audio panel, where you record and stop. Recordings: up to 3 minutes. Uploaded audio/video: up to 30 minutes.": {
+    "ja": "音声のショートカットで音声パネルを開き、そこで録音と停止をします。録音は最大3分、音声・動画ファイルは最大30分です。"
+  },
+  "Press a shortcut to open the audio panel, then record PC audio, microphone speech, or both.": {
+    "ja": "ショートカットで音声パネルを開き、PCの再生音、マイクの音声、またはその両方を録音します。"
+  },
+  "Press Win + Alt + A: the audio panel opens at the mouse pointer. Press Record (or Space), then Stop to translate.": {
+    "ja": "Win + Alt + A を押すと、マウスポインターの位置に音声パネルが開きます。「録音」（または Space）を押し、「停止」で翻訳します。"
+  },
+  "Audio shortcut": {
+    "ja": "音声のショートカット"
+  },
+  "Open the audio panel, or record while the shortcut is held.": {
+    "ja": "音声パネルを開くか、ショートカットを押している間だけ録音します。"
+  },
+  "Open the audio panel": {
+    "ja": "音声パネルを開く"
+  },
+  "Hold to record, release to translate": {
+    "ja": "押している間録音し、離して翻訳"
+  },
+  "Shortcut action": {
+    "ja": "ショートカットの動作"
+  },
+  "To record while holding the shortcut instead, choose Hold to record in API keys. Tray > Audio panel opens the panel too.": {
+    "ja": "ショートカットを押している間だけ録音するには、APIキーで「押している間録音」を選びます。トレイの「音声パネル」からも開けます。"
+  },
+  "Translate a file…": {
+    "ja": "ファイルを翻訳…"
+  },
+  "Translate an audio or video file": {
+    "ja": "音声・動画ファイルを翻訳"
+  },
+  "Audio or video, up to 30 minutes": {
+    "ja": "音声・動画（最大30分）"
+  },
+  "Reading the file…": {
+    "ja": "ファイルを読み込み中…"
+  },
+  "Please wait a moment before starting another quick translation.": {
+    "ja": "次のクイック翻訳を始める前に少しお待ちください。"
+  },
+  "Enter a prompt before sending.": {
+    "ja": "送信する前にプロンプトを入力してください。"
+  },
+  "The recording was too short to recognize speech. Hold the shortcut or record a little longer, then try again.": {
+    "ja": "録音が短すぎて音声を認識できませんでした。ショートカットをもう少し長押しするか、長く録音してからもう一度お試しください。"
+  },
+  "CrossTrans could not detect which provider this API key belongs to. Open Settings > API keys, choose the Provider, or click Test on the key card.": {
+    "ja": "このAPIキーのプロバイダーを自動判別できませんでした。設定 > APIキーでプロバイダーを選択するか、キーカードの「テスト」を押してください。"
+  },
+  "The model returned a tool call instead of a translation. Try again or select another model in Settings > API keys.": {
+    "ja": "モデルが翻訳ではなくツール呼び出しを返しました。もう一度試すか、設定 > APIキーで別のモデルを選択してください。"
+  },
+  "CrossTrans could not read text from the attached file. Check that the file exists and contains readable text, or try a different format.": {
+    "ja": "添付ファイルからテキストを読み取れませんでした。ファイルが存在し、読み取り可能なテキストが含まれているか確認するか、別の形式をお試しください。"
+  },
+  "All saved API keys failed for different reasons (a key or model setting error on one key, and a temporary service or rate-limit error on another). Check Details below, try again, or review Settings > API keys.": {
+    "ja": "保存されているすべてのAPIキーが異なる原因で失敗しました（キーまたはモデル設定のエラーと、一時的なサービスまたはレート制限のエラー）。下の詳細を確認して再試行するか、設定 > APIキーを見直してください。"
+  }
+}

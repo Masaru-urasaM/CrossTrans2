@@ -1,0 +1,99 @@
+# Started by hand (Actions > installer acceptance > Run workflow). A run builds the frozen application and
+# the installer, exercises the installer on a clean runner and attaches a private candidate draft, so it is
+# not tied to every push. The application and the installer are also uploaded as run artifacts as soon as
+# each exists, so a run that stops later still leaves them (DEFERRED D32, closed).
+name: installer acceptance
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  package:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+          cache: pip
+      - run: python -m pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
+      - name: Build the frozen application
+        run: |
+          python tools/verify_furigana_bundle.py --source
+          python -m PyInstaller --clean --noconfirm --distpath dist-release --workpath build-release CrossTrans.spec
+          python tools/verify_furigana_bundle.py --exe dist-release/CrossTrans2.exe
+          python tools/verify_ui_bundle.py --exe dist-release/CrossTrans2.exe --json logs/ui-bundle.json
+      - name: Upload the frozen application
+        uses: actions/upload-artifact@v7
+        with:
+          name: frozen-app
+          path: |
+            dist-release/CrossTrans2.exe
+            logs/ui-bundle.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Obtain the signed installer compiler
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path logs/toolchain -Force | Out-Null
+          $file = Join-Path (Get-Location) 'logs/toolchain/inno-setup.exe'
+          Invoke-WebRequest https://github.com/jrsoftware/issrc/releases/download/is-7_1_0/innosetup-7.1.0-x64.exe -OutFile $file
+          if ((Get-AuthenticodeSignature $file).Status -ne 'Valid') { throw 'Invalid compiler signature' }
+          $destination = Join-Path (Get-Location) 'logs/toolchain/inno'
+          $process = Start-Process $file -ArgumentList @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/CURRENTUSER','/NOICONS',('/DIR="' + $destination + '"')) -WindowStyle Hidden -PassThru -Wait
+          if ($process.ExitCode -ne 0) { throw 'Compiler installation failed' }
+      - name: Compile the installer
+        timeout-minutes: 10
+        shell: pwsh
+        run: ./tools/build_installer.ps1 -SourceExe dist-release/CrossTrans2.exe -Compiler logs/toolchain/inno/ISCC.exe
+      - name: Upload the installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: installer
+          path: |
+            dist-release/CrossTrans2Setup_v2.0.0.exe
+            dist-release/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 7
+      - name: Exercise the installer in this disposable runner
+        timeout-minutes: 10
+        shell: pwsh
+        run: ./tools/test_installer.ps1 -Installer dist-release/CrossTrans2Setup_v2.0.0.exe -SourceExe dist-release/CrossTrans2.exe -IsolatedEnvironment
+      - name: Show installer acceptance evidence
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path logs/installer-acceptance/results.json) { Get-Content logs/installer-acceptance/results.json }
+          if (Test-Path logs/ui-bundle.json) { Get-Content logs/ui-bundle.json }
+          Get-ChildItem logs/installer-acceptance -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.Extension -in '.log','.txt' } | ForEach-Object {
+            Write-Output ('Diagnostic: ' + $_.FullName)
+            Get-Content -LiteralPath $_.FullName -Tail 100
+          }
+      - name: Upload installer acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: installer-acceptance
+          path: |
+            logs/installer-acceptance
+            logs/ui-bundle.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Deliver the candidate in a private draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $shortSha = '${{ github.sha }}'.Substring(0, 8)
+          $tag = 'candidate-2.0.0-' + $shortSha
+          $notes = @(
+            'Private review candidate; not a published production release.',
+            ('Source commit: ${{ github.sha }}'),
+            ('Installer acceptance run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'),
+            'Validation evidence and SHA256SUMS.txt accompany the installer.'
+          )
+          $notes | Set-Content logs/candidate-notes.md -Encoding utf8
+          Compress-Archive -Path logs/installer-acceptance,logs/ui-bundle.json -DestinationPath dist-release/installer-validation.zip -Force
+          gh release create $tag dist-release/CrossTrans2.exe dist-release/CrossTrans2Setup_v2.0.0.exe dist-release/SHA256SUMS.txt dist-release/installer-validation.zip --repo '${{ github.repository }}' --target '${{ github.sha }}' --draft --title ('CrossTrans 2.0.0 review ' + $shortSha) --notes-file logs/candidate-notes.md
+          if ($LASTEXITCODE -ne 0) { throw 'Candidate draft delivery failed.' }
