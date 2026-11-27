@@ -57,6 +57,10 @@ a = Analysis(
         # Status markers & universal selection capture
         'src.core.result_status',
         'src.core.selection_capture',
+        # Model registry (Decision 110): imported inside a function by remote_config, which swallows an ImportError
+        # and falls back to the Worker, so a missing module would otherwise go unnoticed.
+        'src.core.registry_source',
+        'src.core.model_registry_client',
         # Other dependencies
         'keyboard',
         'packaging',

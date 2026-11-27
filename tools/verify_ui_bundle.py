@@ -29,7 +29,8 @@ ESSENTIAL_MODULES = {'src.product', 'src.ui.main_workspace', 'src.ui.home_dictio
 ESSENTIAL_MODULES.update({'src.core.audio_media', 'src.core.audio_service', 'src.core.speech_engines',
                           'src.ui.audio_controller', 'src.ui.settings.audio_settings',
                           'src.utils.logging_setup', 'src.utils.diagnostics', 'src.ui.diagnostics_dialog',
-                          'src.core.result_status', 'src.core.selection_capture'})
+                          'src.core.result_status', 'src.core.selection_capture',
+                          'src.core.registry_source', 'src.core.model_registry_client'})
 BRAND_ASSETS = (
     'src/assets/CrossTrans.ico',
     'src/assets/CrossTrans.png',

@@ -1,15 +1,17 @@
 """
 Remote Configuration Manager for CrossTrans.
-Fetches model/provider configuration from Cloudflare Worker KV,
+Fetches model/provider configuration from the model registry or the Cloudflare Worker KV,
 with local caching and hardcoded fallback.
 
-Architecture (3-tier fallback):
-  Tier 1: Remote fetch from Cloudflare Worker /v1/config
+Architecture (4-tier fallback, Decision 110):
+  Tier 0: The model registry (https://models.masaru.uk), rebuilt as a v2 payload by src/core/registry_source.py
+  Tier 1: Remote fetch from Cloudflare Worker /v1/config (asked only when tier 0 gave nothing usable)
   Tier 2: Local cache file (%APPDATA%/CrossTrans2/models_config.json)
   Tier 3: Hardcoded defaults in constants.py
 """
 import json
 import os
+import shutil
 import time
 import logging
 import threading
@@ -33,6 +35,8 @@ SUPPORTED_SCHEMA_VERSIONS = {2}
 _APPDATA = os.environ.get('APPDATA', os.path.expanduser('~'))
 CACHE_DIR = os.path.join(_APPDATA, APP_ID)
 CACHE_FILE = os.path.join(CACHE_DIR, 'models_config.json')
+# The registry client's own copy of the catalog: a folder inside the app's cache folder, nowhere else.
+REGISTRY_CACHE_DIRNAME = 'model_registry'
 
 logger = logging.getLogger(__name__)
 
@@ -120,13 +124,13 @@ class RemoteConfigManager:
             logger.warning(f"[RemoteConfig] Failed to read cache file: {e}")
         return None
 
-    def _save_cache(self, data: Dict):
+    def _save_cache(self, data: Dict, source: str = 'remote'):
         """Save config to local cache file."""
         try:
             os.makedirs(CACHE_DIR, exist_ok=True)
             data_with_meta = dict(data)
             data_with_meta['_cached_at'] = time.time()
-            data_with_meta['_source'] = 'remote'
+            data_with_meta['_source'] = source
             with open(CACHE_FILE, 'w', encoding='utf-8') as f:
                 json.dump(data_with_meta, f, ensure_ascii=False, indent=2)
             logger.info("[RemoteConfig] Saved config to local cache")
@@ -183,16 +187,16 @@ class RemoteConfigManager:
         t.start()
 
     def _fetch_remote_thread(self):
-        """Background thread: fetch config from Cloudflare Worker."""
+        """Background thread: fetch config from the model registry, else from the Cloudflare Worker."""
         try:
-            data = self._fetch_remote()
+            data, source = self._fetch_table()
             if data and self._validate_config(data):
                 with self._config_lock:
                     self._config = data
                     self._config['_cached_at'] = time.time()
-                    self._config['_source'] = 'remote'
-                self._save_cache(data)
-                logger.info("[RemoteConfig] Updated config from remote")
+                    self._config['_source'] = source
+                self._save_cache(data, source)
+                logger.info("[RemoteConfig] Updated config from %s", "the model registry" if source == 'registry' else "remote")
                 self._notify_callbacks()
             else:
                 logger.warning("[RemoteConfig] Remote config invalid or empty, keeping current")
@@ -200,6 +204,48 @@ class RemoteConfigManager:
             logger.warning(f"[RemoteConfig] Remote fetch failed: {e}")
         finally:
             self._fetching = False
+
+    def _fetch_table(self):
+        """The table to adopt and where it came from: (data, 'registry' | 'remote').
+
+        The registry first. Its table counts only when it passes the same validation as the Worker's; anything else
+        (switched off, unreachable, an implausible catalog, a table that fails validation) means the Worker is asked,
+        exactly as before the registry existed. A registry that answers never makes the app contact the Worker."""
+        registry = self._fetch_registry()
+        if registry is not None:
+            if self._validate_config(registry):
+                return registry, 'registry'
+            logger.warning("[RemoteConfig] Registry table failed validation, asking the Worker instead")
+        return self._fetch_remote(), 'remote'
+
+    def _registry_base(self) -> Dict[str, Any]:
+        """What the registry cannot supply, from the table held now (the hardcoded one when nothing else is held)."""
+        hardcoded = self._build_hardcoded_defaults()
+        with self._config_lock:
+            held = dict(self._config)
+        base = {
+            'model_provider_map': held.get('model_provider_map') or hardcoded['model_provider_map'],
+            'default_models_by_provider': held.get('default_models_by_provider') or hardcoded['default_models_by_provider'],
+        }
+        if 'trial_daily_limit' in held:
+            base['trial_daily_limit'] = held['trial_daily_limit']
+        return base
+
+    def _fetch_registry(self) -> Optional[Dict]:
+        """Tier 0: the table from the model registry as a v2 payload, or None. Never raises."""
+        from src.constants import MODEL_REGISTRY_ENABLED, MODEL_REGISTRY_URL
+        if not MODEL_REGISTRY_ENABLED:
+            return None
+        try:
+            from src.core import registry_source
+            return registry_source.fetch_registry_config(
+                cache_dir=os.path.join(CACHE_DIR, REGISTRY_CACHE_DIRNAME),
+                base_url=MODEL_REGISTRY_URL,
+                base=self._registry_base(),
+            )
+        except Exception as e:
+            logger.warning("[RemoteConfig] Registry step failed: %s", type(e).__name__)
+            return None
 
     def _fetch_remote(self) -> Optional[Dict]:
         """Fetch config JSON from Cloudflare Worker endpoint."""
@@ -331,7 +377,7 @@ class RemoteConfigManager:
 
     @property
     def config_source(self) -> str:
-        """Return 'remote', 'cached', or 'hardcoded'."""
+        """Return 'registry', 'remote', 'cached', or 'hardcoded'."""
         with self._config_lock:
             return self._config.get('_source', 'hardcoded')
 
@@ -342,13 +388,14 @@ class RemoteConfigManager:
             return self._config.get('updated_at', '')
 
     def clear_cache(self):
-        """Clear local cache file (e.g., on version upgrade)."""
+        """Clear local cache file (e.g., on version upgrade) and the registry client's copy of the catalog."""
         try:
             if os.path.exists(CACHE_FILE):
                 os.remove(CACHE_FILE)
                 logger.info("[RemoteConfig] Cache cleared")
         except Exception as e:
             logger.warning(f"[RemoteConfig] Failed to clear cache: {e}")
+        shutil.rmtree(os.path.join(CACHE_DIR, REGISTRY_CACHE_DIRNAME), ignore_errors=True)
 
 
 def get_config() -> RemoteConfigManager:

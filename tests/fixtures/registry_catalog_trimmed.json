@@ -1,0 +1,4640 @@
+{
+ "build": {
+  "builder_version": "0.1.0",
+  "generated_at": "2026-11-27T09:35:12.386Z",
+  "id": "20261127T093512Z-local",
+  "trigger": "local"
+ },
+ "models": [
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "claude-fable",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "claude-fable-5",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-01",
+    "release_date": "2026-06-07",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "Claude Fable 5",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 1,
+    "cache_write": 12.5,
+    "currency": "USD",
+    "input": 10,
+    "output": 50,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "anthropic",
+   "refs": {
+    "models_dev_id": "claude-fable-5",
+    "openrouter_id": "anthropic/claude-fable-5"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "claude-fable",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "claude-fable-5-1",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-06",
+    "release_date": "2026-08-28",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "Claude Fable 5.1",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.25,
+    "cache_write": 12.5,
+    "currency": "USD",
+    "input": 10,
+    "output": 50,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "anthropic",
+   "refs": {
+    "models_dev_id": "claude-fable-5-1",
+    "openrouter_id": "anthropic/claude-fable-5.1"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "claude-fable",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "claude-fable-5-2",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-06",
+    "release_date": "2026-11-09",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "Claude Fable 5.2",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.2,
+    "cache_write": 10,
+    "currency": "USD",
+    "input": 8,
+    "output": 40,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "anthropic",
+   "refs": {
+    "models_dev_id": "claude-fable-5-2",
+    "openrouter_id": "anthropic/claude-fable-5.2"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 200000,
+   "family": "claude-haiku",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "claude-haiku-4-5-20251001",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-02",
+    "release_date": "2025-10-15",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 64000,
+   "name": "Claude Haiku 4.5",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.1,
+    "cache_write": 1.25,
+    "currency": "USD",
+    "input": 1,
+    "output": 5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "anthropic",
+   "refs": {
+    "models_dev_id": "claude-haiku-4-5-20251001",
+    "openrouter_id": "anthropic/claude-haiku-4.5"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "claude-haiku",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "claude-haiku-5-5",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-06",
+    "release_date": "2026-10-07",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "Claude Haiku 5.5",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.01,
+    "cache_write": 0.125,
+    "currency": "USD",
+    "input": 0.1,
+    "output": 0.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "anthropic",
+   "refs": {
+    "models_dev_id": "claude-haiku-5-5",
+    "openrouter_id": "anthropic/claude-haiku-5.5"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 200000,
+   "family": "claude-opus",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "claude-opus-4-5-20251101",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": "2026-11-23",
+    "knowledge_cutoff": "2025-05",
+    "release_date": "2025-11-24",
+    "retirement_date": "2027-01-22",
+    "status": "deprecated"
+   },
+   "max_output_tokens": 64000,
+   "name": "Claude Opus 4.5",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.5,
+    "cache_write": 6.25,
+    "currency": "USD",
+    "input": 5,
+    "output": 25,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "anthropic",
+   "refs": {
+    "models_dev_id": "claude-opus-4-5-20251101",
+    "openrouter_id": "anthropic/claude-opus-4.5"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "claude-opus",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "claude-opus-4-6",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-05",
+    "release_date": "2026-02-04",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "Claude Opus 4.6",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.5,
+    "cache_write": 6.25,
+    "currency": "USD",
+    "input": 5,
+    "output": 25,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "anthropic",
+   "refs": {
+    "models_dev_id": "claude-opus-4-6",
+    "openrouter_id": "anthropic/claude-opus-4.6"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "claude-sonnet",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "claude-sonnet-5-5",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-06",
+    "release_date": "2026-09-28",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "Claude Sonnet 5.5",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.1,
+    "cache_write": 2.5,
+    "currency": "USD",
+    "input": 2,
+    "output": 10,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "anthropic",
+   "refs": {
+    "models_dev_id": "claude-sonnet-5-5",
+    "openrouter_id": "anthropic/claude-sonnet-5.5"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "gpt-oss",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gpt-oss-120b",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2024-06",
+    "release_date": "2025-08-05",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 40960,
+   "name": "GPT OSS 120B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.35,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.35,
+    "output": 0.75,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "cerebras",
+   "refs": {
+    "models_dev_id": "gpt-oss-120b",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "qwen",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "qwen-3.8-27b",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-08-14",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 40960,
+   "name": "Qwen3.8 27B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.99,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.99,
+    "output": 1.49,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "cerebras",
+   "refs": {
+    "models_dev_id": "qwen-3.8-27b",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "deepseek-flash",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "deepseek-flash",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-05",
+    "release_date": "2026-10-17",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 393216,
+   "name": "DeepSeek V4.1 Flash 1017",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.003,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.15,
+    "output": 0.6,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "deepseek",
+   "refs": {
+    "models_dev_id": "deepseek-flash",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "deepseek-flash",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "deepseek-v4-flash",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-05",
+    "release_date": "2026-10-17",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 393216,
+   "name": "DeepSeek V4 Flash",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.003,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.15,
+    "output": 0.6,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "deepseek",
+   "refs": {
+    "models_dev_id": "deepseek-v4-flash",
+    "openrouter_id": "deepseek/deepseek-v4-flash"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "deepseek-pro",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "deepseek-v4-pro",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-08-13",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 393216,
+   "name": "DeepSeek V4 Pro",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.022,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.66,
+    "output": 1.98,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "deepseek",
+   "refs": {
+    "models_dev_id": "deepseek-v4-pro",
+    "openrouter_id": "deepseek/deepseek-v4-pro"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": null,
+   "features": {
+    "reasoning": null,
+    "structured_output": null,
+    "tools": null,
+    "vision": null
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "antigravity-preview-05-2026",
+   "input": [],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": null,
+    "retirement_date": null,
+    "status": "preview"
+   },
+   "max_output_tokens": 65536,
+   "name": "Antigravity Agent Preview",
+   "output": [],
+   "pricing": null,
+   "provider": "google",
+   "refs": {
+    "models_dev_id": null,
+    "openrouter_id": null
+   },
+   "sources": [
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 7168,
+   "family": null,
+   "features": {
+    "reasoning": null,
+    "structured_output": null,
+    "tools": null,
+    "vision": null
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "aqa",
+   "input": [],
+   "kind": "other",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": null,
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 1024,
+   "name": "Model that performs Attributed Question Answering.",
+   "output": [],
+   "pricing": null,
+   "provider": "google",
+   "refs": {
+    "models_dev_id": null,
+    "openrouter_id": null
+   },
+   "sources": [
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "gemini-deep-research-max",
+   "features": {
+    "reasoning": true,
+    "structured_output": null,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "deep-research-max-preview-04-2026",
+   "input": [
+    "audio",
+    "image",
+    "pdf",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-01",
+    "release_date": "2026-04-21",
+    "retirement_date": null,
+    "status": "preview"
+   },
+   "max_output_tokens": 65536,
+   "name": "Deep Research Max Preview (Apr-21-2026)",
+   "output": [
+    "image",
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.2,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 2,
+    "output": 12,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "google",
+   "refs": {
+    "models_dev_id": "deep-research-max-preview-04-2026",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "gemini-flash",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gemini-2.5-flash",
+   "input": [
+    "audio",
+    "image",
+    "pdf",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-01",
+    "release_date": "2025-06-17",
+    "retirement_date": "2026-12-01",
+    "status": "deprecated"
+   },
+   "max_output_tokens": 65536,
+   "name": "Gemini 2.5 Flash",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.03,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 2.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "google",
+   "refs": {
+    "models_dev_id": "gemini-2.5-flash",
+    "openrouter_id": "google/gemini-2.5-flash"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "gemini-flash-lite",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gemini-2.5-flash-lite",
+   "input": [
+    "audio",
+    "image",
+    "pdf",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-01",
+    "release_date": "2025-07-22",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "Gemini 2.5 Flash-Lite",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.01,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.1,
+    "output": 0.4,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "google",
+   "refs": {
+    "models_dev_id": "gemini-2.5-flash-lite",
+    "openrouter_id": "google/gemini-2.5-flash-lite"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "gemini-flash-lite",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gemini-3.5-flash-lite",
+   "input": [
+    "audio",
+    "image",
+    "pdf",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-03",
+    "release_date": "2026-07-21",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "Gemini 3.5 Flash Lite",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.03,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 2.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "google",
+   "refs": {
+    "models_dev_id": "gemini-3.5-flash-lite",
+    "openrouter_id": "google/gemini-3.5-flash-lite"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "gemini-flash",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gemini-flash-latest",
+   "input": [
+    "audio",
+    "image",
+    "pdf",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-09-02",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "Gemini Flash Latest",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.075,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.75,
+    "output": 3.75,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "google",
+   "refs": {
+    "models_dev_id": "gemini-flash-latest",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 262144,
+   "family": "gemma",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": true,
+   "id": "gemma-4-31b-it",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-04-02",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 32768,
+   "name": "Gemma 4 31B IT",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0,
+    "output": 0,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "google",
+   "refs": {
+    "models_dev_id": "gemma-4-31b-it",
+    "openrouter_id": "google/gemma-4-31b-it"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 4096,
+   "family": "allam",
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": false,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": true,
+   "id": "allam-2-7b",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-01-23",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 4096,
+   "name": "ALLaM-2-7b",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0,
+    "output": 0,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "groq",
+   "refs": {
+    "models_dev_id": "allam-2-7b",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 4000,
+   "family": "orpheus",
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": false,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "canopylabs/orpheus-arabic-saudi",
+   "input": [
+    "text"
+   ],
+   "kind": "text_to_speech",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-12-16",
+    "retirement_date": null,
+    "status": "preview"
+   },
+   "max_output_tokens": 50000,
+   "name": "Canopy Labs Orpheus Arabic Saudi",
+   "output": [
+    "audio"
+   ],
+   "pricing": null,
+   "provider": "groq",
+   "refs": {
+    "models_dev_id": "canopylabs/orpheus-arabic-saudi",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "llama",
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "llama-3.1-8b-instant",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2023-12",
+    "release_date": "2024-07-23",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 131072,
+   "name": "Llama 3.1 8B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.05,
+    "output": 0.08,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "groq",
+   "refs": {
+    "models_dev_id": "llama-3.1-8b-instant",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "gpt-oss",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "openai/gpt-oss-120b",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2024-06",
+    "release_date": "2025-08-05",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "GPT OSS 120B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.075,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.15,
+    "output": 0.6,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "groq",
+   "refs": {
+    "models_dev_id": "openai/gpt-oss-120b",
+    "openrouter_id": "openai/gpt-oss-120b"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "gpt-oss",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "openai/gpt-oss-20b",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2024-06",
+    "release_date": "2025-08-05",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "GPT OSS 20B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.0375,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.075,
+    "output": 0.3,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "groq",
+   "refs": {
+    "models_dev_id": "openai/gpt-oss-20b",
+    "openrouter_id": "openai/gpt-oss-20b"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "qwen",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "qwen/qwen3.8-27b",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-08-14",
+    "retirement_date": null,
+    "status": "preview"
+   },
+   "max_output_tokens": 16384,
+   "name": "Qwen3.8 27B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.8,
+    "output": 4,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "groq",
+   "refs": {
+    "models_dev_id": "qwen/qwen3.8-27b",
+    "openrouter_id": "qwen/qwen3.8-27b"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 128000,
+   "family": null,
+   "features": {
+    "reasoning": null,
+    "structured_output": true,
+    "tools": false,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "ByteDance-Seed/UI-TARS-1.5-7B",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-04-16",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": null,
+   "name": "ByteDance-Seed/UI-TARS-1.5-7B",
+   "output": [
+    "text"
+   ],
+   "pricing": null,
+   "provider": "huggingface",
+   "refs": {
+    "models_dev_id": null,
+    "openrouter_id": null
+   },
+   "sources": [
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 192000,
+   "family": "command-a-plus",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "CohereLabs/command-a-plus-05-2026-bf16",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-04",
+    "release_date": "2026-05-11",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 64000,
+   "name": "Command A Plus",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 1.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "huggingface",
+   "refs": {
+    "models_dev_id": "CohereLabs/command-a-plus-05-2026-bf16",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 8192,
+   "family": "mythomax",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": false,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "Gryphe/MythoMax-L2-13b",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2023-06",
+    "release_date": "2023-08-10",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 3200,
+   "name": "MythoMax L2 13B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.08,
+    "output": 0.11,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "huggingface",
+   "refs": {
+    "models_dev_id": "Gryphe/MythoMax-L2-13b",
+    "openrouter_id": "gryphe/mythomax-l2-13b"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 128000,
+   "family": null,
+   "features": {
+    "reasoning": null,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "LiquidAI/LFM2.5-24B-A2B",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-10-12",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": null,
+   "name": "LiquidAI/LFM2.5-24B-A2B",
+   "output": [
+    "text"
+   ],
+   "pricing": null,
+   "provider": "huggingface",
+   "refs": {
+    "models_dev_id": null,
+    "openrouter_id": null
+   },
+   "sources": [
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 262144,
+   "family": null,
+   "features": {
+    "reasoning": null,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "LiquidAI/LFM3-1.7B",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-10-23",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": null,
+   "name": "LiquidAI/LFM3-1.7B",
+   "output": [
+    "text"
+   ],
+   "pricing": null,
+   "provider": "huggingface",
+   "refs": {
+    "models_dev_id": null,
+    "openrouter_id": null
+   },
+   "sources": [
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 65536,
+   "family": "minimax-m",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "MiniMaxAI/MiniMax-M2.5",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-02-12",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "MiniMax-M2.5",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 1.2,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "huggingface",
+   "refs": {
+    "models_dev_id": "MiniMaxAI/MiniMax-M2.5",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 163840,
+   "family": "llama-guard",
+   "features": {
+    "reasoning": false,
+    "structured_output": false,
+    "tools": false,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "meta-llama/Llama-Guard-4-12B",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "moderation",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2024-08",
+    "release_date": "2025-04-23",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 163840,
+   "name": "Llama Guard 4 12B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.18,
+    "output": 0.18,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "huggingface",
+   "refs": {
+    "models_dev_id": "meta-llama/Llama-Guard-4-12B",
+    "openrouter_id": "meta-llama/llama-guard-4-12b"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "gpt-oss",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "openai/gpt-oss-120b",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2024-06",
+    "release_date": "2025-08-04",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 131072,
+   "name": "GPT OSS 120B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.03,
+    "output": 0.15,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "huggingface",
+   "refs": {
+    "models_dev_id": "openai/gpt-oss-120b",
+    "openrouter_id": "openai/gpt-oss-120b"
+   },
+   "sources": [
+    "models.dev",
+    "native",
+    "openrouter"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 256000,
+   "family": "codestral",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "codestral-2508",
+   "input": [
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-03",
+    "release_date": "2025-07-30",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 8192,
+   "name": "Codestral 25.08",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.03,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 0.9,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "mistral",
+   "refs": {
+    "models_dev_id": "codestral-2508",
+    "openrouter_id": "mistralai/codestral-2508"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 256000,
+   "family": "codestral",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "codestral-latest",
+   "input": [
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2024-10",
+    "release_date": "2024-05-29",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 4096,
+   "name": "Codestral (latest)",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.03,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 0.9,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "mistral",
+   "refs": {
+    "models_dev_id": "codestral-latest",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "deepseek-flash",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "deepseek-v4-1-flash-1017",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-05",
+    "release_date": "2026-10-17",
+    "retirement_date": null,
+    "status": "preview"
+   },
+   "max_output_tokens": 128000,
+   "name": "DeepSeek V4.1 Flash 1017",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.007,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 1.2,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "mistral",
+   "refs": {
+    "models_dev_id": "deepseek-v4-1-flash-1017",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "glm",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "glm-5-2",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-06-13",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 131072,
+   "name": "GLM-5.2",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.14,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 1.4,
+    "output": 4.4,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "mistral",
+   "refs": {
+    "models_dev_id": "glm-5-2",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 262144,
+   "family": "ministral",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "ministral-14b-2512",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-12-02",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 262144,
+   "name": "Ministral 3 14B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.02,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.2,
+    "output": 0.2,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "mistral",
+   "refs": {
+    "models_dev_id": "ministral-14b-2512",
+    "openrouter_id": "mistralai/ministral-14b-2512"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 8000,
+   "family": "mistral-embed",
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": false,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "mistral-embed",
+   "input": [
+    "text"
+   ],
+   "kind": "embedding",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2023-12-11",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 3072,
+   "name": "Mistral Embed",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.01,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.1,
+    "output": 0,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "mistral",
+   "refs": {
+    "models_dev_id": "mistral-embed",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "mistral-large",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "mistral-large-latest",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-10-05",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 262144,
+   "name": "Mistral Large (latest)",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.07,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.7,
+    "output": 2.1,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "mistral",
+   "refs": {
+    "models_dev_id": "mistral-large-latest",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 262144,
+   "family": "mistral-small",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "mistral-small-latest",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-06",
+    "release_date": "2026-03-16",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 256000,
+   "name": "Mistral Small (latest)",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.015,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.15,
+    "output": 0.6,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "mistral",
+   "refs": {
+    "models_dev_id": "mistral-small-latest",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 0,
+   "family": "gpt-image",
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": false,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "chatgpt-image-latest",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "image_generation",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-12-16",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 0,
+   "name": "chatgpt-image-latest",
+   "output": [
+    "image",
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 1.25,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 5,
+    "output": 10,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openai",
+   "refs": {
+    "models_dev_id": "chatgpt-image-latest",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1047576,
+   "family": "gpt",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gpt-4.1",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2024-04",
+    "release_date": "2025-04-14",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 32768,
+   "name": "GPT-4.1",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.5,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 2,
+    "output": 8,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openai",
+   "refs": {
+    "models_dev_id": "gpt-4.1",
+    "openrouter_id": "openai/gpt-4.1"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 400000,
+   "family": "gpt",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gpt-5.2",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-08",
+    "release_date": "2025-12-11",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "GPT-5.2",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.175,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 1.75,
+    "output": 14,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openai",
+   "refs": {
+    "models_dev_id": "gpt-5.2",
+    "openrouter_id": "openai/gpt-5.2"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 400000,
+   "family": "gpt-pro",
+   "features": {
+    "reasoning": true,
+    "structured_output": false,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gpt-5.2-pro",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-08",
+    "release_date": "2025-12-11",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "GPT-5.2 Pro",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 21,
+    "output": 168,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openai",
+   "refs": {
+    "models_dev_id": "gpt-5.2-pro",
+    "openrouter_id": "openai/gpt-5.2-pro"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1050000,
+   "family": "gpt",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gpt-5.4",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-08",
+    "release_date": "2026-03-05",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "GPT-5.4",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.25,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 2.5,
+    "output": 15,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openai",
+   "refs": {
+    "models_dev_id": "gpt-5.4",
+    "openrouter_id": "openai/gpt-5.4"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 400000,
+   "family": "gpt-mini",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gpt-5.4-mini",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-08",
+    "release_date": "2026-03-17",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "GPT-5.4 mini",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.075,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.75,
+    "output": 4.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openai",
+   "refs": {
+    "models_dev_id": "gpt-5.4-mini",
+    "openrouter_id": "openai/gpt-5.4-mini"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1050000,
+   "family": "gpt-luna",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gpt-6-luna",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-05",
+    "release_date": "2026-09-22",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "GPT-6 Luna",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.01,
+    "cache_write": 0.125,
+    "currency": "USD",
+    "input": 0.1,
+    "output": 0.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openai",
+   "refs": {
+    "models_dev_id": "gpt-6-luna",
+    "openrouter_id": "openai/gpt-6-luna"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1050000,
+   "family": "gpt-terra",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gpt-6.1-terra",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-06",
+    "release_date": "2026-10-26",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 128000,
+   "name": "GPT-6.1 Terra",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.05,
+    "cache_write": 1.25,
+    "currency": "USD",
+    "input": 1,
+    "output": 5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openai",
+   "refs": {
+    "models_dev_id": "gpt-6.1-terra",
+    "openrouter_id": "openai/gpt-6.1-terra"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "aion",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "aion-labs/aion-2.0",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-02-23",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 32768,
+   "name": "AionLabs: Aion-2.0",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.2,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.8,
+    "output": 1.6,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openrouter",
+   "refs": {
+    "models_dev_id": "aion-labs/aion-2.0",
+    "openrouter_id": "aion-labs/aion-2.0"
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "aion",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "aion-labs/aion-3.0",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-07-07",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 32768,
+   "name": "AionLabs: Aion-3.0",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.75,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 3,
+    "output": 6,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openrouter",
+   "refs": {
+    "models_dev_id": "aion-labs/aion-3.0",
+    "openrouter_id": "aion-labs/aion-3.0"
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "aion-mini",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "aion-labs/aion-3.0-mini",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-07-07",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 32768,
+   "name": "AionLabs: Aion-3.0-Mini",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.18,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.7,
+    "output": 1.4,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openrouter",
+   "refs": {
+    "models_dev_id": "aion-labs/aion-3.0-mini",
+    "openrouter_id": "aion-labs/aion-3.0-mini"
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "nova-lite",
+   "features": {
+    "reasoning": true,
+    "structured_output": false,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "amazon/nova-2-lite-v1",
+   "input": [
+    "image",
+    "pdf",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-10",
+    "release_date": "2025-12-02",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65535,
+   "name": "Amazon: Nova 2 Lite",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 2.5,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openrouter",
+   "refs": {
+    "models_dev_id": "amazon/nova-2-lite-v1",
+    "openrouter_id": "amazon/nova-2-lite-v1"
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "nova-premier",
+   "features": {
+    "reasoning": false,
+    "structured_output": false,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "amazon/nova-premier-v1",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2024-10",
+    "release_date": "2025-10-31",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 32000,
+   "name": "Amazon: Nova Premier 1.0",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.625,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 2.5,
+    "output": 12.5,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openrouter",
+   "refs": {
+    "models_dev_id": "amazon/nova-premier-v1",
+    "openrouter_id": "amazon/nova-premier-v1"
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 32768,
+   "family": "nano-banana",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": false,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "google/gemini-2.5-flash-image",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "image_generation",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-01",
+    "release_date": "2025-10-07",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 8192,
+   "name": "Google: Nano Banana (Gemini 2.5 Flash Image)",
+   "output": [
+    "image",
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.03,
+    "cache_write": 0.08333333333,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 2.5,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openrouter",
+   "refs": {
+    "models_dev_id": "google/gemini-2.5-flash-image",
+    "openrouter_id": "google/gemini-2.5-flash-image"
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 262144,
+   "family": "gemma-free",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": true,
+   "id": "google/gemma-4-31b-it:free",
+   "input": [
+    "image",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-01",
+    "release_date": "2026-04-02",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 32768,
+   "name": "Google: Gemma 4 31B (free)",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0,
+    "output": 0,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openrouter",
+   "refs": {
+    "models_dev_id": "google/gemma-4-31b-it:free",
+    "openrouter_id": "google/gemma-4-31b-it:free"
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "nemotron-lightning-free",
+   "features": {
+    "reasoning": true,
+    "structured_output": false,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": true,
+   "id": "nvidia/nemotron-3.5-lightning:free",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-09",
+    "release_date": "2026-08-11",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "NVIDIA: Nemotron 3.5 Lightning (free)",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0,
+    "output": 0,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "openrouter",
+   "refs": {
+    "models_dev_id": "nvidia/nemotron-3.5-lightning:free",
+    "openrouter_id": "nvidia/nemotron-3.5-lightning:free"
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 128000,
+   "family": "sonar",
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": false,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "sonar",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-09",
+    "release_date": "2024-01-01",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 4096,
+   "name": "Sonar",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 1,
+    "output": 1,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "perplexity",
+   "refs": {
+    "models_dev_id": "sonar",
+    "openrouter_id": "perplexity/sonar"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 200000,
+   "family": "sonar-pro",
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": false,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "sonar-pro",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-09",
+    "release_date": "2024-01-01",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 8192,
+   "name": "Sonar Pro",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 3,
+    "output": 15,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "perplexity",
+   "refs": {
+    "models_dev_id": "sonar-pro",
+    "openrouter_id": "perplexity/sonar-pro"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "glm",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "GLM-5.3",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-08-14",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 131072,
+   "name": "GLM-5.3",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.14,
+    "cache_write": 0,
+    "currency": "USD",
+    "input": 2.8,
+    "output": 8.8,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "sambanova",
+   "refs": {
+    "models_dev_id": "GLM-5.3",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "minimax-m-flash",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "MiniMax-M3.1-Flash",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-10-19",
+    "retirement_date": null,
+    "status": "preview"
+   },
+   "max_output_tokens": 1048576,
+   "name": "MiniMax-M3.1-Flash",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.03,
+    "cache_write": 0,
+    "currency": "USD",
+    "input": 0.3,
+    "output": 1.2,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "sambanova",
+   "refs": {
+    "models_dev_id": "MiniMax-M3.1-Flash",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 262144,
+   "family": "gemma",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gemma-4-31B-it",
+   "input": [
+    "image",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-01",
+    "release_date": "2026-04-02",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 262144,
+   "name": "Gemma 4 31B IT",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.38,
+    "output": 1.15,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "sambanova",
+   "refs": {
+    "models_dev_id": "gemma-4-31B-it",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "gpt-oss",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "gpt-oss-120b",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2024-06",
+    "release_date": "2025-08-05",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 131072,
+   "name": "GPT OSS 120B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.22,
+    "output": 0.59,
+    "source": "native",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "sambanova",
+   "refs": {
+    "models_dev_id": "gpt-oss-120b",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev",
+    "native"
+   ],
+   "verified": true
+  },
+  {
+   "aliases": [],
+   "context_window": 262000,
+   "family": "seed-oss",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "ByteDance-Seed/Seed-OSS-36B-Instruct",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-09-04",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 262000,
+   "name": "ByteDance-Seed/Seed-OSS-36B-Instruct",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.22417122,
+    "output": 0.59778991,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "siliconflow",
+   "refs": {
+    "models_dev_id": "ByteDance-Seed/Seed-OSS-36B-Instruct",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 16384,
+   "family": null,
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": false,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": true,
+   "id": "PaddlePaddle/PaddleOCR-VL-1.5",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-01-29",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 16384,
+   "name": "PaddlePaddle/PaddleOCR-VL-1.5",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0,
+    "output": 0,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "siliconflow",
+   "refs": {
+    "models_dev_id": "PaddlePaddle/PaddleOCR-VL-1.5",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 164000,
+   "family": "deepseek-r",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "Pro/deepseek-ai/DeepSeek-R1",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-05-28",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 164000,
+   "name": "Pro/deepseek-ai/DeepSeek-R1",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.05977899,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.59778991,
+    "output": 2.39115964,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "siliconflow",
+   "refs": {
+    "models_dev_id": "Pro/deepseek-ai/DeepSeek-R1",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 164000,
+   "family": "deepseek",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "Pro/deepseek-ai/DeepSeek-V3",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-03-24",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 164000,
+   "name": "Pro/deepseek-ai/DeepSeek-V3",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.0298895,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.29889496,
+    "output": 1.19557982,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "siliconflow",
+   "refs": {
+    "models_dev_id": "Pro/deepseek-ai/DeepSeek-V3",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 262000,
+   "family": "kimi",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "Pro/moonshotai/Kimi-K2.5",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-01",
+    "release_date": "2026-01-27",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 262000,
+   "name": "Pro/moonshotai/Kimi-K2.5",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.07,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.45,
+    "output": 2.25,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "siliconflow",
+   "refs": {
+    "models_dev_id": "Pro/moonshotai/Kimi-K2.5",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 33000,
+   "family": "qwen",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "Qwen/Qwen2.5-72B-Instruct",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2024-09-18",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 4000,
+   "name": "Qwen/Qwen2.5-72B-Instruct",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.61721808,
+    "output": 0.61721808,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "siliconflow",
+   "refs": {
+    "models_dev_id": "Qwen/Qwen2.5-72B-Instruct",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 8192,
+   "family": null,
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": false,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": true,
+   "id": "deepseek-ai/DeepSeek-OCR",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "other",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-10-20",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 8192,
+   "name": "deepseek-ai/DeepSeek-OCR",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0,
+    "output": 0,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "siliconflow",
+   "refs": {
+    "models_dev_id": "deepseek-ai/DeepSeek-OCR",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 164000,
+   "family": "deepseek",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "deepseek-ai/DeepSeek-V3",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2025-03-24",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 164000,
+   "name": "deepseek-ai/DeepSeek-V3",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.0298895,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.29889496,
+    "output": 1.19557982,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "siliconflow",
+   "refs": {
+    "models_dev_id": "deepseek-ai/DeepSeek-V3",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "minimax-m-flash",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "MiniMaxAI/MiniMax-M3.1-Flash",
+   "input": [
+    "image",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-10-19",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 512000,
+   "name": "MiniMax-M3.1-Flash",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.015,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.15,
+    "output": 0.6,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "together",
+   "refs": {
+    "models_dev_id": "MiniMaxAI/MiniMax-M3.1-Flash",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 262144,
+   "family": null,
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": true,
+   "id": "Prism-ML/Ternary-Bonsai-27B",
+   "input": [
+    "image",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-07-04",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "Ternary Bonsai 27B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0,
+    "output": 0,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "together",
+   "refs": {
+    "models_dev_id": "Prism-ML/Ternary-Bonsai-27B",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 262144,
+   "family": "qwen",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "Qwen/Qwen3.5-9B",
+   "input": [
+    "image",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-02-23",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "Qwen3.5 9B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.17,
+    "output": 0.25,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "together",
+   "refs": {
+    "models_dev_id": "Qwen/Qwen3.5-9B",
+    "openrouter_id": "qwen/qwen3.5-9b"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "qwen-plus",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "Qwen/Qwen3.6-Plus",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2025-04",
+    "release_date": "2026-04-02",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 65536,
+   "name": "Qwen3.6 Plus",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": null,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.5,
+    "output": 3,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "together",
+   "refs": {
+    "models_dev_id": "Qwen/Qwen3.6-Plus",
+    "openrouter_id": "qwen/qwen3.6-plus"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "qwen-max",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "Qwen/Qwen3.7-Max",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-05-21",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 131072,
+   "name": "Qwen3.7 Max",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.5,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 2.5,
+    "output": 7.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "together",
+   "refs": {
+    "models_dev_id": "Qwen/Qwen3.7-Max",
+    "openrouter_id": "qwen/qwen3.7-max"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048576,
+   "family": "deepseek-pro",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": false
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "input": [
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-08-13",
+    "retirement_date": null,
+    "status": "deprecated"
+   },
+   "max_output_tokens": 384000,
+   "name": "DeepSeek V4 Pro 0813",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.13,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 1.32,
+    "output": 3.96,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "together",
+   "refs": {
+    "models_dev_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 131072,
+   "family": "muse-glimmer",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "meta-models/Muse-Glimmer-30B",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-01",
+    "release_date": "2026-08-10",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 131072,
+   "name": "Muse Glimmer 30B",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.04,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.35,
+    "output": 1.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "together",
+   "refs": {
+    "models_dev_id": "meta-models/Muse-Glimmer-30B",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1048575,
+   "family": "glm-flash",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "zai-org/GLM-5.3-Flash",
+   "input": [
+    "image",
+    "text",
+    "video"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-08-26",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 400000,
+   "name": "GLM-5.3-Flash",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.03,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 0.15,
+    "output": 0.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "together",
+   "refs": {
+    "models_dev_id": "zai-org/GLM-5.3-Flash",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "grok",
+   "features": {
+    "reasoning": false,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "grok-4.20-0309-non-reasoning",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-03-09",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 30000,
+   "name": "Grok 4.20 (Non-Reasoning)",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.2,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 1.25,
+    "output": 2.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "xai",
+   "refs": {
+    "models_dev_id": "grok-4.20-0309-non-reasoning",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "grok",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "grok-4.20-0309-reasoning",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-03-09",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 30000,
+   "name": "Grok 4.20 (Reasoning)",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.2,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 1.25,
+    "output": 2.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "xai",
+   "refs": {
+    "models_dev_id": "grok-4.20-0309-reasoning",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "grok",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": false,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "grok-4.20-multi-agent-0309",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-03-09",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 30000,
+   "name": "Grok 4.20 Multi-Agent",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.2,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 1.25,
+    "output": 2.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "xai",
+   "refs": {
+    "models_dev_id": "grok-4.20-multi-agent-0309",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 1000000,
+   "family": "grok",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "grok-4.3",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-04-17",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 30000,
+   "name": "Grok 4.3",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.2,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 1.25,
+    "output": 2.5,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "xai",
+   "refs": {
+    "models_dev_id": "grok-4.3",
+    "openrouter_id": "x-ai/grok-4.3"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 500000,
+   "family": "grok",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "grok-4.5",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-07-08",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 500000,
+   "name": "Grok 4.5",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.3,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 2,
+    "output": 6,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "xai",
+   "refs": {
+    "models_dev_id": "grok-4.5",
+    "openrouter_id": "x-ai/grok-4.5"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 500000,
+   "family": "grok",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "grok-4.6",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-02",
+    "release_date": "2026-08-12",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 500000,
+   "name": "Grok 4.6",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.5,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 2,
+    "output": 6,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "xai",
+   "refs": {
+    "models_dev_id": "grok-4.6",
+    "openrouter_id": "x-ai/grok-4.6"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 500000,
+   "family": "grok",
+   "features": {
+    "reasoning": true,
+    "structured_output": true,
+    "tools": true,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "grok-4.7",
+   "input": [
+    "image",
+    "pdf",
+    "text"
+   ],
+   "kind": "chat",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": "2026-05",
+    "release_date": "2026-09-21",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 500000,
+   "name": "Grok 4.7",
+   "output": [
+    "text"
+   ],
+   "pricing": {
+    "cache_read": 0.5,
+    "cache_write": null,
+    "currency": "USD",
+    "input": 2,
+    "output": 6,
+    "source": "models.dev",
+    "unit": "per_1m_tokens"
+   },
+   "provider": "xai",
+   "refs": {
+    "models_dev_id": "grok-4.7",
+    "openrouter_id": "x-ai/grok-4.7"
+   },
+   "sources": [
+    "models.dev",
+    "openrouter"
+   ],
+   "verified": false
+  },
+  {
+   "aliases": [],
+   "context_window": 16000,
+   "family": "grok-imagine-image",
+   "features": {
+    "reasoning": false,
+    "structured_output": null,
+    "tools": false,
+    "vision": true
+   },
+   "first_seen": "2026-11-27",
+   "free": false,
+   "id": "grok-imagine-image",
+   "input": [
+    "image",
+    "text"
+   ],
+   "kind": "image_generation",
+   "lifecycle": {
+    "deprecation_date": null,
+    "knowledge_cutoff": null,
+    "release_date": "2026-01-28",
+    "retirement_date": null,
+    "status": "active"
+   },
+   "max_output_tokens": 0,
+   "name": "Grok Imagine Image",
+   "output": [
+    "image"
+   ],
+   "pricing": null,
+   "provider": "xai",
+   "refs": {
+    "models_dev_id": "grok-imagine-image",
+    "openrouter_id": null
+   },
+   "sources": [
+    "models.dev"
+   ],
+   "verified": false
+  }
+ ],
+ "providers": {
+  "anthropic": {
+   "aliases": [],
+   "api": {
+    "auth": "x-api-key",
+    "base_url": "https://api.anthropic.com/v1",
+    "openai_compatible_base_url": null,
+    "style": "anthropic"
+   },
+   "docs_url": "https://docs.anthropic.com/en/docs/about-claude/models",
+   "free_tier": false,
+   "id": "anthropic",
+   "key_prefixes": [
+    "sk-ant-"
+   ],
+   "key_url": "https://console.anthropic.com/settings/keys",
+   "name": "Anthropic"
+  },
+  "cerebras": {
+   "aliases": [],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.cerebras.ai/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://inference-docs.cerebras.ai/models/overview",
+   "free_tier": true,
+   "id": "cerebras",
+   "key_prefixes": [
+    "csk-"
+   ],
+   "key_url": "https://cloud.cerebras.ai/platform",
+   "name": "Cerebras"
+  },
+  "deepseek": {
+   "aliases": [],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.deepseek.com",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://api-docs.deepseek.com/",
+   "free_tier": false,
+   "id": "deepseek",
+   "key_prefixes": [
+    "sk-"
+   ],
+   "key_url": "https://platform.deepseek.com/api_keys",
+   "name": "DeepSeek"
+  },
+  "google": {
+   "aliases": [
+    "gemini"
+   ],
+   "api": {
+    "auth": "x-goog-api-key",
+    "base_url": "https://generativelanguage.googleapis.com/v1beta",
+    "openai_compatible_base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
+    "style": "gemini"
+   },
+   "docs_url": "https://ai.google.dev/gemini-api/docs/models",
+   "free_tier": true,
+   "id": "google",
+   "key_prefixes": [
+    "AIza",
+    "AQ."
+   ],
+   "key_url": "https://aistudio.google.com/apikey",
+   "name": "Google Gemini"
+  },
+  "groq": {
+   "aliases": [],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.groq.com/openai/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://console.groq.com/docs/models",
+   "free_tier": true,
+   "id": "groq",
+   "key_prefixes": [
+    "gsk_"
+   ],
+   "key_url": "https://console.groq.com/keys",
+   "name": "Groq"
+  },
+  "huggingface": {
+   "aliases": [],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://router.huggingface.co/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://huggingface.co/docs/inference-providers",
+   "free_tier": true,
+   "id": "huggingface",
+   "key_prefixes": [
+    "hf_"
+   ],
+   "key_url": "https://huggingface.co/settings/tokens",
+   "name": "Hugging Face"
+  },
+  "mistral": {
+   "aliases": [
+    "mistralai"
+   ],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.mistral.ai/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://docs.mistral.ai/getting-started/models/models_overview/",
+   "free_tier": true,
+   "id": "mistral",
+   "key_prefixes": [],
+   "key_url": "https://console.mistral.ai/api-keys",
+   "name": "Mistral AI"
+  },
+  "openai": {
+   "aliases": [],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.openai.com/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://platform.openai.com/docs/models",
+   "free_tier": false,
+   "id": "openai",
+   "key_prefixes": [
+    "sk-proj-",
+    "sk-svcacct-",
+    "sk-"
+   ],
+   "key_url": "https://platform.openai.com/api-keys",
+   "name": "OpenAI"
+  },
+  "openrouter": {
+   "aliases": [],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://openrouter.ai/api/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://openrouter.ai/docs",
+   "free_tier": true,
+   "id": "openrouter",
+   "key_prefixes": [
+    "sk-or-v1-"
+   ],
+   "key_url": "https://openrouter.ai/keys",
+   "name": "OpenRouter"
+  },
+  "perplexity": {
+   "aliases": [],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.perplexity.ai",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://docs.perplexity.ai/",
+   "free_tier": false,
+   "id": "perplexity",
+   "key_prefixes": [
+    "pplx-"
+   ],
+   "key_url": "https://www.perplexity.ai/settings/api",
+   "name": "Perplexity"
+  },
+  "sambanova": {
+   "aliases": [],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.sambanova.ai/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://docs.sambanova.ai/docs/en/models/sambacloud-models",
+   "free_tier": true,
+   "id": "sambanova",
+   "key_prefixes": [],
+   "key_url": "https://cloud.sambanova.ai/apis",
+   "name": "SambaNova"
+  },
+  "siliconflow": {
+   "aliases": [],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.siliconflow.cn/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://docs.siliconflow.cn/",
+   "free_tier": true,
+   "id": "siliconflow",
+   "key_prefixes": [
+    "sk-"
+   ],
+   "key_url": "https://cloud.siliconflow.cn/account/ak",
+   "name": "SiliconFlow"
+  },
+  "together": {
+   "aliases": [
+    "togetherai"
+   ],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.together.xyz/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://docs.together.ai/docs/serverless-models",
+   "free_tier": false,
+   "id": "together",
+   "key_prefixes": [],
+   "key_url": "https://api.together.xyz/settings/api-keys",
+   "name": "Together AI"
+  },
+  "xai": {
+   "aliases": [
+    "x-ai"
+   ],
+   "api": {
+    "auth": "bearer",
+    "base_url": "https://api.x.ai/v1",
+    "openai_compatible_base_url": null,
+    "style": "openai"
+   },
+   "docs_url": "https://docs.x.ai/docs/models",
+   "free_tier": false,
+   "id": "xai",
+   "key_prefixes": [
+    "xai-"
+   ],
+   "key_url": "https://console.x.ai",
+   "name": "xAI"
+  }
+ },
+ "schema_version": 1
+}

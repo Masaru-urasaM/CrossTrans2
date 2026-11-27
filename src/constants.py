@@ -1,3 +1,5 @@
+import os
+
 from src.ui.theme.tokens import DARK
 from src.product import APP_ID, REPOSITORY, INSTANCE_PORT
 """
@@ -20,6 +22,20 @@ REMOTE_CONFIG_CACHE_TTL = 86400  # 24 hours in seconds
 # this long after any attempt, failed or not, before the next (Decision 103).
 REMOTE_CONFIG_REFRESH_SECONDS = 6 * 3600
 REMOTE_CONFIG_RETRY_SECONDS = 3600
+
+
+def _env_switch(name, default=True):
+    """A feature switch that an environment variable can turn off ('0', 'false', 'no', 'off') or on."""
+    value = os.environ.get(name)
+    if value is None or not value.strip():
+        return default
+    return value.strip().lower() not in ('0', 'false', 'no', 'off')
+
+
+# The model registry is the first source of the model/provider table; the Worker above, the cache file and the
+# hardcoded tables follow it (Decision 110). CROSSTRANS_MODEL_REGISTRY=0 turns it off: only the Worker is asked then.
+MODEL_REGISTRY_URL = "https://models.masaru.uk"
+MODEL_REGISTRY_ENABLED = _env_switch('CROSSTRANS_MODEL_REGISTRY', True)
 
 # ============== TIMING ==============
 COOLDOWN = 2.0  # Translation cooldown in seconds
