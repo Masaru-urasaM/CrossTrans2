@@ -72,7 +72,7 @@ failing tests, none new. The 2 extra passes are tests that skip in the export fo
 `check_test_counts.py --min-total 6107 --max-skipped 28` therefore fails here for that reason alone and has to be run on CI.
 `ruff check src tools tests`: 0 errors.
 
-**Commit**: `<uncommitted>`
+**Commit**: `a71684d`
 
 ## [2.0.0] - 2026-11-27
 
