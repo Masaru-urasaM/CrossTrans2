@@ -174,3 +174,75 @@ def test_collect_tkinterdnd2_tcl9_fails_loudly_when_tcl9_dir_missing(tmp_path):
         pytest.skip('Test asserts Tcl >= 9 requirement')
     with pytest.raises(RuntimeError, match='win-x64-tcl9'):
         tcl_tk_bundle.collect_tkinterdnd2_tcl9(pkg, arch='AMD64', system='Windows', require_when_tcl9=True)
+
+
+def test_repo_manifest_requires_all_brand_assets_and_ten_screenshots(tmp_path):
+    from pathlib import Path
+    repo = Path(__file__).resolve().parents[1]
+    collected = bundle.collect_repo_data(repo)
+    for asset in bundle.BRAND_ASSETS:
+        assert asset in collected and collected[asset]
+    assert sum(name.startswith('docs/screenshots/') and name.endswith('.png') for name in collected) == 10
+    assert {'src.ui.theme.brand', 'src.ui.theme.windows', 'src.ui.tray'} <= bundle.ESSENTIAL_MODULES
+
+    # Copy minimal repo layout into tmp_path and verify missing a brand asset fails loudly.
+    for rel in list(collected):
+        target = tmp_path / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(collected[rel])
+    (tmp_path / 'src/assets/brand/crest_compact.png').unlink()
+    with pytest.raises(ValueError, match='crest_compact.png'):
+        bundle.collect_repo_data(tmp_path)
+
+
+def test_check_exe_icon_verifies_all_dpi_frames_and_catches_stale_payloads(tmp_path):
+    import struct
+    from pathlib import Path
+    from types import SimpleNamespace
+
+    repo = Path(__file__).resolve().parents[1]
+    ico_bytes = (repo / 'CrossTrans.ico').read_bytes()
+    (tmp_path / 'CrossTrans.ico').write_bytes(ico_bytes)
+    frames = bundle.ico_frame_bytes(ico_bytes)
+
+    def make_pe(frame_map):
+        ordered = sorted(frame_map.items())
+        header = struct.pack('<HHH', 0, 1, len(ordered))
+        entries = []
+        icon_entries = []
+        payloads = {}
+        for idx, (size, payload) in enumerate(ordered, 1):
+            dim = 0 if size == 256 else size
+            entries.append(struct.pack('<BBBBHHIH', dim, dim, 0, 0, 1, 32, len(payload), idx))
+            payloads[f'rt:{idx}'] = payload
+            icon_entries.append(SimpleNamespace(
+                id=idx,
+                directory=SimpleNamespace(entries=[SimpleNamespace(
+                    data=SimpleNamespace(struct=SimpleNamespace(OffsetToData=f'rt:{idx}', Size=len(payload)))
+                )]),
+            ))
+        payloads['grp'] = header + b''.join(entries)
+        group_res = SimpleNamespace(
+            id=14,
+            directory=SimpleNamespace(entries=[SimpleNamespace(
+                directory=SimpleNamespace(entries=[SimpleNamespace(
+                    data=SimpleNamespace(struct=SimpleNamespace(OffsetToData='grp', Size=len(payloads['grp'])))
+                )])
+            )]),
+        )
+        icon_res = SimpleNamespace(id=3, directory=SimpleNamespace(entries=icon_entries))
+        return SimpleNamespace(
+            DIRECTORY_ENTRY_RESOURCE=SimpleNamespace(entries=[group_res, icon_res]),
+            get_data=lambda key, _sz: payloads[key],
+        )
+
+    assert bundle.check_exe_icon(make_pe(frames), root=tmp_path) == []
+
+    stale = dict(frames)
+    stale[16] = b'old-silver-16px-frame'
+    errors = bundle.check_exe_icon(make_pe(stale), root=tmp_path)
+    assert errors == ['Stale/different EXE icon frame: 16px']
+
+    incomplete = {k: v for k, v in frames.items() if k != 256}
+    errors = bundle.check_exe_icon(make_pe(incomplete), root=tmp_path)
+    assert any('256' in err for err in errors)

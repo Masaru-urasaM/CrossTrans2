@@ -1,33 +1,39 @@
 """
-The CrossTrans mark - a square, flat version of the logo's blue-and-amber X for the places the full
-logo cannot go (TODO.md U5, V9, V16; Decision 48).
+The CrossTrans II crest and mark - the Royal Sapphire Crest with the sweeping cyan-blue and
+amber-gold winged X, 'CrossTrans' above, and sculpted Roman numeral 'II' below (TODO.md U5,
+V9, V16; Decision 48).
 
-The full logo (`CrossTrans.png`: a silver disc, an X and the word "CrossTrans", 488 x 511, not even
-square) turns into a smudge at 16-24 px and was squashed to 64 x 64 for the tray. The mark keeps
-what the eye keeps at that size - two crossing strokes, sky blue and amber - on a navy rounded
-square, so it reads on a light and a dark taskbar alike, and it is drawn from code: at the exact
-size the system asks for (`SM_CXSMICON`), with strokes that thicken as the icon shrinks.
+Master 512 px RGBA assets live in `src/assets/brand/` (bundled into PyInstaller via
+`CrossTrans.spec`):
+  - `crest_full.png`    for sizes > 36 px (Explorer, desktop shortcut, README, dialogs)
+  - `crest_compact.png` for sizes <= 36 px (system tray and title bars, where an enlarged
+                        winged X on the same gold-rimmed sapphire plate reads crisply)
+  - `mark_only.png`     for `plate=False` (winged X alone on transparency)
 
 Pure Pillow; no Tk, no application imports. `tools/make_icons.py` writes the .ico and .png files.
 """
 import ctypes
-from typing import Iterable, List, Tuple
+from functools import lru_cache
+import os
+import sys
+from typing import Iterable, List, Optional, Tuple
 
 from PIL import Image, ImageDraw
 
-NAVY_TOP = '#12427F'
-NAVY_BOTTOM = '#082A55'
-SKY = '#3DB5EA'
-SKY_EDGE = '#1B86C8'
+NAVY_TOP = '#15376B'
+NAVY_BOTTOM = '#050F23'
+SKY = '#42D4FF'
+SKY_EDGE = '#0B66B8'
 AMBER = '#FFB224'
-AMBER_EDGE = '#F0801E'
-INK = '#06203F'                 # the thin separation where the amber crosses the blue
+AMBER_EDGE = '#E85B10'
+INK = '#050F23'
 
 # Windows wants these frames in an .ico: the notification area at 100-200 %, the title bar, the
 # taskbar, Explorer's list, medium and large views, and the 256 px "jumbo".
 ICO_SIZES: Tuple[int, ...] = (16, 20, 24, 30, 32, 36, 40, 48, 60, 64, 72, 80, 96, 256)
 TRAY_SIZES: Tuple[int, ...] = (16, 20, 24, 32)
-WORK = 1024                      # the design grid; everything below is drawn at this size
+WORK = 1024                      # fallback design grid when master PNGs are unavailable
+COMPACT_MAX_SIZE = 36            # <= 36 px uses the optically enlarged compact crest
 
 
 def _rgb(colour: str) -> Tuple[int, int, int]:
@@ -36,8 +42,8 @@ def _rgb(colour: str) -> Tuple[int, int, int]:
 
 
 def stroke_for(size: int) -> Tuple[int, int]:
-    """(stroke width, half extent) on the 1024 grid: the X gets bolder and bigger as the icon
-    gets smaller, because a thin stroke at 16 px is a grey blur."""
+    """(stroke width, half extent) on the 1024 grid: the X gets bolder as the icon shrinks,
+    because thin strokes at 16 px turn into a grey blur."""
     if size <= 20:
         return 270, 292
     if size <= 24:
@@ -47,6 +53,23 @@ def stroke_for(size: int) -> Tuple[int, int]:
     if size <= 64:
         return 204, 300
     return 188, 304
+
+
+def _brand_asset_path(filename: str) -> str:
+    if hasattr(sys, '_MEIPASS'):
+        base = sys._MEIPASS
+    else:
+        base = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    return os.path.join(base, 'src', 'assets', 'brand', filename)
+
+
+@lru_cache(maxsize=4)
+def _load_master(filename: str) -> Optional[Image.Image]:
+    path = _brand_asset_path(filename)
+    if not os.path.isfile(path):
+        return None
+    with Image.open(path) as img:
+        return img.convert('RGBA').copy()
 
 
 def _gradient(size: int, top: str, bottom: str) -> Image.Image:
@@ -68,27 +91,17 @@ def _bar(draw: ImageDraw.ImageDraw, start: Tuple[int, int], end: Tuple[int, int]
         draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=fill)
 
 
-def render_mark(size: int, plate: bool = True) -> Image.Image:
-    """The mark as a square RGBA image `size` pixels on a side. With `plate=False` only the X is
-    drawn, on transparency (for a place that supplies its own background)."""
+def _render_fallback(size: int, plate: bool = True) -> Image.Image:
+    """Pure-Pillow fallback mark used only if bundled master assets are absent."""
     width, half = stroke_for(size)
     centre = WORK // 2
     layer = Image.new('RGBA', (WORK, WORK), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer)
     a, b = centre - half, centre + half
     blue, amber, ink = _rgb(SKY) + (255,), _rgb(AMBER) + (255,), _rgb(INK) + (255,)
-    # woven: amber over blue at the top right, blue over amber at the top left - an X, not a slash
     _bar(draw, (a, a), (b, b), width, blue)
     _bar(draw, (b, a), (a, b), width + 56, ink)
     _bar(draw, (b, a), (a, b), width, amber)
-    over = Image.new('RGBA', (WORK, WORK), (0, 0, 0, 0))
-    over_draw = ImageDraw.Draw(over)
-    _bar(over_draw, (a, a), (b, b), width + 56, ink)
-    _bar(over_draw, (a, a), (b, b), width, blue)
-    half_plane = Image.new('L', (WORK, WORK), 0)                                  # the top-left half
-    ImageDraw.Draw(half_plane).polygon([(0, 0), (WORK, 0), (0, WORK)], fill=255)
-    layer.paste(over, (0, 0), Image.composite(over.getchannel('A'), Image.new('L', (WORK, WORK), 0),
-                                              half_plane))
     if plate:
         base = _gradient(WORK, NAVY_TOP, NAVY_BOTTOM)
         mask = Image.new('L', (WORK, WORK), 0)
@@ -96,8 +109,30 @@ def render_mark(size: int, plate: bool = True) -> Image.Image:
         base.putalpha(mask)
         base.alpha_composite(layer)
         layer = base
-    # premultiplied shrink: no dark halo round the transparent corners
     return layer.convert('RGBa').resize((size, size), Image.Resampling.LANCZOS).convert('RGBA')
+
+
+def render_mark(size: int, plate: bool = True) -> Image.Image:
+    """The CrossTrans II mark as a square RGBA image `size` pixels on a side.
+
+    Sizes <= 36 px render the optically compact Royal Sapphire Crest (enlarged winged X on
+    the gold-rimmed sapphire plate); larger sizes render the full Royal Sapphire Crest with
+    'CrossTrans' above and Roman numeral 'II' below. With `plate=False`, only the winged X
+    is returned on transparency.
+    """
+    if not plate:
+        master = _load_master('mark_only.png')
+    elif size <= COMPACT_MAX_SIZE:
+        master = _load_master('crest_compact.png')
+    else:
+        master = _load_master('crest_full.png')
+
+    if master is None:
+        return _render_fallback(size, plate=plate)
+    if master.size == (size, size):
+        return master.copy()
+    # premultiplied shrink: no dark halo round the transparent corners
+    return master.convert('RGBa').resize((size, size), Image.Resampling.LANCZOS).convert('RGBA')
 
 
 def render_set(sizes: Iterable[int] = ICO_SIZES, plate: bool = True) -> List[Image.Image]:

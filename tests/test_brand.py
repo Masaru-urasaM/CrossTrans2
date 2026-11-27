@@ -38,9 +38,9 @@ class TestTheMark:
 
     def test_both_strokes_are_there_blue_on_the_left_amber_on_the_right(self):
         image = brand.render_mark(256)
-        left_top = image.getpixel((70, 70))[:3]                   # the blue stroke's upper end
-        right_top = image.getpixel((186, 70))[:3]                 # the amber stroke's upper end
-        assert left_top[2] > left_top[0] and right_top[0] > right_top[2]
+        left_wing = image.getpixel((96, 100))[:3]                 # the blue wing's upper arc
+        right_wing = image.getpixel((164, 100))[:3]               # the amber wing's upper arc
+        assert left_wing[2] > left_wing[0] and right_wing[0] > right_wing[2]
 
     def test_the_x_gets_bolder_as_the_icon_shrinks(self):
         widths = [brand.stroke_for(size)[0] for size in (16, 24, 32, 48, 96)]
@@ -96,6 +96,35 @@ class TestIcoFile:
     def test_the_picture_of_the_mark_is_square(self):
         with Image.open(os.path.join(REPO, make_icons.PNG)) as picture:
             assert picture.width == picture.height == 256
+
+    def test_brand_masters_exist_and_are_512_rgba(self):
+        assert make_icons.brand_master_problems(REPO) == []
+        for name in make_icons.BRAND_MASTERS:
+            with Image.open(os.path.join(REPO, 'src', 'assets', 'brand', name)) as master:
+                assert master.size == (512, 512) and master.mode == 'RGBA'
+
+    def test_compact_crest_used_at_small_sizes_and_full_at_large_sizes(self):
+        compact_36 = brand.render_mark(36)
+        full_48 = brand.render_mark(48)
+        with Image.open(os.path.join(REPO, 'src', 'assets', 'brand', 'crest_compact.png')) as compact_master:
+            expected_36 = compact_master.convert('RGBa').resize((36, 36), Image.Resampling.LANCZOS).convert('RGBA')
+        with Image.open(os.path.join(REPO, 'src', 'assets', 'brand', 'crest_full.png')) as full_master:
+            expected_48 = full_master.convert('RGBa').resize((48, 48), Image.Resampling.LANCZOS).convert('RGBA')
+        assert compact_36.tobytes() == expected_36.tobytes()
+        assert full_48.tobytes() == expected_48.tobytes()
+        assert compact_36.tobytes() != full_48.resize((36, 36), Image.Resampling.LANCZOS).tobytes()
+
+    def test_root_logo_is_synced_512_crest(self):
+        root_png = os.path.join(REPO, make_icons.ROOT_PNG)
+        assert make_icons.png_problems(root_png, 512) == []
+        with Image.open(root_png) as logo:
+            assert logo.size == (512, 512) and logo.mode == 'RGBA'
+
+    def test_stale_png_is_reported(self, tmp_path):
+        stale = tmp_path / 'CrossTrans.png'
+        Image.new('RGBA', (512, 512), (200, 200, 200, 255)).save(stale)
+        problems = make_icons.png_problems(str(stale), 512)
+        assert problems and 'does not match' in problems[0]
 
 
 class TestTray:
@@ -165,6 +194,17 @@ class TestWindowIcon:
             script = fh.read()
         assert 'make_icons.py --check' in script and 'goto :icons_ok' in script
         assert ':icons_failed' in script
+
+    def test_installer_and_release_pipelines_reference_new_icon_and_checks(self):
+        iss = open(os.path.join(REPO, 'installer', 'CrossTrans2.iss'), encoding='utf-8').read()
+        assert r'SetupIconFile=..\src\assets\CrossTrans.ico' in iss
+        assert r'UninstallDisplayIcon={app}\CrossTrans2.exe' in iss
+        assert r'Name: "{autoprograms}\CrossTrans 2"; Filename: "{app}\CrossTrans2.exe"' in iss
+        assert r'Name: "{autodesktop}\CrossTrans 2"; Filename: "{app}\CrossTrans2.exe"; Tasks: desktopicon' in iss
+        ps1 = open(os.path.join(REPO, 'tools', 'build_release.ps1'), encoding='utf-8').read()
+        assert 'make_icons.py --check' in ps1
+        yml = open(os.path.join(REPO, '.github', 'workflows', 'installer.yml'), encoding='utf-8').read()
+        assert 'make_icons.py --check' in yml
 
 
 class TestNoVietnamese:

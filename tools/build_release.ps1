@@ -6,6 +6,8 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 Push-Location -LiteralPath $repoRoot
 try {
     New-Item -ItemType Directory -Path logs -Force | Out-Null
+    python tools/make_icons.py --check
+    if ($LASTEXITCODE -ne 0) { throw 'Icon verification failed.' }
     python tools/verify_furigana_bundle.py --source
     if ($LASTEXITCODE -ne 0) { throw 'Furigana preflight failed.' }
     python -m PyInstaller --clean --noconfirm --distpath dist-release --workpath build-release CrossTrans.spec

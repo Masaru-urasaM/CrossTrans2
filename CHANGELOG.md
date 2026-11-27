@@ -30,6 +30,7 @@ Initial public release of **CrossTrans 2** for Windows 10/11.
   - Supports Google Gemini, OpenAI, Anthropic Claude, DeepSeek, Groq, xAI, Mistral, Perplexity, Cerebras, SambaNova, Together, SiliconFlow, OpenRouter, and HuggingFace.
   - Drag-to-reorder primary & backup keys, live key testing, capability badges (*Reads images*, *Reads files*, *Reads audio*), and optional key/model rotation.
 - **Modern UI, Themes, Localization & Security**
+  - **CrossTrans II Visual Identity:** Royal Sapphire Crest branding with crisp multi-DPI icons (16–256 px) across the application executable, installer, shortcuts, window title bars, and Windows system tray.
   - Light, Dark, Pastel, and *Follow Windows* themes, adjustable text scaling, high-DPI support, and **English / Japanese (日本語)** interface languages.
   - Per-user Windows DPAPI encryption for API keys and optional GitHub update tokens, with Windows Hello verification before displaying saved API keys.
   - Public GitHub Releases auto-update with SHA-256 verification and privacy-safe Diagnostics / bug report export.

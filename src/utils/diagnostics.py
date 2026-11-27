@@ -448,6 +448,15 @@ def run_self_check(destination: str | os.PathLike[str] | None = None) -> int:
         ico_path = get_resource_path(os.path.join('src', 'assets', 'CrossTrans.ico'))
         if not os.path.isfile(ico_path):
             errors.append(f'Missing application icon resource: {ico_path}')
+        for rel in (
+            os.path.join('src', 'assets', 'CrossTrans.png'),
+            os.path.join('src', 'assets', 'brand', 'crest_full.png'),
+            os.path.join('src', 'assets', 'brand', 'crest_compact.png'),
+            os.path.join('src', 'assets', 'brand', 'mark_only.png'),
+        ):
+            asset_path = get_resource_path(rel)
+            if not os.path.isfile(asset_path):
+                errors.append(f'Missing brand asset resource: {asset_path}')
         if len(catalog()) < 400:
             errors.append('UI translation catalog is incomplete.')
 
