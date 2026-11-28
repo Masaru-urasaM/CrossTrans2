@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Masaru-urasaM/CrossTrans2/releases/latest"><img src="https://img.shields.io/badge/Download-Windows%20Installer%20v2.0.0-b01c5c?style=for-the-badge" alt="Download CrossTrans 2" /></a>
+  <a href="https://github.com/Masaru-urasaM/CrossTrans2/releases/latest"><img src="https://img.shields.io/badge/Download-Windows%20Installer%20v2.0.1-b01c5c?style=for-the-badge" alt="Download CrossTrans 2" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue?style=for-the-badge" alt="License: AGPL-3.0" /></a>
   <img src="https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078d4?style=for-the-badge" alt="Windows 10/11" />
 </p>
@@ -50,7 +50,7 @@ CrossTrans 2 lives quietly in your Windows system tray and translates anything o
 ## Quick Start (2 Minutes)
 
 1. **Download & Install**
-   - Go to [GitHub Releases](https://github.com/Masaru-urasaM/CrossTrans2/releases/latest) and download **`CrossTrans2Setup_v2.0.0.exe`**.
+   - Go to [GitHub Releases](https://github.com/Masaru-urasaM/CrossTrans2/releases/latest) and download **`CrossTrans2Setup_v2.0.1.exe`**.
    - Run the installer and follow the prompts. *(If Windows SmartScreen shows a "Windows protected your PC" prompt because the open-source binary is unsigned, click **More info** → **Run anyway** — see the [User Guide](docs/USER_GUIDE.md#installation--windows-smartscreen) for details and SHA-256 verification.)*
 2. **Add a Free or Paid API Key**
    - Launch CrossTrans 2 and open **Settings → API keys** (or paste your key during the Welcome setup wizard).

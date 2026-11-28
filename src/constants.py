@@ -7,7 +7,7 @@ Constants and configuration values for CrossTrans.
 """
 
 # ============== VERSION ==============
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 APP_NAME = APP_ID
 GITHUB_REPO = REPOSITORY
 FEEDBACK_URL = f"https://github.com/{GITHUB_REPO}/issues/new"
@@ -240,238 +240,141 @@ PROVIDERS_LIST = [
     "SambaNova", "Together", "SiliconFlow", "OpenRouter", "HuggingFace"
 ]
 
-# Maps specific model patterns to their native providers
-# Keys match PROVIDERS_LIST exactly (Title Case)
-# Updated January 2026 with all active models
+# Maps specific model patterns to their native providers.
+# Keys match PROVIDERS_LIST exactly (Title Case).
+# Offline tier-3 floor snapshot synced against https://models.masaru.uk on 2026-11-28.
+# At runtime, remote_config replaces this table from the live registry (tier 1) or cache (tier 2).
+# Keep these lists compact and curated: every non-Perplexity ID here is live-verified on 2026-11-28.
 MODEL_PROVIDER_MAP = {
-    # === GOOGLE (Gemini) ===
-    # Verified 2026-09-08 by a real generateContent call per model. Six of the
-    # eight IDs that used to sit here answer 404: the whole 2.0 line,
-    # gemini-3-flash (the live name is gemini-3-flash-preview) and
-    # gemini-2.5-flash-preview-image. gemini-2.5-pro is *listed* by the API and
-    # still 404s on use ("no longer available to new users") - which is why
-    # presence in /models is not the test here, a call is.
-    # Chat models only: the same endpoint also serves tts, image, transcribe,
-    # robotics, computer-use, lyria (music), nano-banana (image) and the agentic
-    # deep-research / antigravity families, none of which translate.
+    # === GOOGLE (Gemini & Gemma) ===
+    # Chat models only: omits robotics, computer-use, deep-research and antigravity preview entries.
     'Google': [
-        # Gemini 3.x flash
-        'gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash',
-        'gemini-3.5-flash', 'gemini-3.5-flash-lite',
-        'gemini-3.1-flash-lite', 'gemini-3-flash-preview',
+        # Gemini 4
+        'gemini-4-argon', 'gemini-4-carbon', 'gemini-4-hydrogen', 'gemini-4-neon',
+        # Gemini 3.x
+        'gemini-3.8-flash', 'gemini-3.6-flash', 'gemini-3.5-flash-lite',
+        'gemini-3.1-pro-preview', 'gemini-3.1-flash-lite-preview', 'gemini-3-flash-preview',
         # Gemini 2.5
-        'gemini-2.5-flash', 'gemini-2.5-flash-lite',
-        # Aliases that follow the current release, so they cannot go stale
+        'gemini-2.5-flash-lite',
+        # Aliases that track the current release
         'gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-pro-latest',
+        # Gemma 4
+        'gemma-4-31b-it', 'gemma-4-26b-a4b-it',
     ],
     # === OPENAI ===
     'OpenAI': [
-        # GPT-6 Series - the defaults since 2026-11-17 (Decision 92); both take image input
-        'gpt-6-luna', 'gpt-6.1-terra',
-        # O-Series (Reasoning)
-        'o3', 'o3-mini', 'o3-pro',
-        'o1', 'o1-preview', 'o1-mini', 'o1-pro',
-        # GPT-4.1 Series
-        'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano',
-        # GPT-4o Series
-        'gpt-4o', 'gpt-4o-mini', 'gpt-4o-2024-11-20', 'gpt-4o-2024-08-06',
-        'gpt-4o-audio-preview', 'gpt-4o-realtime-preview',
-        # GPT-4 Turbo
-        'gpt-4-turbo', 'gpt-4-turbo-preview', 'gpt-4-turbo-2024-04-09',
-        # GPT-4 Base
-        'gpt-4', 'gpt-4-0613', 'gpt-4-32k',
-        # GPT-3.5
-        'gpt-3.5-turbo', 'gpt-3.5-turbo-0125', 'gpt-3.5-turbo-16k',
+        # GPT-6 Series - defaults since 2026-11-17 (Decision 92); all live models accept image input
+        'gpt-6-luna', 'gpt-6.1-terra', 'gpt-6-astra', 'gpt-6-sol',
+        'gpt-6.1-sol', 'gpt-6.2-astra', 'gpt-6.2-sol',
+        # GPT-5 Series
+        'gpt-5.6', 'gpt-5.6-luna', 'gpt-5.6-terra', 'gpt-5.6-sol',
+        'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini', 'gpt-5.2',
     ],
     # === ANTHROPIC (Claude) ===
     'Anthropic': [
-        # Claude 5.5 / Fable 5.1 - current, and the D11 defaults (K15, 2026-10-16)
-        'claude-haiku-5-5', 'claude-sonnet-5-5', 'claude-opus-5-5', 'claude-fable-5-1',
-        'claude-haiku-4-5',
-        # Claude 4.5 Series
-        'claude-opus-4-5-20251101', 'claude-sonnet-4-5-20251101', 'claude-haiku-4-5-20251101',
-        # Claude 4 Series
-        'claude-4-opus', 'claude-4-sonnet', 'claude-4-haiku',
-        # Claude 3.5 Series
-        'claude-3-5-sonnet-20241022', 'claude-3-5-sonnet-latest',
-        'claude-3-5-haiku-20241022', 'claude-3-5-haiku-latest',
-        # Claude 3 Series
-        'claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307',
+        # Claude 5.5 / 5 & Fable 5.x
+        'claude-haiku-5-5', 'claude-sonnet-5-5', 'claude-opus-5-5',
+        'claude-fable-5-2', 'claude-fable-5-1', 'claude-fable-5',
+        'claude-sonnet-5', 'claude-opus-5',
+        # Claude 4.x
+        'claude-opus-4-8', 'claude-opus-4-7', 'claude-opus-4-6',
+        'claude-sonnet-4-6', 'claude-haiku-4-5-20251001',
     ],
     # === DEEPSEEK ===
     'DeepSeek': [
-        # Current names in DeepSeek's API docs, and the D11 defaults (K15)
         'deepseek-flash', 'deepseek-v4-pro',
-        'deepseek-chat', 'deepseek-coder', 'deepseek-reasoner',
-        'deepseek-r1', 'deepseek-r1-lite',
-        'deepseek-v3', 'deepseek-v2.5',
     ],
     # === GROQ ===
-    # Verified against Groq's own /models endpoint 2026-09-07. The entire Llama
-    # chat line is decommissioned: 15 of the 17 IDs that used to sit here are
-    # gone, and the 2 survivors were whisper - a speech model that was never a
-    # translation candidate. Only reached in tier-3 fallback (remote config
-    # unreachable AND no local cache), which is exactly when offering a model
-    # that 404s is worst. Live but deliberately absent: whisper / orpheus
-    # (speech), *-guard and gpt-oss-safeguard (classifiers), allam-2-7b (Arabic
-    # specialist, 4k ctx), groq/compound* (agentic - multi-step, and it cannot
-    # hold the trial proxy's 15 s timeout).
+    # Deliberately omits allam-2-7b (Arabic specialist, 4k ctx) from the offline floor.
     'Groq': [
-        # GPT-OSS - 131k ctx, answers directly (measured: no reasoning preamble)
         'openai/gpt-oss-120b', 'openai/gpt-oss-20b',
-        # Qwen 3 - 131k ctx, multilingual; emits <think>, which
-        # text_cleanup.strip_thinking_tags() removes on every path
-        'qwen/qwen3.6-27b', 'qwen/qwen3.8-27b',
+        'qwen/qwen3.8-27b',
     ],
     # === XAI (Grok) ===
     'xAI': [
-        # The grok-4.x line - all xAI lists now; the first two are the D11 defaults (K15)
         'grok-4.20-0309-non-reasoning', 'grok-4.3', 'grok-4.7', 'grok-4.6', 'grok-4.5',
-        'grok-4.20-0309-reasoning',
-        'grok-3', 'grok-3-fast',
-        'grok-2', 'grok-2-vision', 'grok-2-1212',
-        'grok-beta', 'grok-vision-beta',
+        'grok-4.20-0309-reasoning', 'grok-4.20-multi-agent-0309',
     ],
     # === MISTRAL AI ===
     'Mistral': [
-        # Large Models
-        'mistral-large-latest', 'mistral-large-2411', 'mistral-large-2407',
-        # Medium & Small
-        'mistral-medium-latest', 'mistral-small-latest', 'mistral-small-2409',
-        # Ministral
-        'ministral-8b-latest', 'ministral-3b-latest',
-        # Open Models
-        'open-mistral-nemo', 'open-mistral-7b', 'open-mixtral-8x7b', 'open-mixtral-8x22b',
-        # Codestral
-        'codestral-latest', 'codestral-mamba-latest',
-        # Pixtral (Vision)
-        'pixtral-large-latest', 'pixtral-12b-latest',
+        'mistral-large-latest', 'mistral-large-4',
+        'mistral-small-latest', 'mistral-small-2603',
+        'ministral-14b-latest', 'ministral-8b-latest', 'ministral-3b-latest',
+        'codestral-latest', 'codestral-2508',
     ],
     # === PERPLEXITY ===
+    # Registry marks sonar* deprecated; registry_source intentionally preserves this list so
+    # Perplexity keys keep a non-empty model picker.
     'Perplexity': [
-        # Sonar Series
         'sonar', 'sonar-pro', 'sonar-reasoning', 'sonar-reasoning-pro',
         'sonar-deep-research',
-        # Legacy Sonar
         'llama-3.1-sonar-small-128k-online', 'llama-3.1-sonar-large-128k-online',
         'llama-3.1-sonar-huge-128k-online',
     ],
     # === CEREBRAS ===
-    # Cerebras serves exactly three models (its own /models, 2026-09-08 with a
-    # real key). All SIX IDs that used to be here are gone - the whole Llama line
-    # and qwen-3-32b - and llama-3.3-70b / llama3.1-70b answered a real request
-    # with 404 "Model does not exist". The three below returned 402 "Payment
-    # required" instead, which is the useful distinction: Cerebras validates the
-    # model before it checks billing, so 402 proves the model exists where 404
-    # proves it does not. Not callable beyond that - the key has no credit.
     'Cerebras': [
-        'gpt-oss-120b', 'qwen-3.8-27b', 'gemma-4-31b',
+        'gpt-oss-120b', 'qwen-3.8-27b',
     ],
     # === SAMBANOVA ===
-    # SambaNova's own /models, 2026-09-08 with a real key: 11 of the 12 IDs that
-    # used to be here are gone - every DeepSeek-R1 variant, the whole Llama 3.1/3.2
-    # line and all three Qwen entries. Only Meta-Llama-3.3-70B-Instruct survived.
-    # Weaker evidence than Cerebras and Google, deliberately noted: SambaNova checks
-    # billing BEFORE model validity, so every call returned 402 - including one for
-    # a model absent from its own catalogue. The listing is the only evidence here;
-    # no model below has been sent a real translation.
     'SambaNova': [
-        'Meta-Llama-3.3-70B-Instruct', 'gemma-4-31B-it', 'gpt-oss-120b',
-        'DeepSeek-V3.2', 'DeepSeek-V3.1', 'MiniMax-M3', 'MiniMax-M2.7',
+        'gemma-4-31B-it', 'gpt-oss-120b', 'MiniMax-M3.1-Flash', 'GLM-5.3',
     ],
     # === TOGETHER ===
     'Together': [
-        # The D11 defaults (K15): Together's named replacements. No prefix rule knows
-        # meta-models/ or zai-org/, so without these entries they would route elsewhere.
-        'meta-models/Muse-Glimmer-30B', 'zai-org/GLM-5.3-Flash',
-        # Llama 3.3
-        'meta-llama/Llama-3.3-70B-Instruct-Turbo',
-        # Llama 3.2
-        'meta-llama/Llama-3.2-3B-Instruct-Turbo', 'meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo',
-        # Llama 3.1
-        'meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo', 'meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo',
-        'meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo',
-        # Qwen
-        'Qwen/Qwen2.5-7B-Instruct-Turbo', 'Qwen/Qwen2.5-72B-Instruct-Turbo',
-        'Qwen/QwQ-32B-Preview',
-        # Mistral
-        'mistralai/Mixtral-8x7B-Instruct-v0.1', 'mistralai/Mistral-7B-Instruct-v0.3',
-        # DeepSeek
-        'deepseek-ai/DeepSeek-R1', 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B',
-        # Google
-        'google/gemma-2-9b-it', 'google/gemma-2-27b-it',
+        # Defaults first: no prefix rule knows meta-models/ or zai-org/, so exact-match keeps them here.
+        'meta-models/Muse-Glimmer-30B', 'zai-org/GLM-5.3-Flash', 'zai-org/GLM-5.3', 'zai-org/GLM-5.2',
+        'Qwen/Qwen4-Max', 'Qwen/Qwen3.8-Flash', 'Qwen/Qwen3.7-Max',
+        'Qwen/Qwen3.7-Plus', 'Qwen/Qwen3.6-Plus', 'Qwen/Qwen3.5-9B',
+        'deepseek-ai/DeepSeek-V4.1-Flash',
+        'moonshotai/Kimi-K3.1-Pro', 'moonshotai/Kimi-K3',
+        'MiniMaxAI/MiniMax-M3.1-Flash',
+        'nvidia/NVIDIA-Nemotron-3.5-Super-VL',
     ],
     # === SILICONFLOW ===
     'SiliconFlow': [
-        # Qwen Series
-        'Qwen/Qwen2.5-7B-Instruct', 'Qwen/Qwen2.5-14B-Instruct', 'Qwen/Qwen2.5-32B-Instruct',
-        'Qwen/Qwen2.5-72B-Instruct', 'Qwen/Qwen2.5-Coder-7B-Instruct',
-        'Qwen/QwQ-32B-Preview', 'Qwen/Qwen2-VL-72B-Instruct',
-        # DeepSeek
-        'deepseek-ai/DeepSeek-V3', 'deepseek-ai/DeepSeek-V2.5', 'deepseek-ai/DeepSeek-R1',
-        'deepseek-ai/DeepSeek-Coder-V2-Instruct',
-        # GLM
-        'THUDM/glm-4-9b-chat',
-        # InternLM
-        'internlm/internlm2_5-7b-chat',
-        # Yi
-        '01-ai/Yi-1.5-9B-Chat', '01-ai/Yi-1.5-34B-Chat',
-        # Pro versions
-        'Pro/Qwen/Qwen2.5-7B-Instruct', 'Pro/deepseek-ai/DeepSeek-V3',
+        'deepseek-ai/DeepSeek-V3', 'deepseek-ai/DeepSeek-V3.2',
+        'deepseek-ai/DeepSeek-V4-Flash', 'deepseek-ai/DeepSeek-V4-Pro',
+        'deepseek-ai/DeepSeek-V4.1-Flash', 'deepseek-ai/DeepSeek-R1',
+        'Qwen/Qwen2.5-72B-Instruct', 'Qwen/Qwen2.5-7B-Instruct',
+        'Qwen/Qwen3.8-27B', 'Qwen/Qwen3.6-27B', 'Qwen/Qwen3.5-27B', 'Qwen/Qwen3-32B',
+        'Qwen/Qwen3-VL-32B-Instruct', 'Qwen/Qwen3-VL-8B-Instruct',
+        'zai-org/GLM-5.3', 'zai-org/GLM-5.3-Flash', 'zai-org/GLM-4.5V',
+        'Pro/deepseek-ai/DeepSeek-V3', 'Pro/deepseek-ai/DeepSeek-R1',
     ],
-    # === OPENROUTER (aggregator - common models) ===
-    # Tier-3 fallback only: the Worker rebuilds this list from OpenRouter's live
-    # catalogue on every cron, so tiers 1 and 2 already carry ~426 current IDs.
-    # It is reached on a fresh install with no network, which is exactly when a
-    # dead entry is least recoverable - and 9 of the 20 that used to be here were
-    # dead (checked 2026-09-08 against the live catalogue AND the per-model
-    # /endpoints resource, which agreed exactly): o1-mini, claude-3.5-sonnet,
-    # claude-3-opus, gemini-2.0-flash-exp, gemini-pro, gemini-flash-1.5,
-    # llama-3.1-405b-instruct, mixtral-8x7b-instruct, qwq-32b-preview.
-    # Every ID below has at least one routable endpoint. No ':batch' variants -
-    # those are async batch endpoints and cannot serve an interactive translation.
+    # === OPENROUTER (aggregator - curated live subset; runtime registry holds ~440 IDs) ===
+    # No ':batch' variants: those are async batch endpoints and cannot serve interactive translation.
     'OpenRouter': [
         # OpenAI
-        'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo',
-        'openai/gpt-3.5-turbo', 'openai/o1',
+        'openai/gpt-6-luna', 'openai/gpt-6.1-terra', 'openai/gpt-4o', 'openai/gpt-4o-mini',
         # Anthropic
-        'anthropic/claude-sonnet-5', 'anthropic/claude-opus-5', 'anthropic/claude-3-haiku',
+        'anthropic/claude-sonnet-5.5', 'anthropic/claude-haiku-5.5', 'anthropic/claude-opus-5.5',
+        'anthropic/claude-sonnet-5', 'anthropic/claude-opus-5',
         # Google
-        'google/gemini-3.8-flash', 'google/gemini-2.5-flash', 'google/gemini-2.5-flash-lite',
+        'google/gemini-3.8-flash', 'google/gemini-3.5-flash-lite', 'google/gemini-3-flash-preview',
         # Meta
         'meta-llama/llama-3.3-70b-instruct', 'meta-llama/llama-3.1-70b-instruct',
         'meta-llama/llama-4-maverick',
         # Mistral
-        'mistralai/mistral-large', 'mistralai/mistral-medium-3-5',
+        'mistralai/mistral-large', 'mistralai/mistral-large-4-0', 'mistralai/mistral-small-2603',
         # DeepSeek
-        'deepseek/deepseek-chat', 'deepseek/deepseek-r1',
+        'deepseek/deepseek-chat', 'deepseek/deepseek-v4-flash', 'deepseek/deepseek-v4-pro',
         # Qwen
         'qwen/qwen-2.5-72b-instruct', 'qwen/qwen3.8-flash',
-        # Free tier - these two are also the OpenRouter entries in
-        # DEFAULT_MODELS_BY_PROVIDER, and they MUST stay listed here.
-        # _identify_provider() matches this map first; miss it and
-        # 'google/gemma-4-31b-it:free' falls through to the 'google/' prefix
-        # rule, which answers Together and sends an sk-or-v1- key to the wrong
-        # API. Measured 2026-09-08 on the tier-3 path, where this list is the
-        # only one there is - and it is what the old defaults were doing.
+        # Free tier - also the OpenRouter entries in DEFAULT_MODELS_BY_PROVIDER, and MUST stay listed
+        # here so _identify_provider() matches OpenRouter before the 'google/' -> Together prefix rule.
         'google/gemma-4-31b-it:free', 'nvidia/nemotron-3.5-lightning:free',
     ],
-    # === HUGGINGFACE ===
+    # === HUGGINGFACE (curated live subset; runtime registry holds ~100 IDs) ===
     'HuggingFace': [
-        # Qwen Series
-        'Qwen/Qwen2.5-72B-Instruct', 'Qwen/Qwen2.5-32B-Instruct', 'Qwen/Qwen2.5-14B-Instruct',
-        'Qwen/Qwen2.5-7B-Instruct', 'Qwen/Qwen2.5-3B-Instruct', 'Qwen/Qwen2.5-Coder-32B-Instruct',
-        # Llama Series
+        'Qwen/Qwen2.5-72B-Instruct', 'Qwen/Qwen2.5-Coder-32B-Instruct', 'Qwen/Qwen2.5-VL-72B-Instruct',
+        'Qwen/Qwen3-32B', 'Qwen/Qwen3-VL-30B-A3B-Instruct', 'Qwen/Qwen3.8-27B',
         'meta-llama/Llama-3.3-70B-Instruct', 'meta-llama/Llama-3.2-3B-Instruct',
         'meta-llama/Llama-3.1-8B-Instruct', 'meta-llama/Llama-3.1-70B-Instruct',
-        # Mistral
-        'mistralai/Mistral-7B-Instruct-v0.3', 'mistralai/Mixtral-8x7B-Instruct-v0.1',
-        # Microsoft Phi
-        'microsoft/Phi-3-mini-4k-instruct', 'microsoft/Phi-3.5-mini-instruct',
-        # Google Gemma
-        'google/gemma-2-9b-it', 'google/gemma-2-27b-it',
-        # DeepSeek
-        'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B',
+        'meta-llama/Llama-4-Maverick-17B-128E-Instruct',
+        'mistralai/Mistral-Large-4-1T-A52B',
+        'google/gemma-2-27b-it', 'google/gemma-3-27b-it', 'google/gemma-4-31B-it',
+        'deepseek-ai/DeepSeek-V3', 'deepseek-ai/DeepSeek-V4-Flash', 'deepseek-ai/DeepSeek-R1-0528',
+        'zai-org/GLM-5.3', 'zai-org/GLM-5.3-Flash',
     ],
 }
 
@@ -501,21 +404,28 @@ API_KEY_PATTERNS = {
 }
 
 # ============== VISION MODELS ==============
-# Models that support vision/image input. Supports wildcards (*).
-# Note: Naming patterns like 'vision', 'VL', 'pixtral' are also detected in multimodal.py
+# Offline tier-3 floor snapshot synced against https://models.masaru.uk (input=image) on 2026-11-28.
+# Supports wildcards (*). Naming heuristics ('vision', 'pixtral') also apply in multimodal.py.
 VISION_MODELS = {
-    'google': ['gemini-*'],  # All Gemini models support vision
-    'openai': ['gpt-4-vision-*', 'gpt-4o', 'gpt-4o-*',  # Note: o1 models do NOT support vision
-               'gpt-6-luna', 'gpt-6.1-terra'],          # text and image input (OpenAI's model pages)
-    'anthropic': ['claude-3-*', 'claude-3.5-*', 'claude-3-5-*'],  # Wildcard support
-    # Measured 2026-09-07 with a 2x2 PNG: qwen3 accepts images; gpt-oss-*,
-    # groq/compound* and allam-2-7b reject them ('content must be a string').
-    # The llama-3.2 vision previews and llava are gone from Groq entirely.
+    'google': ['gemini-*', 'gemma-4-*'],
+    'openai': ['gpt-6*', 'gpt-5*', 'gpt-4.1*', 'gpt-4o', 'gpt-4o-*', 'gpt-4-vision-*'],
+    'anthropic': ['claude-3-*', 'claude-3.5-*', 'claude-3-5-*', 'claude-*-4-*',
+                  'claude-*-5', 'claude-*-5-*', 'claude-fable-*'],
+    'deepseek': ['deepseek-flash', 'deepseek-v4-flash*'],
+    # Groq: qwen3 accepts images; gpt-oss-* rejects them ('content must be a string').
     'groq': ['qwen/qwen3*'],
-    'xai': ['grok-*-vision*', 'grok-vision-*'],
-    'mistral': ['pixtral-*'],
-    'together': ['meta-llama/Llama-3.2-*-Vision-*', 'Qwen/Qwen2-VL-*', '*-vision-*'],
-    'siliconflow': ['Qwen/Qwen2-VL-*', '*-VL-*'],
-    'openrouter': ['*'],  # OpenRouter aggregates models - rely on naming heuristics
+    'xai': ['grok-4*', 'grok-*-vision*', 'grok-vision-*'],
+    'mistral': ['mistral-large-*', 'mistral-medium-*', 'mistral-small-*',
+                'ministral-*', 'magistral-*', 'pixtral-*'],
+    'perplexity': ['sonar-pro', 'sonar-reasoning-pro'],
+    'cerebras': ['qwen-3.8-27b'],
+    'sambanova': ['gemma-4-31B-it', 'MiniMax-M3.1-Flash'],
+    'together': ['meta-models/Muse-*', 'zai-org/GLM-5.3-Flash', 'Qwen/Qwen4-*', 'Qwen/Qwen3.8-*',
+                 'Qwen/Qwen3.5-*', 'deepseek-ai/DeepSeek-V4.1-Flash*', 'moonshotai/Kimi-K3*',
+                 'MiniMaxAI/MiniMax-M3.1-Flash', '*-VL*', '*-Vision-*', '*-vision-*'],
+    'siliconflow': ['Qwen/Qwen3-VL-*', 'Qwen/Qwen3.5-*', 'Qwen/Qwen3.6-*', 'Qwen/Qwen3.8-*',
+                    'Qwen/Qwen2-VL-*', 'deepseek-ai/DeepSeek-V4.1-Flash', 'zai-org/GLM-4.5V', '*-VL-*'],
+    'openrouter': ['*'],  # Runtime registry supplies explicit IDs; offline relies on heuristics
+    'huggingface': ['Qwen/Qwen*-VL-*', 'Qwen/Qwen3.5-*', 'Qwen/Qwen3.6-*', 'Qwen/Qwen3.8-*',
+                    'google/gemma-3-*', 'google/gemma-4-*', 'MiniMaxAI/MiniMax-M3*', '*-VL-*'],
 }
-

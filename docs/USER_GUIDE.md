@@ -30,12 +30,12 @@ Welcome to **CrossTrans 2**! This guide walks you through installation, free & p
 - **Internet connection** and at least one **AI API key** (free-tier keys work great — see [Section 3](#3-getting--adding-api-keys-free-tiers-included)).
 
 ### Installing with the Setup Wizard (Recommended)
-1. Download **`CrossTrans2Setup_v2.0.0.exe`** from the [Latest GitHub Release](https://github.com/Masaru-urasaM/CrossTrans2/releases/latest).
+1. Download **`CrossTrans2Setup_v2.0.1.exe`** from the [Latest GitHub Release](https://github.com/Masaru-urasaM/CrossTrans2/releases/latest).
 2. *(Optional but recommended)* Verify file integrity against **`SHA256SUMS.txt`** from the same release using PowerShell:
    ```powershell
-   Get-FileHash .\CrossTrans2Setup_v2.0.0.exe -Algorithm SHA256
+   Get-FileHash .\CrossTrans2Setup_v2.0.1.exe -Algorithm SHA256
    ```
-3. Double-click **`CrossTrans2Setup_v2.0.0.exe`** and follow the setup prompts.
+3. Double-click **`CrossTrans2Setup_v2.0.1.exe`** and follow the setup prompts.
    - Installs cleanly with a Start Menu entry, optional auto-start with Windows, clean uninstaller, and automatic updates.
 4. Once running, CrossTrans 2 sits in the **Windows System Tray** (bottom-right taskbar corner; click the `^` chevron if hidden). Right-click the tray icon anytime to open **Translate**, **Audio panel**, **Settings**, or **Exit**.
 

@@ -2,7 +2,7 @@ param(
     [Parameter(Mandatory=$true)][string]$SourceExe,
     [Parameter(Mandatory=$true)][string]$Compiler,
     [string]$OutputDirectory,
-    [string]$AppVersion = "2.0.0"
+    [string]$AppVersion = "2.0.1"
 )
 $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot

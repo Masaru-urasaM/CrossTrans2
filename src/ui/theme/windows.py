@@ -9,6 +9,7 @@ an injectable seam for tests.
 """
 import ctypes
 import logging
+import re
 import sys
 from typing import Callable, Optional
 
@@ -134,3 +135,73 @@ def monitor_work_area(x, y):
         return tuple(win32api.GetMonitorInfo(monitor)['Work'])
     except Exception:
         return None
+
+
+def monitor_rect(x, y):
+    """The full rectangle (left, top, right, bottom) of the monitor nearest a point, or None."""
+    try:
+        import win32api
+        monitor = win32api.MonitorFromPoint((int(x), int(y)), 2)
+        return tuple(win32api.GetMonitorInfo(monitor)['Monitor'])
+    except Exception:
+        return None
+
+
+def tk_geometry(x, y, width=None, height=None) -> str:
+    """A Tk geometry string that is right for negative coordinates.
+
+    `wm geometry` reads `-X` as "X pixels from the right (or bottom) edge of the primary screen", so a
+    monitor to the left of or above the primary one (negative x or y) needs the explicit `+-X` form.
+    `{x:+d}` would print `-1080` and silently move the window to the wrong place.
+    """
+    size = f'{int(width)}x{int(height)}' if width is not None and height is not None else ''
+    return f'{size}+{int(x)}+{int(y)}'
+
+
+_GEOMETRY = re.compile(r'^(?:(\d+)x(\d+))?\+(-?\d+)\+(-?\d+)$')
+
+
+def parse_geometry(geometry: str):
+    """`WxH+X+Y` or `+X+Y` (X and Y may be negative) -> (width, height, x, y); width/height are None
+    for the position-only form. Returns None when the text is not in that shape."""
+    found = _GEOMETRY.match(str(geometry))
+    if not found:
+        return None
+    width, height, x, y = found.groups()
+    return (None if width is None else int(width), None if height is None else int(height),
+            int(x), int(y))
+
+
+HWND_TOPMOST = -1
+SWP_SHOWWINDOW = 0x0040
+
+
+def set_window_pos(hwnd: int, left: int, top: int, width: int, height: int) -> bool:
+    """SetWindowPos(hwnd, HWND_TOPMOST, ...) at an exact virtual-screen rectangle; False off Windows."""
+    if sys.platform != 'win32':
+        return False
+    try:
+        from ctypes import wintypes
+        user32 = ctypes.windll.user32
+        user32.SetWindowPos.argtypes = [wintypes.HWND, wintypes.HWND, ctypes.c_int, ctypes.c_int,
+                                        ctypes.c_int, ctypes.c_int, wintypes.UINT]
+        user32.SetWindowPos.restype = wintypes.BOOL
+        return bool(user32.SetWindowPos(hwnd, HWND_TOPMOST, int(left), int(top), int(width),
+                                        int(height), SWP_SHOWWINDOW))
+    except Exception:
+        logging.debug('[windows] SetWindowPos failed', exc_info=True)
+        return False
+
+
+def place_exact(window, left, top, width, height, setter=set_window_pos) -> bool:
+    """Pin a mapped overrideredirect window to an exact rectangle, whatever Tk made of its geometry
+    string. Best effort: the window keeps its Tk geometry when the call is unavailable."""
+    try:
+        window.update_idletasks()
+        try:
+            hwnd = hwnd_of(window)
+        except Exception:
+            hwnd = int(window.winfo_id())
+        return bool(setter(hwnd, left, top, width, height))
+    except Exception:
+        return False

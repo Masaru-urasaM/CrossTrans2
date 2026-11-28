@@ -142,3 +142,20 @@ def test_failed_download_removes_empty_update_temp_dir(monkeypatch, tmp_path, sc
     assert not result['success']
     assert updater.download_path is None
     assert not update_dir.exists()
+
+
+def test_release_version_is_consistent_across_app_installer_and_workflow():
+    from src.constants import VERSION
+    root = Path(__file__).resolve().parents[1]
+    major, minor, patch = (int(part) for part in VERSION.split('.'))
+    iss = (root / 'installer' / 'CrossTrans2.iss').read_text(encoding='utf-8')
+    ver_info = (root / 'installer' / 'version_info.txt').read_text(encoding='utf-8')
+    build_ps1 = (root / 'tools' / 'build_installer.ps1').read_text(encoding='utf-8')
+    workflow = (root / '.github' / 'workflows' / 'installer.yml').read_text(encoding='utf-8')
+    assert f'#define AppVersion "{VERSION}"' in iss
+    assert f'filevers=({major}, {minor}, {patch}, 0), prodvers=({major}, {minor}, {patch}, 0)' in ver_info
+    assert f"StringStruct('FileVersion', '{VERSION}.0')" in ver_info
+    assert f"StringStruct('ProductVersion', '{VERSION}')" in ver_info
+    assert f'$AppVersion = "{VERSION}"' in build_ps1
+    assert f'CrossTrans2Setup_v{VERSION}.exe' in workflow
+    assert f"'candidate-{VERSION}-'" in workflow

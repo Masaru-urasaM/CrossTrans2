@@ -189,22 +189,16 @@ class ToastManager:
         try:
             # Get current position
             geometry = toast.geometry()
-            # Parse geometry string: "WxH+X+Y" or "+X+Y"
-            if '+' in geometry:
-                parts = geometry.split('+')
-                x = int(parts[-2])
-                y = int(parts[-1])
-                size = '+'.join(parts[:-2]) if len(parts) > 2 else ''
+            # Parse "WxH+X+Y" or "+X+Y"; X and Y can be negative on a monitor left of or above the primary
+            parsed = windows.parse_geometry(geometry)
+            if parsed is not None:
+                width, height, x, y = parsed
 
                 # Shake pattern: right, left, right, left (decreasing amplitude)
                 offsets = [8, -8, 6, -6, 4, -4, 2, -2]
                 offset = offsets[step] if step < len(offsets) else 0
 
-                new_x = x + offset
-                if size:
-                    toast.geometry(f"{size}+{new_x}+{y}")
-                else:
-                    toast.geometry(f"+{new_x}+{y}")
+                toast.geometry(windows.tk_geometry(x + offset, y, width, height))
 
                 # Schedule next shake frame (40ms = 25fps)
                 self._after(toast, 40, lambda: self._shake_toast(toast, step + 1))

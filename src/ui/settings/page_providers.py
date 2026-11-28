@@ -447,7 +447,7 @@ class ProvidersPage(SettingsPage):
             self._ghost_height = max(ctx.px(88), card.winfo_height(), face.winfo_reqheight())
         ghost = self._drag_ghost
         offset = C.get().px(14)
-        ghost.geometry(f'{self._ghost_width}x{self._ghost_height}{int(x + offset):+d}{int(y + offset):+d}')
+        ghost.geometry(windows.tk_geometry(x + offset, y + offset, self._ghost_width, self._ghost_height))
         ghost.deiconify()
 
     def _show_drop_marker(self):

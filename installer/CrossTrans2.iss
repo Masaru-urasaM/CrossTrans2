@@ -1,5 +1,5 @@
 #ifndef AppVersion
-  #define AppVersion "2.0.0"
+  #define AppVersion "2.0.1"
 #endif
 #ifndef SourceExe
   #error SourceExe must name the verified CrossTrans2.exe build

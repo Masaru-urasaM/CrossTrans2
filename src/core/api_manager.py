@@ -56,7 +56,7 @@ DEFAULT_MODELS_BY_PROVIDER = {
     # model up that also takes reasoning_effort 'none' (_openai_generation_settings).
     # Listed by OpenAI, not yet answered: no OpenAI key is at hand (DEFERRED D11).
     'OpenAI': ['gpt-6-luna', 'gpt-6.1-terra'],
-    'Anthropic': ['claude-haiku-5-5', 'claude-sonnet-5-5', 'claude-haiku-4-5'],
+    'Anthropic': ['claude-haiku-5-5', 'claude-sonnet-5-5', 'claude-haiku-4-5-20251001'],
     'DeepSeek': ['deepseek-flash', 'deepseek-v4-pro'],
     # All three previous entries were decommissioned by Groq (checked 2026-09-07).
     # This list drives auto-pick and _try_model_rotation(), so it holds only models
@@ -82,12 +82,9 @@ DEFAULT_MODELS_BY_PROVIDER = {
     # could not be called (402, the account has no credit), so that is an inference
     # from the same base model on another provider, not a measurement of this one.
     'Cerebras': ['gpt-oss-120b', 'qwen-3.8-27b'],
-    # Meta-Llama-3.1-70B-Instruct is gone from SambaNova's catalogue (2026-09-08);
-    # Meta-Llama-3.3-70B-Instruct survives and stays first. gemma-4-31B-it replaces
-    # the dead entry - a plain instruct model, deliberately not one of the MiniMax or
-    # DeepSeek reasoning models, since auto-pick wants boring and fast. Unverified by
-    # a real call: SambaNova returns 402 before it validates the model.
-    'SambaNova': ['Meta-Llama-3.3-70B-Instruct', 'gemma-4-31B-it'],
+    # Meta-Llama-3.3-70B-Instruct is gone from SambaNova's live catalogue (2026-11-28);
+    # gemma-4-31B-it and gpt-oss-120b are the live fast non-reasoning defaults.
+    'SambaNova': ['gemma-4-31B-it', 'gpt-oss-120b'],
     'Together': ['meta-models/Muse-Glimmer-30B', 'zai-org/GLM-5.3-Flash'],
     'SiliconFlow': ['deepseek-ai/DeepSeek-V3', 'Qwen/Qwen2.5-72B-Instruct'],
     # Both previous entries are gone: google/gemini-2.0-flash-exp:free and

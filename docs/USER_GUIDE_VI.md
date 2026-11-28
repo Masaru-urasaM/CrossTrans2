@@ -30,12 +30,12 @@ Chào mừng bạn đến với **CrossTrans 2**! Tài liệu này hướng dẫ
 - **Kết nối Internet** và ít nhất **1 API key AI** (bạn có thể lấy miễn phí trong 1 phút — xem [Mục 3](#3-cách-lấy--thêm-api-key-có-gói-miễn-phí)).
 
 ### Cài đặt bằng bộ cài Setup (Khuyên dùng)
-1. Tải file **`CrossTrans2Setup_v2.0.0.exe`** từ trang [GitHub Releases mới nhất](https://github.com/Masaru-urasaM/CrossTrans2/releases/latest).
+1. Tải file **`CrossTrans2Setup_v2.0.1.exe`** từ trang [GitHub Releases mới nhất](https://github.com/Masaru-urasaM/CrossTrans2/releases/latest).
 2. *(Tùy chọn)* Nếu muốn kiểm tra tính toàn vẹn của file tải về so với **`SHA256SUMS.txt`**, mở PowerShell và chạy:
    ```powershell
-   Get-FileHash .\CrossTrans2Setup_v2.0.0.exe -Algorithm SHA256
+   Get-FileHash .\CrossTrans2Setup_v2.0.1.exe -Algorithm SHA256
    ```
-3. Nháy đúp **`CrossTrans2Setup_v2.0.0.exe`** và làm theo hướng dẫn trên màn hình.
+3. Nháy đúp **`CrossTrans2Setup_v2.0.1.exe`** và làm theo hướng dẫn trên màn hình.
    - Bộ cài sẽ tự tạo lối tắt Start Menu, hỗ trợ tự động khởi động cùng Windows, gỡ cài đặt sạch sẽ và tự động cập nhật phiên bản mới.
 4. Sau khi mở, CrossTrans 2 sẽ chạy gọn trong **Khay hệ thống (System Tray)** ở góc dưới bên phải thanh Taskbar (bấm mũi tên `^` nếu bị ẩn). Bạn có thể **nhấp chuột phải** vào biểu tượng để mở nhanh **Translate**, **Audio panel**, **Settings** hoặc **Exit**.
 

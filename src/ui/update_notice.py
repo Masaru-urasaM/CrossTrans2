@@ -46,7 +46,7 @@ class UpdateNotice:
         left, top, right, bottom = self._work_area(root)
         x = max(left, right - width - 20)
         y = max(top, bottom - height - 20)
-        self.window.geometry(f'{width}x{height}{x:+d}{y:+d}')
+        self.window.geometry(windows.tk_geometry(x, y, width, height))
         self._prevent_activation()
         self.window.deiconify()
 

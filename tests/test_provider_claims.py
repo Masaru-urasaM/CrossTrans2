@@ -45,8 +45,25 @@ def shared_models():
 SHARED = shared_models()
 
 
+INTENDED_SHARED = {
+    'deepseek-ai/deepseek-v3': ['SiliconFlow', 'HuggingFace'],
+    'deepseek-ai/deepseek-v4-flash': ['SiliconFlow', 'HuggingFace'],
+    'deepseek-ai/deepseek-v4.1-flash': ['Together', 'SiliconFlow'],
+    'gemma-4-31b-it': ['Google', 'SambaNova'],
+    'gpt-oss-120b': ['Cerebras', 'SambaNova'],
+    'meta-llama/llama-3.1-70b-instruct': ['OpenRouter', 'HuggingFace'],
+    'meta-llama/llama-3.3-70b-instruct': ['OpenRouter', 'HuggingFace'],
+    'qwen/qwen2.5-72b-instruct': ['SiliconFlow', 'HuggingFace'],
+    'qwen/qwen3-32b': ['SiliconFlow', 'HuggingFace'],
+    'qwen/qwen3.8-27b': ['Groq', 'SiliconFlow', 'HuggingFace'],
+    'qwen/qwen3.8-flash': ['Together', 'OpenRouter'],
+    'zai-org/glm-5.3': ['Together', 'SiliconFlow', 'HuggingFace'],
+    'zai-org/glm-5.3-flash': ['Together', 'SiliconFlow', 'HuggingFace'],
+}
+
+
 def test_the_shared_ids_are_the_ones_d12_lists():
-    assert len(SHARED) == 13
+    assert SHARED == INTENDED_SHARED
     assert SHARED['gpt-oss-120b'] == ['Cerebras', 'SambaNova']
 
 
@@ -67,15 +84,16 @@ def test_the_one_claimant_without_a_prefix_gets_the_other_keys(manager, model, p
 
 def test_d12s_rows_that_were_wrong(manager):
     assert manager._identify_provider("gpt-oss-120b", UUID_KEY) == 'SambaNova'
+    assert manager._identify_provider("gemma-4-31b-it", UUID_KEY) == 'SambaNova'
+    assert manager._identify_provider("gemma-4-31b-it", "AIzaSyTestKey") == 'Google'
     assert manager._identify_provider("meta-llama/llama-3.3-70b-instruct", "hf_x") == 'HuggingFace'
-    assert manager._identify_provider("google/gemma-2-27b-it", "hf_x") == 'HuggingFace'
     assert manager._identify_provider("qwen/qwen2.5-72b-instruct", "hf_x") == 'HuggingFace'
 
 
 def test_two_claimants_without_a_prefix_stay_unresolved(manager):
     # Together and SiliconFlow have no key prefix: the first still wins (D12's gap).
-    assert SHARED['deepseek-ai/deepseek-r1'] == ['Together', 'SiliconFlow']
-    assert manager._identify_provider("deepseek-ai/deepseek-r1", UUID_KEY) == 'Together'
+    assert SHARED['deepseek-ai/deepseek-v4.1-flash'] == ['Together', 'SiliconFlow']
+    assert manager._identify_provider("deepseek-ai/deepseek-v4.1-flash", UUID_KEY) == 'Together'
 
 
 def test_a_key_that_matches_no_claimant_keeps_the_first(manager):
@@ -87,4 +105,4 @@ def test_no_key_keeps_the_first(manager):
 
 
 def test_a_model_one_provider_lists_ignores_the_key(manager):
-    assert manager._identify_provider("gemini-2.5-flash", "gsk_abc") == 'Google'
+    assert manager._identify_provider("gemini-3.5-flash-lite", "gsk_abc") == 'Google'

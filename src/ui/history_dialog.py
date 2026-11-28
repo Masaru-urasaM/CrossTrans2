@@ -12,7 +12,7 @@ from src.core.furigana import RubySegment
 from src.ui import components as ui
 from src.ui.components.dialog import work_area
 from src.ui.ruby_text import RubyLine, fit_segments
-from src.ui.theme import engine, fonts
+from src.ui.theme import engine, fonts, windows
 from src.ui.theme.compat import NO_AUTOSTYLE
 from src.ui.translator_layout import window_size, window_position
 from src.utils.ui_helpers import schedule_window_callback, cancel_window_callback
@@ -197,7 +197,7 @@ class HistoryDialog:
             area = work_area()
             size = window_size(area, scale=self.ctx.scale, default=(720, 680), minimum=(480, 360))
             x, y = window_position(size, area)
-            self.window.geometry(f'{size.width}x{size.height}{x:+d}{y:+d}')
+            self.window.geometry(windows.tk_geometry(x, y, size.width, size.height))
             self.window.minsize(size.min_width, size.min_height)
         self._create_widgets()
         self._unsubscribe = self.ctx.manager.subscribe(self._retheme)

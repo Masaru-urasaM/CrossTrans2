@@ -2,6 +2,15 @@
 
 All notable user-facing changes to **CrossTrans 2** are documented in this file.
 
+## [2.0.1] - 2026-11-28
+
+### Fixed
+- **Multi-Monitor Screenshot OCR (`Win + Alt + S`) & Window Placement:** Fixed overlay offset and crop misalignment on multi-monitor setups with displays positioned to the left of or above the primary monitor (negative desktop coordinates), ensuring the dimmed overlay, selection rectangle, cropped pixels, and active-monitor instruction/dimension chips align accurately across all displays.
+- **Negative-Coordinate Popups & Dialogs:** Fixed negative-coordinate window positioning and shake animations in History, Update notices, API key drag previews, and Toast notifications on multi-monitor layouts.
+
+### Changed
+- **Refreshed Offline Model Catalog & Defaults:** Removed retired AI model IDs from the offline fallback lists, refreshed image-reading (vision) capability patterns for current model families, and updated offline default models for Anthropic and SambaNova while preserving compatibility with manually entered legacy model IDs.
+
 ## [2.0.0] - 2026-11-27
 
 Initial public release of **CrossTrans 2** for Windows 10/11.

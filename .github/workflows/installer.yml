@@ -53,14 +53,14 @@ jobs:
         with:
           name: installer
           path: |
-            dist-release/CrossTrans2Setup_v2.0.0.exe
+            dist-release/CrossTrans2Setup_v2.0.1.exe
             dist-release/SHA256SUMS.txt
           if-no-files-found: error
           retention-days: 7
       - name: Exercise the installer in this disposable runner
         timeout-minutes: 10
         shell: pwsh
-        run: ./tools/test_installer.ps1 -Installer dist-release/CrossTrans2Setup_v2.0.0.exe -SourceExe dist-release/CrossTrans2.exe -IsolatedEnvironment
+        run: ./tools/test_installer.ps1 -Installer dist-release/CrossTrans2Setup_v2.0.1.exe -SourceExe dist-release/CrossTrans2.exe -IsolatedEnvironment
       - name: Show installer acceptance evidence
         if: always()
         shell: pwsh
@@ -87,7 +87,7 @@ jobs:
         shell: pwsh
         run: |
           $shortSha = '${{ github.sha }}'.Substring(0, 8)
-          $tag = 'candidate-2.0.0-' + $shortSha
+          $tag = 'candidate-2.0.1-' + $shortSha
           $notes = @(
             'Private review candidate; not a published production release.',
             ('Source commit: ${{ github.sha }}'),
@@ -96,5 +96,5 @@ jobs:
           )
           $notes | Set-Content logs/candidate-notes.md -Encoding utf8
           Compress-Archive -Path logs/installer-acceptance,logs/ui-bundle.json -DestinationPath dist-release/installer-validation.zip -Force
-          gh release create $tag dist-release/CrossTrans2.exe dist-release/CrossTrans2Setup_v2.0.0.exe dist-release/SHA256SUMS.txt dist-release/installer-validation.zip --repo '${{ github.repository }}' --target '${{ github.sha }}' --draft --title ('CrossTrans 2.0.0 review ' + $shortSha) --notes-file logs/candidate-notes.md
+          gh release create $tag dist-release/CrossTrans2.exe dist-release/CrossTrans2Setup_v2.0.1.exe dist-release/SHA256SUMS.txt dist-release/installer-validation.zip --repo '${{ github.repository }}' --target '${{ github.sha }}' --draft --title ('CrossTrans 2.0.1 review ' + $shortSha) --notes-file logs/candidate-notes.md
           if ($LASTEXITCODE -ne 0) { throw 'Candidate draft delivery failed.' }

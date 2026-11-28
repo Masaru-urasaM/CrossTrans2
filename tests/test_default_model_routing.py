@@ -21,7 +21,9 @@ import pytest
 
 import src.core.api_manager as api_manager_module
 from src.core.api_manager import AIAPIManager, DEFAULT_MODELS_BY_PROVIDER
-from src.constants import API_KEY_PATTERNS, MODEL_PROVIDER_MAP
+from src.constants import API_KEY_PATTERNS, MODEL_PROVIDER_MAP, VISION_MODELS
+from src.core import multimodal as multimodal_module
+from src.core.multimodal import MultimodalProcessor
 
 
 class _HardcodedConfig:
@@ -125,7 +127,9 @@ RETIRED = {
     'OpenAI': {'gpt-3.5-turbo',                                     # shut down 2026-10-23
                'gpt-4o', 'gpt-4o-mini'},                            # shut down 2027-01-14 (Decision 92)
     'Anthropic': {'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022',
-                  'claude-3-haiku-20240307'},                       # retired 2025-10 .. 2026-04
+                  'claude-3-haiku-20240307',                        # retired 2025-10 .. 2026-04
+                  'claude-haiku-4-5'},                              # replaced by claude-haiku-4-5-20251001
+    'SambaNova': {'Meta-Llama-3.3-70B-Instruct'},                   # removed from SambaNova catalogue
     'DeepSeek': {'deepseek-chat', 'deepseek-coder'},                # gone from the API docs
     'xAI': {'grok-2', 'grok-beta'},                                 # not on xAI's model list
     'Together': {'meta-llama/Llama-3.3-70B-Instruct-Turbo',         # removed 2026-10-22
@@ -153,3 +157,83 @@ def test_every_provider_has_a_second_default_to_rotate_to():
     provider left with one has nowhere to go (D11 removed gpt-3.5-turbo)."""
     for provider, models in DEFAULT_MODELS_BY_PROVIDER.items():
         assert len(models) >= 2, f"{provider} has {models}"
+
+
+def test_every_provider_model_list_has_unique_non_empty_non_batch_entries():
+    for provider, models in MODEL_PROVIDER_MAP.items():
+        assert models, f'{provider} list is empty'
+        seen = set()
+        for model in models:
+            assert isinstance(model, str) and model.strip() == model and model
+            assert ':batch' not in model, f'{provider} lists batch endpoint {model!r}'
+            key = model.lower()
+            assert key not in seen, f'{provider} lists duplicate model {model!r}'
+            seen.add(key)
+
+
+def test_every_default_is_listed_in_its_providers_model_map():
+    for provider, defaults in DEFAULT_MODELS_BY_PROVIDER.items():
+        listed = MODEL_PROVIDER_MAP[provider]
+        for model in defaults:
+            assert model in listed, f'{provider} default {model!r} is missing from MODEL_PROVIDER_MAP'
+
+
+@pytest.mark.parametrize('model,expected', [
+    ('gpt-4o', 'OpenAI'),
+    ('gpt-4o-mini', 'OpenAI'),
+    ('gpt-4.1', 'OpenAI'),
+    ('gpt-3.5-turbo', 'OpenAI'),
+    ('o1-preview', 'OpenAI'),
+    ('o3-mini', 'OpenAI'),
+    ('claude-3-5-sonnet-20241022', 'Anthropic'),
+    ('claude-3-opus-20240229', 'Anthropic'),
+    ('claude-haiku-4-5', 'Anthropic'),
+    ('deepseek-chat', 'DeepSeek'),
+    ('deepseek-reasoner', 'DeepSeek'),
+    ('deepseek-r1', 'DeepSeek'),
+    ('grok-3', 'xAI'),
+    ('grok-2', 'xAI'),
+    ('gemini-2.5-flash', 'Google'),
+    ('gemini-2.0-flash', 'Google'),
+    ('mistral-large-2411', 'Mistral'),
+    ('pixtral-large-latest', 'Mistral'),
+    ('Meta-Llama-3.3-70B-Instruct', 'SambaNova'),
+])
+def test_manually_typed_legacy_ids_still_route_to_their_provider(offline_manager, model, expected):
+    assert offline_manager._identify_provider(model, '') == expected
+
+
+@pytest.mark.parametrize('provider,model,capable', [
+    ('anthropic', 'claude-haiku-5-5', True),
+    ('anthropic', 'claude-sonnet-5-5', True),
+    ('anthropic', 'claude-opus-5-5', True),
+    ('anthropic', 'claude-fable-5-1', True),
+    ('anthropic', 'claude-haiku-4-5-20251001', True),
+    ('anthropic', 'claude-3-5-sonnet-20241022', True),
+    ('openai', 'gpt-6-luna', True),
+    ('openai', 'gpt-6.1-terra', True),
+    ('openai', 'gpt-5.6', True),
+    ('openai', 'gpt-4o', True),
+    ('openai', 'o3-mini', False),
+    ('google', 'gemini-3.5-flash-lite', True),
+    ('google', 'gemini-4-argon', True),
+    ('google', 'gemma-4-31b-it', True),
+    ('deepseek', 'deepseek-flash', True),
+    ('deepseek', 'deepseek-v4-pro', False),
+    ('groq', 'qwen/qwen3.8-27b', True),
+    ('groq', 'openai/gpt-oss-120b', False),
+    ('xai', 'grok-4.20-0309-non-reasoning', True),
+    ('mistral', 'mistral-large-latest', True),
+    ('mistral', 'ministral-8b-latest', True),
+    ('mistral', 'codestral-latest', False),
+    ('perplexity', 'sonar-pro', True),
+    ('perplexity', 'sonar', False),
+    ('cerebras', 'qwen-3.8-27b', True),
+    ('cerebras', 'gpt-oss-120b', False),
+    ('sambanova', 'gemma-4-31B-it', True),
+    ('sambanova', 'gpt-oss-120b', False),
+])
+def test_offline_vision_patterns_match_live_capabilities(monkeypatch, provider, model, capable):
+    monkeypatch.setattr(multimodal_module, 'get_config',
+                        lambda: type('Cfg', (), {'vision_models': VISION_MODELS})())
+    assert MultimodalProcessor.is_vision_capable(model, provider) is capable
